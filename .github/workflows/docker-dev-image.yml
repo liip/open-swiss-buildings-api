@@ -6,14 +6,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker Dev image
-      run: docker build . --file docker/Dockerfile --target app-dev --tag open-swiss-buildings-api:latest
+      run: docker build . --file docker/Dockerfile --target app-dev --tag $IMAGE_NAME:latest
     - name: Tag the Docker Dev image
-      run: docker tag open-swiss-buildings-api:latest $DOCKER_REGISTRY_URL/open-swiss-buildings-api:latest
+      run: docker tag open-swiss-buildings-api:latest $REGISTRY/$IMAGE_NAME:latest
     - name: Push the latest tag of the Docker Dev image
-      run: docker push $DOCKER_REGISTRY_URL/open-swiss-buildings-api:latest
+      run: docker push $REGISTRY/$IMAGE_NAME:latest
