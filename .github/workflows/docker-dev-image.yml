@@ -18,6 +18,6 @@ jobs:
     - name: Build the Docker Dev image
       run: docker build . --file docker/Dockerfile --target app-dev --tag $IMAGE_NAME:latest
     - name: Tag the Docker Dev image
-      run: docker tag open-swiss-buildings-api:latest $REGISTRY/$IMAGE_NAME:latest
+      run: docker tag $IMAGE_NAME:latest $REGISTRY/$IMAGE_NAME:latest
     - name: Push the latest tag of the Docker Dev image
       run: docker push $REGISTRY/$IMAGE_NAME:latest
