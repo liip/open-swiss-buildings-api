@@ -1,0 +1,19 @@
+name: Docker Dev Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker Dev image
+      run: docker build . --file docker/Dockerfile --target app-dev --tag open-swiss-buildings-api:latest
+    - name: Tag the Docker Dev image
+      run: docker tag open-swiss-buildings-api:latest $DOCKER_REGISTRY_URL/open-swiss-buildings-api:latest
+    - name: Push the latest tag of the Docker Dev image
+      run: docker push $DOCKER_REGISTRY_URL/open-swiss-buildings-api:latest
