@@ -1,0 +1,6 @@
+includes:
+  - phpstan.dist.neon
+
+parameters:
+  scanDirectories:
+    - var/cache/test/Symfony/Config

@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      # use the app-dev-local target defined on the Dockerfile
+      # This image includes XDebug, nano and other tools which are not around in the default target
+      # Plus a ZSH shell terminal with autocompletion and shell history management
+      target: app-dev-local
+    environment:
+      # Permanently enable the debug mode
+      XDEBUG_MODE: develop,debug
+      # Add Blackfire ID and Token for Profiling
+      BLACKFIRE_CLIENT_ID: the-client-id-here
+      BLACKFIRE_CLIENT_TOKEN: the-token-here
+    # Mount your local Composer cache folder into the project to re-use the host local cache, if existing
+    volumes:
+      - "./:/www:z"
+      - "${COMPOSER_CACHE_DIR:-${HOME}/.cache/composer}:/home/php/.composer/cache:z"
+      - "${COMPOSER_HOME:-${HOME}/.composer}/auth.json:/home/php/.composer/auth.json:z"
+      - "${COMPOSER_HOME:-${HOME}/.composer}/config.json:/home/php/.composer/config.json:z"
+      - ".docker-volume/starship.toml:/home/php/.config/starship.toml:rw,z" # allow for local edits to the integrated shell
+      - ".docker-volumes/atuin:/home/php/.local/share/atuin/:rw,z" # allow to keep the shell history stored in Atuin between container restarts
+    # Expose ports
+    ports: []
+      # Export SSH port on 2222 (available on the prod docker image)
+      # To connect, use something like "ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o PasswordAuthentication=yes root@localhost -p 2222 -v"
+      # As your SSH might be configured to *not allow* plain password authentication
+      #- target: 2222
+      #  published: 2222
+      #  protocol: tcp
+
+  # Expose the database port
+  database:
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp

@@ -1,0 +1,10 @@
+includes:
+  - phpstan.dist.neon
+
+parameters:
+  editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+  editorUrlTitle: '%%relFile%%:%%line%%'
+  symfony:
+    containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+  scanDirectories:
+    - var/cache/dev/Symfony/

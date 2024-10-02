@@ -1,0 +1,3 @@
+foreground { echo "Doctrine: running database migrations ..." }
+su php -s "/bin/ash" \
+    -c "/www/bin/console doctrine:migrations:migrate -n -v"

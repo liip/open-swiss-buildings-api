@@ -1,0 +1,36 @@
+{
+    "type": "FeatureCollection",
+    "name": "Test GeoJson file",
+    "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::2056" } },
+    "features": [{
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+                [
+                    [
+                        [ 2667985.1111, 1249131.1111 ],
+                        [ 2667993.1111, 1249131.1111 ],
+                        [ 2667997.1111, 1249113.1111 ]
+                     ]
+                 ]
+            ]
+        }
+   }, {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+                [
+                    [
+                        [ 2667985.2222, 1249131.2222 ],
+                        [ 2667993.2222, 1249131.2222 ],
+                        [ 2667997.2222, 1249113.2222 ]
+                     ]
+                 ]
+             ]
+         }
+   }]
+}

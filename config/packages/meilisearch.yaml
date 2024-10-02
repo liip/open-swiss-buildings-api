@@ -1,0 +1,2 @@
+meilisearch:
+    default_connection: '%env(MEILISEARCH_DSN)%'

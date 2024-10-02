@@ -1,0 +1,25 @@
+parameters:
+  level: 8
+  paths:
+    - bin/
+    - config/
+    - public/
+    - src/
+    - tests/
+  tmpDir: var/cache/ci/phpstan
+  doctrine:
+    ormRepositoryClass: Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
+    objectManagerLoader: tests/object-manager.php
+    reportDynamicQueryBuilders: true
+  symfony:
+    containerXmlPath: var/cache/test/App_KernelTestDebugContainer.xml
+  scanFiles:
+    # This is required to have PhpStan to discover the ContainerConfiguration functions
+    - vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
+  excludePaths:
+    analyse:
+      - tests/object-manager.php
+  bootstrapFiles:
+    - tools/phpunit.phar
+  stubFiles:
+    - phpstan/stubs/EventDispatcherInterface.stub

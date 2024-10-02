@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": 0, "prop2": "", "prop3": null },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [ 2709170.43, 1265231.57 ],
+            [ 2709178.93, 1265238.46 ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": 1, "prop4": "Z4", "prop2": "X2"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [ 2709170.43, 1265231.57 ],
+            [ 2709178.93, 1265238.46 ]
+          ]
+        ]
+      }
+    }
+  ]
+}

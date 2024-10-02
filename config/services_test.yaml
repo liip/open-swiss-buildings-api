@@ -1,0 +1,2 @@
+parameters:
+    app.enable_search_engine: false

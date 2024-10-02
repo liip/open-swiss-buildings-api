@@ -1,0 +1,21 @@
+services:
+    Jsor\Doctrine\PostGIS\Schema\SchemaManagerFactory: ~
+    Jsor\Doctrine\PostGIS\Event\ORMSchemaEventListener:
+        tags: [{ name: doctrine.event_listener, event: postGenerateSchemaTable, connection: default }]
+    Jsor\Doctrine\PostGIS\Driver\Middleware:
+        tags: [ doctrine.middleware ]
+
+doctrine:
+    dbal:
+        schema_filter: ~^(?!tiger)(?!topology)~
+        schema_manager_factory: 'Jsor\Doctrine\PostGIS\Schema\SchemaManagerFactory'
+        types:
+            geometry: 'Jsor\Doctrine\PostGIS\Types\GeometryType'
+            geojson: 'App\Infrastructure\PostGis\Types\GeoJsonType'
+            transformed_wgs84_geometry: 'App\Infrastructure\PostGis\Types\TransformedWGS84GeometryType'
+    orm:
+        dql:
+            string_functions:
+                # ST_Within: 'Jsor\Doctrine\PostGIS\Functions\ST_Within'
+                # ST_Transform: 'Jsor\Doctrine\PostGIS\Functions\ST_Transform'
+                # ST_GeomFromEWKT: 'Jsor\Doctrine\PostGIS\Functions\ST_GeomFromEWKT'

@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv sh
+exec 2>&1
+su php \
+    -s "/bin/ash" \
+    -c "/www/bin/console messenger:consume --limit=10 async"

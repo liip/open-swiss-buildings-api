@@ -1,0 +1,20 @@
+{
+    "type": "FeatureCollection",
+    "name": "Test GeoJson file",
+    "features": [{
+        "type": "Feature",
+        "properties": { "prop1": 111 },
+        "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+                [
+                    [
+                        [ 2667985.1111, 1249131.1111 ],
+                        [ 2667993.1111, 1249131.1111 ],
+                        [ 2667997.1111, 1249113.1111 ]
+                     ]
+                 ]
+            ]
+        }
+   }]
+}

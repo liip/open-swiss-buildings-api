@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      target: app-prod
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - database
+      - meilisearch
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-localhost}
+    extra_hosts:
+      - host.containers.internal:host-gateway
+    ports:
+      - target: 80
+        published: ${HTTP_PORT:-80}
+        protocol: tcp
+
+  database:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.10
+    restart: unless-stopped
+    environment:
+      MEILI_NO_ANALYTICS: true
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-cWwx3jxAworhaQAVHeRYlK37wdVnLNc6P_Uyz8WLTyM}
+    volumes:
+      - meilisearch_data:/meili_data:rw
+
+volumes:
+  database_data:
+  meilisearch_data:
