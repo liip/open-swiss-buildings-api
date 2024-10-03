@@ -1,0 +1,67 @@
+name: Tests
+
+on:
+  workflow_run:
+    workflows: ["Docker Dev Image CI"]
+    branches: [main]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_TAG: ${{ env.GITHUB_REF_SLUG }}
+  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/app?serverVersion=15&charset=utf8"
+
+jobs:
+  symfony-tests:
+    runs-on: ubuntu-latest
+    container: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      meilisearch:
+        image: getmeili/meilisearch:v1.7
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
+    - name: Install Tools
+      run: composer phive:install --no-interaction --no-progress --ansi
+    - name: Execute composer normalizer
+      run: composer normalize --dry-run
+    - name: Execute PHP-CS-Fixer
+      run: composer cs:check
+    - name: Execute PHPStan
+      run: composer phpstan:check
+    - name: Execute PHPStan
+      run: composer phpstan:check
+    - name: Execute Rector
+      run: composer rector:check
+    - name: Setup messenger transports
+      run: ./bin/console messenger:setup-transports
+    - name: Setup database
+      run: ./bin/console doctrine:migration:migrate -n
+    - name: Validate database
+      run: ./bin/console doctrine:schema:validate -v
+    - name: Execute Tests
+      run: composer phpunit:check
