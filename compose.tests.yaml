@@ -2,3 +2,5 @@ services:
   app:
     build:
       target: app-dev
+    volumes:
+      - "./:/www:z"
