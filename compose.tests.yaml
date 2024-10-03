@@ -1,0 +1,7 @@
+include:
+  - compose.yaml
+
+services:
+  app:
+    build:
+      target: app-dev

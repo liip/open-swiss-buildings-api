@@ -17,35 +17,35 @@ jobs:
     - name: Start stack
       shell: bash
       run: |
-        docker compose pull --include-deps
-        docker compose build
-        docker compose up -d
+        docker compose -f compose.tests.yaml pull --include-deps
+        docker compose -f compose.tests.yaml build
+        docker compose -f compose.tests.yaml up -d
     - name: Install vendors
       shell: bash
       run: |
-        docker compose exec app composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
+        docker compose -f compose.tests.yaml exec app composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
     - name: Install tools
       shell: bash
       run: |
-        docker compose exec app composer phive:install --no-interaction --no-progress --ansi
+        docker compose -f compose.tests.yaml exec app composer phive:install --no-interaction --no-progress --ansi
     - name: PHP-CS-Fixer
       shell: bash
       run: |
-        docker compose exec app composer cs:check
+        docker compose -f compose.tests.yaml exec app composer cs:check
     - name: PHPStan
       shell: bash
       run: |
-        docker compose exec app composer phpstan:check
+        docker compose -f compose.tests.yaml exec app composer phpstan:check
     - name: Rector
       shell: bash
       run: |
-        docker compose exec app composer rector:check
+        docker compose -f compose.tests.yaml exec app composer rector:check
     - name: Tests
       shell: bash
       run: |
-        docker compose exec app composer phpunit:check
+        docker compose -f compose.tests.yaml exec app composer phpunit:check
     - name: Stop stack
       if: always()
       shell: bash
       run: |
-        docker compose down
+        docker compose -f compose.tests.yaml down
