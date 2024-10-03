@@ -1,6 +1,3 @@
-include:
-  - compose.yaml
-
 services:
   app:
     build:
