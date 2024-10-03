@@ -1,6 +1,7 @@
 services:
   app:
     build:
+      context: ./
       target: app-prod
       dockerfile: docker/Dockerfile
     restart: unless-stopped
