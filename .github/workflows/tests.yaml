@@ -28,6 +28,12 @@ jobs:
       shell: bash
       run: |
         docker compose -f compose.yaml -f compose.tests.yaml exec app composer phive:install --no-interaction --no-progress --no-ansi
+    - name: Initialize database
+      shell: bash
+      run: |
+        docker compose -f compose.yaml -f compose.tests.yaml exec app bin/console messenger:setup-transports
+        docker compose -f compose.yaml -f compose.tests.yaml exec app bin/console doctrine:migration:migrate -n
+        docker compose -f compose.yaml -f compose.tests.yaml exec app bin/console doctrine:schema:validate -v
     - name: PHP-CS-Fixer
       shell: bash
       run: |
