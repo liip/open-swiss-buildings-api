@@ -105,8 +105,8 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "cs:check": "tools/php-cs-fixer.phar fix --dry-run --show-progress=dots",
-        "cs:fix": "tools/php-cs-fixer.phar fix  --verbose --show-progress=dots",
+        "cs:check": "tools/php-cs-fixer.phar fix --dry-run --diff",
+        "cs:fix": "tools/php-cs-fixer.phar fix --verbose",
         "phive:install": "phive --no-progress install --trust-gpg-keys 0x4AA394086372C20A,0xE82B2FB314E9906E",
         "phpstan:check": "vendor/bin/phpstan analyze",
         "rector:check": "vendor/bin/rector --dry-run",

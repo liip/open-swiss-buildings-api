@@ -27,23 +27,23 @@ jobs:
     - name: Install tools
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer phive:install --no-interaction --no-progress --ansi
+        docker compose -f compose.yaml -f compose.tests.yaml exec app composer phive:install --no-interaction --no-progress --no-ansi
     - name: PHP-CS-Fixer
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer cs:check
+        docker compose -f compose.yaml -f compose.tests.yaml exec app tools/php-cs-fixer.phar fix --no-ansi --dry-run --diff
     - name: PHPStan
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer phpstan:check
+        docker compose -f compose.yaml -f compose.tests.yaml exec app vendor/bin/phpstan --no-ansi --configuration phpstan.test.neon analyze
     - name: Rector
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer rector:check
+        docker compose -f compose.yaml -f compose.tests.yaml exec app vendor/bin/rector --no-ansi --dry-run
     - name: Tests
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer phpunit:check
+        docker compose -f compose.yaml -f compose.tests.yaml exec app tools/phpunit.phar
     - name: Stop stack
       if: always()
       shell: bash
