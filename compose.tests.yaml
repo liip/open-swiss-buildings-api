@@ -4,3 +4,5 @@ services:
       target: app-dev
     volumes:
       - "./:/www:z"
+    environment:
+      APP_ENV: test
