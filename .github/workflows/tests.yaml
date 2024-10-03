@@ -23,23 +23,23 @@ jobs:
     - name: Normalize composer.json
       shell: bash
       run: |
-        docker compose exec app -- composer normalize --dry-run
+        docker compose exec app composer normalize --dry-run
     - name: PHP-CS-Fixer
       shell: bash
       run: |
-        docker compose exec app -- composer cs:check
+        docker compose exec app composer cs:check
     - name: PHPStan
       shell: bash
       run: |
-        docker compose exec app -- composer phpstan:check
+        docker compose exec app composer phpstan:check
     - name: Rector
       shell: bash
       run: |
-        docker compose exec app -- composer rector:check
+        docker compose exec app composer rector:check
     - name: Tests
       shell: bash
       run: |
-        docker compose exec app -- composer phpunit:check
+        docker compose exec app composer phpunit:check
     - name: Stop stack
       if: always()
       shell: bash
