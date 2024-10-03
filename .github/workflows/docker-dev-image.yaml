@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  IMAGE_TAG: ${{ env.GITHUB_REF_SLUG }}
+  IMAGE_TAG: ${{ GITHUB_REF_SLUG }}
 
 jobs:
   build-and-push-image:
