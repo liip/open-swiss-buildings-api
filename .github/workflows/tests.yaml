@@ -13,13 +13,12 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  IMAGE_TAG: ${{ GITHUB_REF_SLUG }}
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/app?serverVersion=15&charset=utf8"
 
 jobs:
   symfony-tests:
     runs-on: ubuntu-latest
-    container: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }}
+    container: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ GITHUB_REF_SLUG }}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     services:
       postgres:
@@ -35,9 +34,11 @@ jobs:
         image: getmeili/meilisearch:v1.7
     steps:
     - uses: actions/checkout@v4
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v4
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
