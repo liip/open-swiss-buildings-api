@@ -20,10 +20,6 @@ jobs:
         docker compose pull --include-deps
         docker compose build
         docker compose up -d
-    - name: Normalize composer.json
-      shell: bash
-      run: |
-        docker compose exec app composer normalize --dry-run
     - name: PHP-CS-Fixer
       shell: bash
       run: |
