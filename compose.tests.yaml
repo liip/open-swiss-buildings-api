@@ -6,3 +6,6 @@ services:
       - "./:/www:z"
     environment:
       APP_ENV: test
+  database:
+    environment:
+      POSTGRES_DB: app_test
