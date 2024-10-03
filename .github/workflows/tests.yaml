@@ -35,7 +35,7 @@ jobs:
     - name: PHPStan
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app vendor/bin/phpstan --no-ansi --configuration phpstan.test.neon analyze
+        docker compose -f compose.yaml -f compose.tests.yaml exec app vendor/bin/phpstan --no-ansi analyze --configuration phpstan.test.neon
     - name: Rector
       shell: bash
       run: |
