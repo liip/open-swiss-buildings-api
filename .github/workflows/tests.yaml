@@ -23,7 +23,7 @@ jobs:
     - name: Install vendors
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
+        docker compose -f compose.yaml -f compose.tests.yaml exec app composer install --no-ansi --no-interaction --no-progress --prefer-dist
     - name: Install tools
       shell: bash
       run: |
