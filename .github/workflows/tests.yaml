@@ -20,6 +20,14 @@ jobs:
         docker compose pull --include-deps
         docker compose build
         docker compose up -d
+    - name: Install vendors
+      shell: bash
+      run: |
+        docker compose exec app composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
+    - name: Install tools
+      shell: bash
+      run: |
+        docker compose exec app composer phive:install --no-interaction --no-progress --ansi
     - name: PHP-CS-Fixer
       shell: bash
       run: |
