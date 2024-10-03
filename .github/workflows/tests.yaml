@@ -14,9 +14,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Start stack
+      shell: bash
+      run: |
+        docker compose pull --include-deps
+        docker compose build
+        docker compose up -d
+    - name: Normalize composer.json
+      shell: bash
+      run: |
+        docker compose exec app -- composer normalize --dry-run
+    - name: PHP-CS-Fixer
+      shell: bash
+      run: |
+        docker compose exec app -- composer cs:check
+    - name: PHPStan
+      shell: bash
+      run: |
+        docker compose exec app -- composer phpstan:check
+    - name: Rector
+      shell: bash
+      run: |
+        docker compose exec app -- composer rector:check
     - name: Tests
-      uses: cloudposse/github-action-docker-compose-test-run@main
-      with:
-        file: compose.yaml
-        service: app
-        command: composer ci:check
+      shell: bash
+      run: |
+        docker compose exec app -- composer phpunit:check
+    - name: Stop stack
+      if: always()
+      shell: bash
+      run: |
+        docker compose down
