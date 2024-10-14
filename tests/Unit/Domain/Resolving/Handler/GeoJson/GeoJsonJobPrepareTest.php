@@ -9,6 +9,7 @@ use App\Domain\Resolving\Contract\GeoJsonFeatureParserInterface;
 use App\Domain\Resolving\Contract\Job\ResolverMetadataWriteRepositoryInterface;
 use App\Domain\Resolving\Contract\Job\ResolverTaskWriteRepositoryInterface;
 use App\Domain\Resolving\Exception\InvalidInputDataException;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Handler\GeoJson\GeoJsonJobPreparer;
 use App\Domain\Resolving\Model\Data\ResolverJobRawData;
 use App\Domain\Resolving\Model\Job\ResolverMetadata;
@@ -392,7 +393,7 @@ final class GeoJsonJobPrepareTest extends TestCase
         $this->taskRepository->expects($this->once())
             ->method('store')
             ->willThrowException(
-                new \Exception('An exception occurred while executing a query: SQLSTATE[XX000]: Internal error: 7 ERROR:  ST_Transform: Input geometry has unknown (0) SRID'),
+                ResolverJobFailedException::wrap(new \Exception('An exception occurred while executing a query: SQLSTATE[XX000]: Internal error: 7 ERROR:  ST_Transform: Input geometry has unknown (0) SRID')),
             )
         ;
 

@@ -10,6 +10,7 @@ use App\Domain\Resolving\Entity\ResolverAddress;
 use App\Domain\Resolving\Entity\ResolverAddressMatch;
 use App\Domain\Resolving\Entity\ResolverResult;
 use App\Domain\Resolving\Entity\ResolverTask;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\AdditionalData;
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
@@ -36,36 +37,40 @@ final readonly class DoctrineAddressSearchResolver implements TaskResolverInterf
 
     public function resolveTasks(ResolverJobIdentifier $job): void
     {
-        $this->exactMatcher->matchExactly($job, 100);
-        $this->exactMatcher->matchExactlyNormalized($job, 99);
+        try {
+            $this->exactMatcher->matchExactly($job, 100);
+            $this->exactMatcher->matchExactlyNormalized($job, 99);
 
-        // Matching on Steet
-        $this->streetMatcher->matchStreetExact($job, 100);
-        $this->streetMatcher->matchStreetNormalized($job, 99);
+            // Matching on Steet
+            $this->streetMatcher->matchStreetExact($job, 100);
+            $this->streetMatcher->matchStreetNormalized($job, 99);
 
-        // Matching with street-number range
-        $this->streetWithRangeMatcher->matchStreetExactNumberRange($job, 98);
-        $this->streetWithRangeMatcher->matchStreetExactNumberSuffixRange($job, 98);
-        $this->streetWithRangeMatcher->matchStreetNormalizedNumberRange($job, 97);
-        $this->streetWithRangeMatcher->matchStreetNormalizedNumberSuffixRange($job, 97);
+            // Matching with street-number range
+            $this->streetWithRangeMatcher->matchStreetExactNumberRange($job, 98);
+            $this->streetWithRangeMatcher->matchStreetExactNumberSuffixRange($job, 98);
+            $this->streetWithRangeMatcher->matchStreetNormalizedNumberRange($job, 97);
+            $this->streetWithRangeMatcher->matchStreetNormalizedNumberSuffixRange($job, 97);
 
-        // Match by street search
-        $this->searchStreetMatcher->matchStreetsBySearch($job, 95, 85);
+            // Match by street search
+            $this->searchStreetMatcher->matchStreetsBySearch($job, 95, 85);
 
-        // Matching on Steet-ID
-        $this->streetIdMatcher->matchOnFullStreet($job, 1);
-        $this->streetIdMatcher->matchWithoutSuffix($job, 2);
-        $this->streetIdMatcher->matchWitSuffix($job, 3);
-        $this->streetIdMatcher->matchWithOtherSuffix($job, 4);
+            // Matching on Steet-ID
+            $this->streetIdMatcher->matchOnFullStreet($job, 1);
+            $this->streetIdMatcher->matchWithoutSuffix($job, 2);
+            $this->streetIdMatcher->matchWitSuffix($job, 3);
+            $this->streetIdMatcher->matchWithOtherSuffix($job, 4);
 
-        $this->closestStreetNumberMatcher->matchClosestHouseNumber($job);
+            $this->closestStreetNumberMatcher->matchClosestHouseNumber($job);
 
-        $this->searchMatcher->matchBySearch($job, 97, 70);
-        $this->nothingMatcher->matchNothing($job);
+            $this->searchMatcher->matchBySearch($job, 97, 70);
+            $this->nothingMatcher->matchNothing($job);
 
-        // Collecting all possible tasks
-        $this->buildTasks($job);
-        $this->resolveIntoResults($job);
+            // Collecting all possible tasks
+            $this->buildTasks($job);
+            $this->resolveIntoResults($job);
+        } catch (\Throwable $e) {
+            throw ResolverJobFailedException::wrap($e);
+        }
     }
 
     private function buildTasks(ResolverJobIdentifier $job): void

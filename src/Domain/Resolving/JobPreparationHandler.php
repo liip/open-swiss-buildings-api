@@ -12,6 +12,7 @@ use App\Domain\Resolving\Event\JobPreparationHasStarted;
 use App\Domain\Resolving\Event\JobResolvingHasFailed;
 use App\Domain\Resolving\Exception\InvalidInputDataException;
 use App\Domain\Resolving\Exception\NoJobPreparationHandlerFoundException;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\Failure\ResolverJobFailure;
 use App\Domain\Resolving\Model\Failure\ResolverJobFailureEnum;
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
@@ -49,6 +50,13 @@ final readonly class JobPreparationHandler implements JobPreparationHandlerInter
             $this->eventDispatcher->dispatch(new JobResolvingHasFailed(
                 $job,
                 ResolverJobFailure::fromException(ResolverJobFailureEnum::INVALID_DATA, $e),
+            ));
+
+            return;
+        } catch (ResolverJobFailedException $e) {
+            $this->eventDispatcher->dispatch(new JobResolvingHasFailed(
+                $job,
+                ResolverJobFailure::fromException(ResolverJobFailureEnum::RESOLVING_ERROR, $e),
             ));
 
             return;

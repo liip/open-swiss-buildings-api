@@ -9,6 +9,7 @@ use App\Domain\Resolving\Contract\Job\ResolverTaskReadRepositoryInterface;
 use App\Domain\Resolving\Contract\Job\TaskResolverInterface;
 use App\Domain\Resolving\Entity\ResolverResult;
 use App\Domain\Resolving\Entity\ResolverTask;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use Doctrine\DBAL\Statement;
@@ -46,8 +47,12 @@ final readonly class DoctrineGeoJsonTaskResolver implements TaskResolverInterfac
         $totalItems = 0;
         $this->logger->debug('Resolving for Job {job_id}: starting', ['job_id' => (string) $job->id]);
 
-        foreach ($this->taskReadRepository->getTasksIds($job->id) as $taskId) {
-            $totalItems += $this->resolveTask($taskId);
+        try {
+            foreach ($this->taskReadRepository->getTasksIds($job->id) as $taskId) {
+                $totalItems += $this->resolveTask($taskId);
+            }
+        } catch (\Throwable $e) {
+            throw ResolverJobFailedException::wrap($e);
         }
 
         $this->logger->debug('Resolving for Job {job_id}: done, {count} items processed', [

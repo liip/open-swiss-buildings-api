@@ -8,6 +8,7 @@ use App\Domain\BuildingData\Entity\BuildingEntrance;
 use App\Domain\Resolving\Contract\Job\TaskResolverInterface;
 use App\Domain\Resolving\Entity\ResolverResult;
 use App\Domain\Resolving\Entity\ResolverTask;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,10 @@ final readonly class DoctrineMunicipalitiesIdsResolver implements TaskResolverIn
             "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, b.building_id, b.id, t.additional_data FROM {$taskTable} t " .
             "LEFT JOIN {$buildingEntranceTable} b ON t.matching_municipality_code = b.municipality_code WHERE t.job_id = :jobId";
 
-        $this->entityManager->getConnection()->executeStatement($sql, ['jobId' => $job->id]);
+        try {
+            $this->entityManager->getConnection()->executeStatement($sql, ['jobId' => $job->id]);
+        } catch (\Throwable $e) {
+            throw ResolverJobFailedException::wrap($e);
+        }
     }
 }

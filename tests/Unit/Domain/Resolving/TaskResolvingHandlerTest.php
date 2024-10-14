@@ -8,6 +8,7 @@ use App\Domain\Resolving\Contract\Job\TaskResolverInterface;
 use App\Domain\Resolving\Event\JobResolvingHasCompleted;
 use App\Domain\Resolving\Event\JobResolvingHasFailed;
 use App\Domain\Resolving\Event\JobResolvingHasStarted;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Exception\RetryableResolvingErrorException;
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
@@ -103,7 +104,7 @@ final class TaskResolvingHandlerTest extends TestCase
             {
                 $this->handled = true;
 
-                throw new \Exception('Test error');
+                throw ResolverJobFailedException::wrap(new \Exception('Test error'));
             }
         };
 

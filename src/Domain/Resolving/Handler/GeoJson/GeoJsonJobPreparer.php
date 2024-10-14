@@ -10,6 +10,7 @@ use App\Domain\Resolving\Contract\Job\JobPreparerInterface;
 use App\Domain\Resolving\Contract\Job\ResolverMetadataWriteRepositoryInterface;
 use App\Domain\Resolving\Contract\Job\ResolverTaskWriteRepositoryInterface;
 use App\Domain\Resolving\Exception\InvalidInputDataException;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\AdditionalData;
 use App\Domain\Resolving\Model\Data\ResolverJobRawData;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
@@ -38,12 +39,11 @@ final readonly class GeoJsonJobPreparer implements JobPreparerInterface
         $tasks = $this->readTasks($jobData);
         try {
             $this->taskRepository->store($tasks);
-        } catch (\Exception $e) {
+        } catch (ResolverJobFailedException $e) {
             if (str_contains($e->getMessage(), 'ST_Transform: Input geometry has unknown (0) SRID')) {
                 throw new InvalidInputDataException('Error handling GeoJson coordinate system conversion: possible SRID mismatch', $e);
             }
-
-            throw $e;
+            throw ResolverJobFailedException::enhance("Failed to resolve job {$jobData->id} of type {$jobData->type->value}: {$e->getMessage()}", $e);
         }
     }
 

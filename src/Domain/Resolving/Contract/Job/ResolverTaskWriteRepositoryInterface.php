@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Resolving\Contract\Job;
 
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
 use Symfony\Component\Uid\Uuid;
 
@@ -16,6 +17,8 @@ interface ResolverTaskWriteRepositoryInterface
      * Stores the given tasks.
      *
      * @param iterable<WriteResolverTask> $tasks
+     *
+     * @throws ResolverJobFailedException
      */
     public function store(iterable $tasks): void;
 

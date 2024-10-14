@@ -10,6 +10,7 @@ use App\Domain\Resolving\Event\JobResolvingHasCompleted;
 use App\Domain\Resolving\Event\JobResolvingHasFailed;
 use App\Domain\Resolving\Event\JobResolvingHasStarted;
 use App\Domain\Resolving\Exception\NoTaskResolvingHandlerFoundException;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Exception\RetryableResolvingErrorException;
 use App\Domain\Resolving\Model\Failure\ResolverJobFailure;
 use App\Domain\Resolving\Model\Failure\ResolverJobFailureEnum;
@@ -37,10 +38,7 @@ final readonly class TaskResolvingHandler implements TaskResolvingHandlerInterfa
         try {
             $this->getTaskResolver($job)->resolveTasks($job);
         } catch (NoTaskResolvingHandlerFoundException $e) {
-            $this->logger->error('Error wile resolving Job: {message}', [
-                'message' => $e->getMessage(),
-                'exception' => $e,
-            ]);
+            $this->logger->error('Error wile resolving Job: {message}', ['message' => $e->getMessage(), 'exception' => $e]);
             $this->eventDispatcher->dispatch(new JobResolvingHasFailed(
                 $job,
                 ResolverJobFailure::fromException(ResolverJobFailureEnum::NO_TASK_RESOLVER, $e),
@@ -52,11 +50,8 @@ final readonly class TaskResolvingHandler implements TaskResolvingHandlerInterfa
             $this->eventDispatcher->dispatch(JobResolvingHasFailed::fromException($job, $e));
 
             throw $e;
-        } catch (\Throwable $e) {
-            $this->logger->error('Error while resolving Job: {message}', [
-                'message' => $e->getMessage(),
-                'exception' => $e,
-            ]);
+        } catch (ResolverJobFailedException $e) {
+            $this->logger->error('Error while resolving Job: {message}', ['message' => $e->getMessage(), 'exception' => $e]);
             $this->eventDispatcher->dispatch(JobResolvingHasFailed::fromException($job, $e));
 
             return;

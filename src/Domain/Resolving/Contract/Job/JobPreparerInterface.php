@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Resolving\Contract\Job;
 
 use App\Domain\Resolving\Exception\InvalidInputDataException;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Exception\ResolverJobNotFoundException;
 use App\Domain\Resolving\Model\Data\ResolverJobRawData;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
@@ -20,6 +21,7 @@ interface JobPreparerInterface
      * Prepares the data of a specific resolver job type.
      *
      * @throws ResolverJobNotFoundException
+     * @throws ResolverJobFailedException
      * @throws InvalidInputDataException
      */
     public function prepareJob(ResolverJobRawData $jobData): void;
