@@ -10,6 +10,7 @@ use App\Domain\Resolving\Contract\Job\ResolverMetadataWriteRepositoryInterface;
 use App\Domain\Resolving\Contract\Job\ResolverTaskWriteRepositoryInterface;
 use App\Domain\Resolving\Exception\CsvReadException;
 use App\Domain\Resolving\Exception\InvalidInputDataException;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\AdditionalData;
 use App\Domain\Resolving\Model\Data\ResolverJobRawData;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
@@ -35,7 +36,11 @@ final readonly class MunicipalitiesCodesPreparer implements JobPreparerInterface
     public function prepareJob(ResolverJobRawData $jobData): void
     {
         $tasks = $this->readTasks($jobData);
-        $this->taskRepository->store($tasks);
+        try {
+            $this->taskRepository->store($tasks);
+        } catch (ResolverJobFailedException $e) {
+            throw ResolverJobFailedException::enhance("Failed to resolve job {$jobData->id} of type {$jobData->type->value}: {$e->getMessage()}", $e);
+        }
     }
 
     /**

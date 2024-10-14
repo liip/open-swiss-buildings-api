@@ -8,6 +8,7 @@ use App\Domain\Resolving\Contract\Job\ResolverTaskReadRepositoryInterface;
 use App\Domain\Resolving\Contract\Job\ResolverTaskWriteRepositoryInterface;
 use App\Domain\Resolving\Entity\ResolverTask as ResolverTaskEntity;
 use App\Domain\Resolving\Event\ResolverTaskHasBeenCreated;
+use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\Job\ResolverTask;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
@@ -79,20 +80,24 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
 
         $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
 
-        foreach ($tasks as $task) {
-            $stmt->bindValue('id', $task->id);
-            $stmt->bindValue('job_id', $task->jobId);
-            $stmt->bindValue('confidence', $task->confidence);
-            $stmt->bindValue('match_type', $task->matchType);
-            $stmt->bindValue('matching_unique_hash', $this->buildMatchingUniqueHash($task));
-            $stmt->bindValue('matching_building_id', $task->matchingBuildingId);
-            $stmt->bindValue('matching_municipality_code', $task->matchingMunicipalityCode);
-            $stmt->bindValue('matching_entrance_id', $task->matchingEntranceId);
-            $stmt->bindValue('matching_geo_json', $task->matchingGeoJson);
-            $stmt->bindValue('additional_data', $task->additionalData->getAsList(), Types::JSON);
-            $stmt->executeStatement();
+        try {
+            foreach ($tasks as $task) {
+                $stmt->bindValue('id', $task->id);
+                $stmt->bindValue('job_id', $task->jobId);
+                $stmt->bindValue('confidence', $task->confidence);
+                $stmt->bindValue('match_type', $task->matchType);
+                $stmt->bindValue('matching_unique_hash', $this->buildMatchingUniqueHash($task));
+                $stmt->bindValue('matching_building_id', $task->matchingBuildingId);
+                $stmt->bindValue('matching_municipality_code', $task->matchingMunicipalityCode);
+                $stmt->bindValue('matching_entrance_id', $task->matchingEntranceId);
+                $stmt->bindValue('matching_geo_json', $task->matchingGeoJson);
+                $stmt->bindValue('additional_data', $task->additionalData->getAsList(), Types::JSON);
+                $stmt->executeStatement();
 
-            $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($task->id));
+                $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($task->id));
+            }
+        } catch (\Throwable $e) {
+            throw ResolverJobFailedException::wrap($e);
         }
     }
 
