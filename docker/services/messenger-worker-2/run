@@ -1,4 +1,5 @@
-#!/usr/bin/with-contenv sh
+#!/bin/sh
+with-contenv
 exec 2>&1
 su php \
     -s "/bin/ash" \

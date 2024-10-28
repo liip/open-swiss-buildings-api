@@ -30,7 +30,7 @@ services:
     image: getmeili/meilisearch:v1.10
     restart: unless-stopped
     environment:
-      MEILI_NO_ANALYTICS: '1'
+      MEILI_NO_ANALYTICS: 'true'
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-cWwx3jxAworhaQAVHeRYlK37wdVnLNc6P_Uyz8WLTyM}
     volumes:
       - meilisearch_data:/meili_data:rw

@@ -8,9 +8,6 @@ services:
     environment:
       # Permanently enable the debug mode
       XDEBUG_MODE: develop,debug
-      # Add Blackfire ID and Token for Profiling
-      BLACKFIRE_CLIENT_ID: the-client-id-here
-      BLACKFIRE_CLIENT_TOKEN: the-token-here
     # Mount your local Composer cache folder into the project to re-use the host local cache, if existing
     volumes:
       - "./:/www:z"
