@@ -17,16 +17,15 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Small]
 final class BuildingAddressToBuildingDataBridgeTest extends TestCase
 {
-    private BuildingEntranceReadRepositoryInterface&MockObject $buildingEntranceRepository;
     private AddressSearchWriteRepositoryInterface&MockObject $addressSearchRepository;
     private AddressSearchToBuildingDataBridge $bridge;
 
     protected function setUp(): void
     {
-        $this->buildingEntranceRepository = $this->createMock(BuildingEntranceReadRepositoryInterface::class);
+        $buildingEntranceRepository = $this->createMock(BuildingEntranceReadRepositoryInterface::class);
         $this->addressSearchRepository = $this->createMock(AddressSearchWriteRepositoryInterface::class);
         $this->bridge = new AddressSearchToBuildingDataBridge(
-            $this->buildingEntranceRepository,
+            $buildingEntranceRepository,
             $this->addressSearchRepository,
             $this->createStub(MessageBusInterface::class),
             new NullLogger(),
