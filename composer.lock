@@ -3218,16 +3218,16 @@
         },
         {
             "name": "symfony/doctrine-bridge",
-            "version": "v7.2.0",
+            "version": "v7.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/doctrine-bridge.git",
-                "reference": "09dbb7c731430335e9ae89ee5054b5f5580c49bf"
+                "reference": "b492be51eb703723d682851a0c9fb39b9d1a7bfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/09dbb7c731430335e9ae89ee5054b5f5580c49bf",
-                "reference": "09dbb7c731430335e9ae89ee5054b5f5580c49bf",
+                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/b492be51eb703723d682851a0c9fb39b9d1a7bfb",
+                "reference": "b492be51eb703723d682851a0c9fb39b9d1a7bfb",
                 "shasum": ""
             },
             "require": {
@@ -3307,7 +3307,7 @@
             "description": "Provides integration for Doctrine with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/doctrine-bridge/tree/v7.2.0"
+                "source": "https://github.com/symfony/doctrine-bridge/tree/v7.2.1"
             },
             "funding": [
                 {
@@ -3323,7 +3323,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-25T12:10:02+00:00"
+            "time": "2024-12-07T08:50:44+00:00"
         },
         {
             "name": "symfony/doctrine-messenger",
