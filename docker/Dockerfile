@@ -1,4 +1,4 @@
-FROM existenz/webstack:8.3 AS base
+FROM existenz/webstack:8.4 AS base
 
 RUN apk -U upgrade && apk add --no-cache \
     tzdata \
