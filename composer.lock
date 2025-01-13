@@ -5272,16 +5272,16 @@
         },
         {
             "name": "symfony/scheduler",
-            "version": "v7.2.1",
+            "version": "v7.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/scheduler.git",
-                "reference": "38b8c09383c33a904cb8a60a445ca435262931a9"
+                "reference": "78add01da6cbbbdcc95494bcd30e4658441475e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/scheduler/zipball/38b8c09383c33a904cb8a60a445ca435262931a9",
-                "reference": "38b8c09383c33a904cb8a60a445ca435262931a9",
+                "url": "https://api.github.com/repos/symfony/scheduler/zipball/78add01da6cbbbdcc95494bcd30e4658441475e1",
+                "reference": "78add01da6cbbbdcc95494bcd30e4658441475e1",
                 "shasum": ""
             },
             "require": {
@@ -5332,7 +5332,7 @@
                 "scheduler"
             ],
             "support": {
-                "source": "https://github.com/symfony/scheduler/tree/v7.2.1"
+                "source": "https://github.com/symfony/scheduler/tree/v7.2.2"
             },
             "funding": [
                 {
@@ -5348,7 +5348,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-07T13:22:50+00:00"
+            "time": "2024-12-19T14:25:03+00:00"
         },
         {
             "name": "symfony/serializer",
