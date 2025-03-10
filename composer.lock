@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "234c28f7e23fd3f58ce423ae8591845c",
+    "content-hash": "63b11c62b8a2dacb3bbca44407c8214c",
     "packages": [
         {
             "name": "brick/geo",
-            "version": "0.11.1",
+            "version": "0.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/geo.git",
-                "reference": "0ba1296d14b4c1164659b4b9911e13ea350f5df4"
+                "reference": "ff2de20484249763cc68c6fe7c01e83ce216531d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/geo/zipball/0ba1296d14b4c1164659b4b9911e13ea350f5df4",
-                "reference": "0ba1296d14b4c1164659b4b9911e13ea350f5df4",
+                "url": "https://api.github.com/repos/brick/geo/zipball/ff2de20484249763cc68c6fe7c01e83ce216531d",
+                "reference": "ff2de20484249763cc68c6fe7c01e83ce216531d",
                 "shasum": ""
             },
             "require": {
@@ -30,7 +30,7 @@
                 "ext-sqlite3": "*",
                 "php-coveralls/php-coveralls": "^2.0",
                 "phpunit/phpunit": "^10.0",
-                "vimeo/psalm": "5.20.0"
+                "vimeo/psalm": "6.8.8"
             },
             "type": "library",
             "autoload": {
@@ -52,7 +52,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/geo/issues",
-                "source": "https://github.com/brick/geo/tree/0.11.1"
+                "source": "https://github.com/brick/geo/tree/0.12.0"
             },
             "funding": [
                 {
@@ -60,7 +60,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-08-19T20:33:41+00:00"
+            "time": "2025-03-09T22:43:11+00:00"
         },
         {
             "name": "composer/pcre",

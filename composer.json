@@ -14,7 +14,7 @@
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
         "ext-pdo_sqlite": "*",
-        "brick/geo": "^0.11.0",
+        "brick/geo": "^0.12.0",
         "composer/pcre": "^3.1",
         "doctrine/doctrine-bundle": "^2.11",
         "doctrine/doctrine-migrations-bundle": "^3.3",
