@@ -33,7 +33,7 @@ final class TaskResolvingHandlerTest extends TestCase
 
     public function testJobIsHandled(): void
     {
-        $taskResolver = new class () implements TaskResolverInterface {
+        $taskResolver = new class implements TaskResolverInterface {
             public bool $handled = false;
 
             public function canResolveTasks(ResolverTypeEnum $type): bool
@@ -62,7 +62,7 @@ final class TaskResolvingHandlerTest extends TestCase
 
     public function testNoHandlerThrowsException(): void
     {
-        $taskResolver = new class () implements TaskResolverInterface {
+        $taskResolver = new class implements TaskResolverInterface {
             public bool $handled = false;
 
             public function canResolveTasks(ResolverTypeEnum $type): bool
@@ -92,7 +92,7 @@ final class TaskResolvingHandlerTest extends TestCase
 
     public function testHandlerErrorThrowsException(): void
     {
-        $taskResolver = new class () implements TaskResolverInterface {
+        $taskResolver = new class implements TaskResolverInterface {
             public bool $handled = false;
 
             public function canResolveTasks(ResolverTypeEnum $type): bool
@@ -123,7 +123,7 @@ final class TaskResolvingHandlerTest extends TestCase
 
     public function testHandlerRetriesWhenRetryableException(): void
     {
-        $taskResolver = new class () implements TaskResolverInterface {
+        $taskResolver = new class implements TaskResolverInterface {
             public bool $handled = false;
 
             public function canResolveTasks(ResolverTypeEnum $type): bool

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <phive xmlns="https://phar.io/phive">
   <config home="~/.phive"/>
-  <phar name="php-cs-fixer" version="^3.49" installed="3.59.3" location="./tools/php-cs-fixer.phar" copy="true"/>
+  <phar name="php-cs-fixer" version="^3.71" installed="3.71.0" location="./tools/php-cs-fixer.phar" copy="true"/>
   <!-- Note We can not update to PHPUnit v11 due to: https://github.com/symfony/symfony/issues/53812 -->
   <phar name="phpunit" version="^10.5" installed="10.5.24" location="./tools/phpunit.phar" copy="true"/>
 </phive>

@@ -35,7 +35,7 @@ final class JobPreparationHandlerTest extends TestCase
 
     public function testJobIsPrepared(): void
     {
-        $preparer = new class () implements JobPreparerInterface {
+        $preparer = new class implements JobPreparerInterface {
             public bool $prepared = false;
 
             public function canPrepareJob(ResolverTypeEnum $type): bool
@@ -66,7 +66,7 @@ final class JobPreparationHandlerTest extends TestCase
 
     public function testNoPreparerThrowsException(): void
     {
-        $preparer = new class () implements JobPreparerInterface {
+        $preparer = new class implements JobPreparerInterface {
             public bool $prepared = false;
 
             public function canPrepareJob(ResolverTypeEnum $type): bool
@@ -98,7 +98,7 @@ final class JobPreparationHandlerTest extends TestCase
 
     public function testPreparerErrorThrowsException(): void
     {
-        $preparer = new class () implements JobPreparerInterface {
+        $preparer = new class implements JobPreparerInterface {
             public bool $prepared = false;
 
             public function canPrepareJob(ResolverTypeEnum $type): bool

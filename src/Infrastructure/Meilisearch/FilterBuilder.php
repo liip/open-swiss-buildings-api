@@ -14,7 +14,7 @@ final class FilterBuilder
      */
     public static function buildListFilter(string $field, array $values): string
     {
-        return sprintf('%s IN ["%s"]', $field, implode('","', $values));
+        return \sprintf('%s IN ["%s"]', $field, implode('","', $values));
     }
 
     /**
