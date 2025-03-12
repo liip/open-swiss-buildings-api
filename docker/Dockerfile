@@ -44,6 +44,16 @@ ENV TZ=Europe/Zurich \
 COPY --link docker/etc/php/conf.d/*.ini /etc/php84/conf.d/
 COPY --link docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
+# Image used to pull the latest phive release as v0.15.3 is not yet available as docker image
+FROM alpine:latest AS local-phive
+RUN apk -U upgrade && apk add --no-cache gpg gpg-agent
+RUN wget -O phive.phar https://phar.io/releases/phive.phar
+RUN wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc
+RUN gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
+RUN gpg --verify phive.phar.asc phive.phar
+RUN chmod +x phive.phar
+RUN mv phive.phar /usr/local/bin/phive
+
 # Image used in Prod
 FROM base AS app-prod
 
@@ -92,8 +102,8 @@ RUN apk add --no-cache \
     php84-xdebug \
     ;
 
-COPY --from=phario/phive:0.15.2 --link /usr/local/bin/phive /usr/local/bin/phive
-COPY --from=php:8.3 /usr/local/etc/php/php.ini-development /etc/php84/php.ini
+COPY --from=local-phive --link /usr/local/bin/phive /usr/local/bin/phive
+COPY --from=php:8.4 /usr/local/etc/php/php.ini-development /etc/php84/php.ini
 COPY --link docker/etc/php/conf.d-dev/*.ini /etc/php84/conf.d/
 
 # Image used for local development
