@@ -45,6 +45,7 @@ final readonly class AddressIndexConfigurator implements IndexProviderInterface
                     'twoTypos' => 6,
                 ],
             ],
+            'facetSearch' => false,
         ]);
     }
 
