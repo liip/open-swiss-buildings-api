@@ -9,6 +9,7 @@ use App\Domain\AddressSearch\Contract\AddressSearchReadRepositoryInterface;
 use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Domain\AddressSearch\Model\BuildingAddressScored;
 use App\Domain\AddressSearch\Model\PlaceScored;
+use App\Infrastructure\PostGis\Coordinates;
 use App\Tests\Util\BuildingAddressModelBuilder;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -53,7 +54,7 @@ final class BuildingAddressSearcherTest extends TestCase
 
         $this->assertSame(20, $results[0]->score);
         $this->assertSame(BuildingAddressModelBuilder::UUID1, $results[0]->place->identifier);
-        $this->assertNull($results[0]->place->geo);
+        $this->assertNotInstanceOf(Coordinates::class, $results[0]->place->geo);
 
         $this->assertSame(BuildingAddressModelBuilder::LOCALITY, $results[0]->place->postalAddress->addressLocality);
         $this->assertSame(BuildingAddressModelBuilder::POSTAL_CODE, $results[0]->place->postalAddress->postalCode);

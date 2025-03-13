@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Infrastructure\Symfony\HttpFoundation;
 
+use App\Infrastructure\Symfony\HttpFoundation\RequestContentType;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeEnum;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -20,7 +21,7 @@ final class RequestContentTypeDeciderTest extends TestCase
 
         $contentType = RequestContentTypeDecider::getContentType($request);
 
-        $this->assertNull($contentType);
+        $this->assertNotInstanceOf(RequestContentType::class, $contentType);
     }
 
     public function testEmptyContentTypeReturnsNull(): void
@@ -30,7 +31,7 @@ final class RequestContentTypeDeciderTest extends TestCase
 
         $contentType = RequestContentTypeDecider::getContentType($request);
 
-        $this->assertNull($contentType);
+        $this->assertNotInstanceOf(RequestContentType::class, $contentType);
     }
 
     public function testEmptyContentTypeWithCharsetReturnsNull(): void
@@ -40,7 +41,7 @@ final class RequestContentTypeDeciderTest extends TestCase
 
         $contentType = RequestContentTypeDecider::getContentType($request);
 
-        $this->assertNull($contentType);
+        $this->assertNotInstanceOf(RequestContentType::class, $contentType);
     }
 
     public function testContentTypeIsReturned(): void
@@ -50,7 +51,7 @@ final class RequestContentTypeDeciderTest extends TestCase
 
         $contentType = RequestContentTypeDecider::getContentType($request);
 
-        $this->assertNotNull($contentType);
+        $this->assertInstanceOf(RequestContentType::class, $contentType);
         $this->assertSame('text/csv', $contentType->type);
         $this->assertNull($contentType->charset);
     }
@@ -62,7 +63,7 @@ final class RequestContentTypeDeciderTest extends TestCase
 
         $contentType = RequestContentTypeDecider::getContentType($request);
 
-        $this->assertNotNull($contentType);
+        $this->assertInstanceOf(RequestContentType::class, $contentType);
         $this->assertSame('text/csv', $contentType->type);
         $this->assertNull($contentType->charset);
     }
@@ -86,7 +87,7 @@ final class RequestContentTypeDeciderTest extends TestCase
 
         $contentType = RequestContentTypeDecider::getContentType($request);
 
-        $this->assertNotNull($contentType);
+        $this->assertInstanceOf(RequestContentType::class, $contentType);
         $this->assertSame('text/csv', $contentType->type);
         $this->assertSame('utf-8', $contentType->charset);
     }
