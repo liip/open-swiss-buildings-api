@@ -7,6 +7,7 @@ namespace App\Infrastructure\Doctrine;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
+use Jsor\Doctrine\PostGIS\Driver\PostGISPlatform;
 
 /**
  * Ignores certain things from Doctrine, which are handled manually.
@@ -16,11 +17,13 @@ use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
 final class IgnoredFieldsListener
 {
     private ?Schema $schema = null;
-    /** @phpstan-ignore-next-line */
+    /**
+     * @var AbstractSchemaManager<PostGISPlatform>|null
+     */
     private ?AbstractSchemaManager $schemaManager = null;
 
     /**
-     * @param array{string: array<string>} $ignoredIndexes
+     * @param array{string: list<string>} $ignoredIndexes
      */
     public function __construct(private array $ignoredIndexes) {}
 
