@@ -5,6 +5,10 @@ services:
       # This image includes XDebug, nano and other tools which are not around in the default target
       # Plus a ZSH shell terminal with autocompletion and shell history management
       target: app-dev-local
+      # args:
+      #   # Allow to override the container's PHP user IDs, useful for volume permissions
+      #   PHP_USERID: 1000
+      #   PHP_GROUPID: 1000
     environment:
       # Permanently enable the debug mode
       XDEBUG_MODE: develop,debug

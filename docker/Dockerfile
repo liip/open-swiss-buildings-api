@@ -99,6 +99,16 @@ COPY --link docker/etc/php/conf.d-dev/*.ini /etc/php83/conf.d/
 # Image used for local development
 FROM app-dev AS app-dev-local
 
+# Override, if provided, the default PHP user-id/group-id
+ARG PHP_USERID="101"
+ENV PHP_USERID=$PHP_USERID
+ARG PHP_GROUPID="102"
+ENV PHP_GROUPID=$PHP_GROUPID
+RUN apk --no-cache add shadow; \
+    groupmod --gid=${PHP_GROUPID} php; \
+    usermod --uid=${PHP_USERID} --gid=${PHP_GROUPID} --shell=/bin/ash php; \
+    apk del shadow;
+
 COPY --link docker/home/.zshrc /home/php/.zshrc
 
 RUN apk add --no-cache \
