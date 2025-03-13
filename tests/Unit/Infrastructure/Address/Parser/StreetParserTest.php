@@ -9,11 +9,13 @@ use App\Infrastructure\Address\Model\StreetNumber;
 use App\Infrastructure\Address\Model\StreetNumberRange;
 use App\Infrastructure\Address\Model\StreetNumberSuffixRange;
 use App\Infrastructure\Address\Parser\StreetParser;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[Small]
+#[CoversClass(StreetParser::class)]
 final class StreetParserTest extends TestCase
 {
     /**
@@ -84,8 +86,6 @@ final class StreetParserTest extends TestCase
     public function testStreetIsCreatedWithRange(Street $expected, string $street): void
     {
         $street = StreetParser::createStreetFromString($street);
-
-        $this->assertNotNull($street);
         $this->assertTrue($expected->equalsTo($street), (string) $street);
     }
 }
