@@ -121,9 +121,11 @@ RUN apk add --no-cache \
     jq \
     ;
 
-RUN mkdir /home/php/.config \
-    mkdir -p /home/php/.local/share/atuin \
+RUN set -xeo pipefail \
+    && mkdir /home/php/.config \
+    && mkdir -p /home/php/.local/share/atuin \
     && chown -R php:php /home/php \
+    && chmod a+r -R /etc/php84 \
     ;
 
 # Restore permissions on TMP folder
