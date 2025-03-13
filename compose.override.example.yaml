@@ -18,16 +18,13 @@ services:
       - "${COMPOSER_CACHE_DIR:-${HOME}/.cache/composer}:/home/php/.composer/cache:z"
       - "${COMPOSER_HOME:-${HOME}/.composer}/auth.json:/home/php/.composer/auth.json:z"
       - "${COMPOSER_HOME:-${HOME}/.composer}/config.json:/home/php/.composer/config.json:z"
-      - ".docker-volume/starship.toml:/home/php/.config/starship.toml:rw,z" # allow for local edits to the integrated shell
-      - ".docker-volumes/atuin:/home/php/.local/share/atuin/:rw,z" # allow to keep the shell history stored in Atuin between container restarts
+      # allow for local edits to the integrated Starship shell customization
+      # Note: before adding this line make sure that the file exists (even empty), otherwise Docker will mount as a folder
+      - ".docker-volumes/starship.toml:/home/php/.config/starship.toml:rw,z"
+      # allow to keep the shell history stored in Atuin between container restarts
+      - ".docker-volumes/atuin:/home/php/.local/share/atuin/:rw,z"
     # Expose ports
     ports: []
-      # Export SSH port on 2222 (available on the prod docker image)
-      # To connect, use something like "ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o PasswordAuthentication=yes root@localhost -p 2222 -v"
-      # As your SSH might be configured to *not allow* plain password authentication
-      #- target: 2222
-      #  published: 2222
-      #  protocol: tcp
 
   # Expose the database port
   database:
