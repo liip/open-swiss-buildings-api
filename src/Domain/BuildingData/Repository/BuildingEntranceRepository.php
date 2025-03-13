@@ -31,11 +31,6 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<BuildingEntranceEntity>
- *
- * @method BuildingEntranceEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method BuildingEntranceEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method BuildingEntranceEntity[]    findAll()
- * @method BuildingEntranceEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class BuildingEntranceRepository extends ServiceEntityRepository implements
     BuildingEntranceReadRepositoryInterface,

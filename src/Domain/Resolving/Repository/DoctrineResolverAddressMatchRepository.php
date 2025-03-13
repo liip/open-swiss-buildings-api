@@ -16,11 +16,6 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<ResolverAddressMatchEntity>
- *
- * @method ResolverAddressMatchEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method ResolverAddressMatchEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method ResolverAddressMatchEntity[]    findAll()
- * @method ResolverAddressMatchEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class DoctrineResolverAddressMatchRepository extends ServiceEntityRepository implements ResolverAddressMatchWriteRepositoryInterface
 {
