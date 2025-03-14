@@ -31,11 +31,6 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<BuildingEntranceEntity>
- *
- * @method BuildingEntranceEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method BuildingEntranceEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method BuildingEntranceEntity[]    findAll()
- * @method BuildingEntranceEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class BuildingEntranceRepository extends ServiceEntityRepository implements
     BuildingEntranceReadRepositoryInterface,
@@ -87,10 +82,10 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
             'geo_coordinates_wgs84' => 'ST_Transform(ST_GeomFromEWKT(:geo_coordinates_lv95%i%), ' . SRIDEnum::WGS84->value . ')',
             'imported_at' => ':imported_at%i%',
         ];
-        $conflictUpdates = array_filter(
+        $conflictUpdates = array_values(array_filter(
             array_keys($columnDefinitions),
             static fn($column): bool => !\in_array($column, ['id', 'building_id', 'entrance_id', 'street_name_language'], true),
-        );
+        ));
 
         $batchSql = BatchInsertStatementBuilder::generate(
             $this->getClassMetadata()->getTableName(),
@@ -353,6 +348,8 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
     }
 
     /**
+     * @param AbstractQuery<int, int> $query
+     *
      * @return non-negative-int
      */
     private function fetchCount(AbstractQuery $query): int

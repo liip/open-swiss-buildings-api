@@ -24,11 +24,6 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<ResolverAddressEntity>
- *
- * @method ResolverAddressEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method ResolverAddressEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method ResolverAddressEntity[]    findAll()
- * @method ResolverAddressEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class DoctrineResolverAddressRepository extends ServiceEntityRepository implements ResolverAddressReadRepositoryInterface, ResolverAddressWriteRepositoryInterface
 {

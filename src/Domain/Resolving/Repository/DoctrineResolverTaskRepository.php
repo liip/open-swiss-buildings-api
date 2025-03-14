@@ -22,11 +22,6 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<ResolverTaskEntity>
- *
- * @method ResolverTaskEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method ResolverTaskEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method ResolverTaskEntity[]    findAll()
- * @method ResolverTaskEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class DoctrineResolverTaskRepository extends ServiceEntityRepository implements
     ResolverTaskWriteRepositoryInterface,

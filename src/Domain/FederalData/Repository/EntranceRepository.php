@@ -18,11 +18,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Entrance>
- *
- * @method Entrance|null find($id, $lockMode = null, $lockVersion = null)
- * @method Entrance|null findOneBy(array $criteria, array $orderBy = null)
- * @method Entrance[]    findAll()
- * @method Entrance[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class EntranceRepository extends ServiceEntityRepository implements FederalBuildingDataRepositoryInterface
 {

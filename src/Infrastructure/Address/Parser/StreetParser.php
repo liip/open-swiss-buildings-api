@@ -19,7 +19,7 @@ final readonly class StreetParser
      *
      * @throws \InvalidArgumentException if the street is not valid
      */
-    public static function createStreetFromString(string $input): ?Street
+    public static function createStreetFromString(string $input): Street
     {
         $lexer = new StreetLexer($input);
         // Two next() are required to get first token's value

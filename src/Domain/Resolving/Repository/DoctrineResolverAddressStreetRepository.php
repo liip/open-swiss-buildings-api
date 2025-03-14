@@ -13,11 +13,6 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<ResolverAddressStreetEntity>
- *
- * @method ResolverAddressStreetEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method ResolverAddressStreetEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method ResolverAddressStreetEntity[]    findAll()
- * @method ResolverAddressStreetEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class DoctrineResolverAddressStreetRepository extends ServiceEntityRepository implements ResolverAddressStreetWriteRepositoryInterface
 {

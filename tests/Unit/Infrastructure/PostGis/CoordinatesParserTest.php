@@ -38,8 +38,6 @@ final class CoordinatesParserTest extends TestCase
     public function testExtractCoordsFromLV95ByParts(?array $expectedCoords, string $expectedGeoCoords, string $east, string $north): void
     {
         $result = CoordinatesParser::extractCoordsFromLV95ByParts($east, $north);
-        $this->assertArrayHasKey('coords', $result);
-        $this->assertArrayHasKey('geoCoords', $result);
 
         $this->assertSame($expectedCoords, $result['coords']);
         $this->assertSame($expectedGeoCoords, $result['geoCoords']);
@@ -60,7 +58,7 @@ final class CoordinatesParserTest extends TestCase
     #[DataProvider('provideParseWGS84ReturnsNullCases')]
     public function testParseWGS84ReturnsNull(?string $coordinates): void
     {
-        $this->assertNull(CoordinatesParser::parseWGS84($coordinates));
+        $this->assertNotInstanceOf(Coordinates::class, CoordinatesParser::parseWGS84($coordinates));
     }
 
     /**
@@ -76,7 +74,7 @@ final class CoordinatesParserTest extends TestCase
     public function testParseWGS84(Coordinates $expectedCoordinates, string $coordinates): void
     {
         $coords = CoordinatesParser::parseWGS84($coordinates);
-        $this->assertNotNull($coords);
+        $this->assertInstanceOf(Coordinates::class, $coords);
 
         $this->assertSame($expectedCoordinates->latitude, $coords->latitude);
         $this->assertSame($expectedCoordinates->longitude, $coords->longitude);

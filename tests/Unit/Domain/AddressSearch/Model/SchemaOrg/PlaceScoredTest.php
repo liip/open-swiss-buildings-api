@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Domain\AddressSearch\Model\SchemaOrg;
 
 use App\Domain\AddressSearch\Model\BuildingAddressScored;
 use App\Domain\AddressSearch\Model\PlaceScored;
+use App\Infrastructure\PostGis\Coordinates;
 use App\Tests\Util\BuildingAddressModelBuilder;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ final class PlaceScoredTest extends TestCase
         $this->assertSame(BuildingAddressModelBuilder::BUILDING_ID, $place->additionalProperty->buildingId);
 
         // Geo properties
-        $this->assertNotNull($place->geo);
+        $this->assertInstanceOf(Coordinates::class, $place->geo);
         $this->assertSame('47.267684673199', $place->geo->longitude);
         $this->assertSame('8.4858953043729', $place->geo->latitude);
     }

@@ -90,9 +90,7 @@ final class WriteResolverAddress
         $this->street = $street;
         $this->uniqueHash = hash('xxh3', implode(',', [$this->street, $this->postalCode, $this->locality]));
 
-        if (null === $parsedStreet = StreetParser::createStreetFromString($street)) {
-            throw new \InvalidArgumentException('Invalid ');
-        }
+        $parsedStreet = StreetParser::createStreetFromString($street);
         $this->streetName = $parsedStreet->streetName;
 
         $number = $parsedStreet->number;

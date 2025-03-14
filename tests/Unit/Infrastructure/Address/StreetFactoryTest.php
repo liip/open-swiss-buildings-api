@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Infrastructure\Address;
 
 use App\Infrastructure\Address\Model\StreetNumber;
+use App\Infrastructure\Address\Model\StreetNumberInterface;
 use App\Infrastructure\Address\StreetFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
@@ -17,7 +18,7 @@ final class StreetFactoryTest extends TestCase
     {
         $s = StreetFactory::createFromSeparateStrings('Hauptstrasse', null);
 
-        $this->assertNull($s->number, var_export($s, true));
+        $this->assertNotInstanceOf(StreetNumberInterface::class, $s->number, var_export($s, true));
     }
 
     /**
@@ -43,7 +44,7 @@ final class StreetFactoryTest extends TestCase
     {
         $n = StreetFactory::createNumberFromString($number);
 
-        $this->assertNotNull($n);
+        $this->assertInstanceOf(StreetNumber::class, $n);
         $this->assertTrue($n->equalsTo($expected), var_export($n, true));
     }
 
@@ -55,7 +56,7 @@ final class StreetFactoryTest extends TestCase
     {
         $s = StreetFactory::createFromSeparateStrings('Hauptstrasse', $number);
 
-        $this->assertNotNull($s->number, var_export($s, true));
+        $this->assertInstanceOf(StreetNumberInterface::class, $s->number, var_export($s, true));
         $this->assertTrue($s->number->equalsTo($expected), var_export($s->number, true));
     }
 }

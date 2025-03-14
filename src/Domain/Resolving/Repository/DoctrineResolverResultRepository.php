@@ -23,11 +23,6 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @extends ServiceEntityRepository<ResolverResultEntity>
  *
- * @method ResolverResultEntity|null find($id, $lockMode = null, $lockVersion = null)
- * @method ResolverResultEntity|null findOneBy(array $criteria, array $orderBy = null)
- * @method ResolverResultEntity[]    findAll()
- * @method ResolverResultEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- *
  * @phpstan-import-type AdditionalDataAsArray from AdditionalData
  */
 final class DoctrineResolverResultRepository extends ServiceEntityRepository implements

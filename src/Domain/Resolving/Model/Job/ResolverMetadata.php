@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
  *     geojson-srid?: non-negative-int,
  *     charset?: non-empty-string,
  *     csv-delimiter?: non-empty-string,
- *     csv-enclosure?: non-empty-string
+ *     csv-enclosure?: non-empty-string,
  * }
  */
 final readonly class ResolverMetadata implements \JsonSerializable
@@ -67,7 +67,13 @@ final readonly class ResolverMetadata implements \JsonSerializable
     }
 
     /**
-     * @param ResolverMetadataAsArray $data
+     * @param array{
+     *     additional-columns?: string|null,
+     *     geojson-srid?: non-negative-int|null,
+     *     charset?: non-empty-string|null,
+     *     csv-delimiter?: non-empty-string|null,
+     *     csv-enclosure?: non-empty-string|null,
+     * } $data
      */
     public static function fromArray(array $data): self
     {
