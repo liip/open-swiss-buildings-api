@@ -45,8 +45,9 @@ return RectorConfig::configure()
         strictBooleans: true,
     )
     ->withAttributesSets(symfony: true, doctrine: true, phpunit: true)
+    ->withComposerBased(doctrine: true)
     ->withSets([
-        SymfonySetList::SYMFONY_64,
+        SymfonySetList::SYMFONY_72,
         SymfonySetList::SYMFONY_CODE_QUALITY,
         DoctrineSetList::DOCTRINE_ORM_214,
         DoctrineSetList::DOCTRINE_CODE_QUALITY,
