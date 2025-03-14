@@ -32,7 +32,7 @@ final class TransformedWGS84GeometryType extends PostGISType
 
     public function convertToDatabaseValueSQL($sqlExpr, AbstractPlatform $platform): string
     {
-        return sprintf('ST_Transform(ST_GeomFromEWKT(%s), %d)', $sqlExpr, SRIDEnum::WGS84->value);
+        return \sprintf('ST_Transform(ST_GeomFromEWKT(%s), %d)', $sqlExpr, SRIDEnum::WGS84->value);
     }
 
     /** @param array{geometry_type?: string|null, srid?: int|string|null} $column */
@@ -40,7 +40,7 @@ final class TransformedWGS84GeometryType extends PostGISType
     {
         $options = $this->getNormalizedPostGISColumnOptions($column);
 
-        return sprintf(
+        return \sprintf(
             '%s(%s, %d)',
             PostGISType::GEOMETRY,
             $options['geometry_type'],

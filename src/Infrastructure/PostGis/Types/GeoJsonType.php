@@ -25,7 +25,7 @@ final class GeoJsonType extends GeometryType
 
     public function convertToPHPValueSQL($sqlExpr, $platform): string
     {
-        return sprintf('ST_AsGeoJSON(%s)', $sqlExpr);
+        return \sprintf('ST_AsGeoJSON(%s)', $sqlExpr);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): mixed
@@ -39,7 +39,7 @@ final class GeoJsonType extends GeometryType
 
     public function convertToDatabaseValueSQL($sqlExpr, AbstractPlatform $platform): string
     {
-        return sprintf('ST_GeomFromGeoJSON(%s)::geometry', $sqlExpr);
+        return \sprintf('ST_GeomFromGeoJSON(%s)::geometry', $sqlExpr);
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
@@ -52,7 +52,7 @@ final class GeoJsonType extends GeometryType
         /** @var array{geometry_type?: string|null, srid?: int|string|null} $column */
         $options = $this->getNormalizedPostGISColumnOptions($column);
 
-        return sprintf(
+        return \sprintf(
             '%s(%s, %d)',
             parent::getName(),
             $options['geometry_type'],

@@ -37,7 +37,7 @@ jobs:
     - name: PHP-CS-Fixer
       shell: bash
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app tools/php-cs-fixer.phar fix --no-ansi --dry-run --diff
+        docker compose -f compose.yaml -f compose.tests.yaml exec app composer cs:check
     - name: PHPStan
       shell: bash
       run: |

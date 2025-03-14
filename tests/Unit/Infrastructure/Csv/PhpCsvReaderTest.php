@@ -307,12 +307,10 @@ final class PhpCsvReaderTest extends TestCase
      */
     public static function provideCharsetStringAndLines(): iterable
     {
-        $buildLinesInCharset = static function (string $charset): array {
-            return [
-                mb_convert_encoding('field¹,field2', $charset, 'UTF-8'),
-                mb_convert_encoding('valüe1,value²', $charset, 'UTF-8'),
-            ];
-        };
+        $buildLinesInCharset = static fn(string $charset): array => [
+            mb_convert_encoding('field¹,field2', $charset, 'UTF-8'),
+            mb_convert_encoding('valüe1,value²', $charset, 'UTF-8'),
+        ];
 
         yield ['utf-8', $buildLinesInCharset('utf-8')];
         yield ['iso-8859-1', $buildLinesInCharset('iso-8859-1')];

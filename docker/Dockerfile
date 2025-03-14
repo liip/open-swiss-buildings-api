@@ -1,37 +1,37 @@
-FROM existenz/webstack:8.3 AS base
+FROM existenz/webstack:8.4 AS base
 
 RUN apk -U upgrade && apk add --no-cache \
     tzdata \
     icu-data-full \
     postgresql-client \
-    php83 \
-    php83-apcu \
-    php83-cli \
-    php83-ctype \
-    php83-curl \
-    php83-dom \
-    php83-intl \
-    php83-iconv \
-    php83-opcache \
-    php83-json \
-    php83-mbstring \
-    php83-openssl \
-    php83-pcntl \
-    php83-phar \
-    php83-pdo_pgsql \
-    php83-pdo_sqlite \
-    php83-simplexml \
-    php83-session \
-    php83-sodium \
-    php83-tokenizer \
-    php83-xdebug \
-    php83-xml \
-    php83-xmlwriter \
-    php83-zip \
+    php84 \
+    php84-apcu \
+    php84-cli \
+    php84-ctype \
+    php84-curl \
+    php84-dom \
+    php84-intl \
+    php84-iconv \
+    php84-opcache \
+    php84-json \
+    php84-mbstring \
+    php84-openssl \
+    php84-pcntl \
+    php84-phar \
+    php84-pdo_pgsql \
+    php84-pdo_sqlite \
+    php84-simplexml \
+    php84-session \
+    php84-sodium \
+    php84-tokenizer \
+    php84-xdebug \
+    php84-xml \
+    php84-xmlwriter \
+    php84-zip \
     nginx-mod-http-headers-more \
     ;
 
-RUN ln -s /usr/bin/php83 /usr/sbin/php
+RUN ln -s /usr/bin/php84 /usr/sbin/php
 
 COPY --from=composer:latest --link /usr/bin/composer /usr/local/bin/composer
 
@@ -41,8 +41,18 @@ ENV TZ=Europe/Zurich \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     S6_VERBOSITY=3
 
-COPY --link docker/etc/php/conf.d/*.ini /etc/php83/conf.d/
+COPY --link docker/etc/php/conf.d/*.ini /etc/php84/conf.d/
 COPY --link docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Image used to pull the latest phive release as v0.15.3 is not yet available as docker image
+FROM alpine:latest AS local-phive
+RUN apk -U upgrade && apk add --no-cache gpg gpg-agent
+RUN wget -O phive.phar https://phar.io/releases/phive.phar
+RUN wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc
+RUN gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
+RUN gpg --verify phive.phar.asc phive.phar
+RUN chmod +x phive.phar
+RUN mv phive.phar /usr/local/bin/phive
 
 # Image used in Prod
 FROM base AS app-prod
@@ -89,12 +99,12 @@ FROM base AS app-dev
 RUN apk add --no-cache \
     git \
     gpg \
-    php83-xdebug \
+    php84-xdebug \
     ;
 
-COPY --from=phario/phive:0.15.2 --link /usr/local/bin/phive /usr/local/bin/phive
-COPY --from=php:8.3 /usr/local/etc/php/php.ini-development /etc/php83/php.ini
-COPY --link docker/etc/php/conf.d-dev/*.ini /etc/php83/conf.d/
+COPY --from=local-phive --link /usr/local/bin/phive /usr/local/bin/phive
+COPY --from=php:8.4 /usr/local/etc/php/php.ini-development /etc/php84/php.ini
+COPY --link docker/etc/php/conf.d-dev/*.ini /etc/php84/conf.d/
 
 # Image used for local development
 FROM app-dev AS app-dev-local
