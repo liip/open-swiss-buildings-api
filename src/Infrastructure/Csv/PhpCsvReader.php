@@ -59,7 +59,8 @@ final class PhpCsvReader implements CsvReaderInterface
         /**
          * @var non-empty-string|null
          */
-        private ?string $charset = null,
+        private readonly ?string $charset = null,
+        private readonly string $escape = '\\',
     ) {
         if (!\is_resource($this->resource)) {
             throw new \InvalidArgumentException('Resource is closed');
@@ -153,7 +154,7 @@ final class PhpCsvReader implements CsvReaderInterface
                 throw new CsvReadException('No header row found');
             }
             $header = [];
-            foreach (str_getcsv($this->firstRawLines[0], $this->delimiter, $this->enclosure) as $cell) {
+            foreach (str_getcsv($this->firstRawLines[0], $this->delimiter, $this->enclosure, $this->escape) as $cell) {
                 if (null === $cell || '' === $cell) {
                     throw new CsvReadException('Empty header row is not supported');
                 }
@@ -238,7 +239,7 @@ final class PhpCsvReader implements CsvReaderInterface
     private function buildRow(int $rowNumber, string $line, string $delimiter, string $enclosure): array
     {
         $row = [];
-        foreach (str_getcsv($line, $delimiter, $enclosure) as $rowCell) {
+        foreach (str_getcsv($line, $delimiter, $enclosure, $this->escape) as $rowCell) {
             if (null === $rowCell) {
                 throw new CsvReadException("Row #{$rowNumber} is empty");
             }

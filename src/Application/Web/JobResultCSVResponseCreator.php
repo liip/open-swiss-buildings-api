@@ -48,7 +48,11 @@ final readonly class JobResultCSVResponseCreator implements JobResultResponseCre
                     $this->getAdditionalHeadersForJobType($job),
                     $this->getAdditionalHeadersForAdditionalColumns($job),
                 );
-                fputcsv($out, $header);
+                fputcsv(
+                    stream: $out,
+                    fields: $header,
+                    escape: '\\',
+                );
                 foreach ($this->resultRepository->getResults($jobId) as $result) {
                     $row = array_merge(
                         [
@@ -68,7 +72,11 @@ final readonly class JobResultCSVResponseCreator implements JobResultResponseCre
                         $this->getAdditionalDataForJobType($job, $result),
                         array_values($result->additionalData->getData()),
                     );
-                    fputcsv($out, $row);
+                    fputcsv(
+                        stream: $out,
+                        fields: $row,
+                        escape: '\\',
+                    );
                 }
             },
             Response::HTTP_OK,
