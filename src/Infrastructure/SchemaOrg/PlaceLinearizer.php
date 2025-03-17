@@ -15,6 +15,7 @@ final readonly class PlaceLinearizer
     {
         return [
             'identifier',
+            'postalAddress.addressCountry',
             'postalAddress.addressLocality',
             'postalAddress.addressRegion',
             'postalAddress.postalCode',
@@ -32,6 +33,7 @@ final readonly class PlaceLinearizer
     /**
      * @return array{
      * "identifier": string,
+     * "postalAddress.addressCountry": string,
      * "postalAddress.addressLocality": string,
      * "postalAddress.addressRegion": string,
      * "postalAddress.postalCode": string,
@@ -49,6 +51,7 @@ final readonly class PlaceLinearizer
     {
         return [
             'identifier' => $place->identifier,
+            'postalAddress.addressCountry' => $place->postalAddress->addressCountry,
             'postalAddress.addressLocality' => $place->postalAddress->addressLocality,
             'postalAddress.addressRegion' => $place->postalAddress->addressRegion,
             'postalAddress.postalCode' => $place->postalAddress->postalCode,

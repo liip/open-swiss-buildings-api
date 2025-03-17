@@ -49,7 +49,7 @@ final class BuildingAddressIndexerTest extends TestCase
         ;
 
         $this->expectException(BuildingAddressNotFoundException::class);
-        $this->indexer->indexBuildingAddress($id);
+        $this->indexer->indexById($id);
     }
 
     public function testIndex(): void
@@ -90,6 +90,6 @@ final class BuildingAddressIndexerTest extends TestCase
             })
         ;
 
-        $this->indexer->indexBuildingAddress($id);
+        $this->indexer->indexById($id);
     }
 }

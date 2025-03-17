@@ -6,6 +6,7 @@ namespace App\Application\Cli\BuildingData;
 
 use App\Domain\BuildingData\Contract\BuildingEntranceReadRepositoryInterface;
 use App\Domain\BuildingData\Model\BuildingEntranceFilter;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\Pagination;
 use App\Infrastructure\Symfony\Console\OptionHelper;
@@ -41,13 +42,14 @@ final class BuildingDataListCommand extends Command
         $this
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of items to show', self::DEFAULT_LIMIT)
             // Filters
-            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the building ID (EGID)')
+            ->addOption('country-code', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given country')
+            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the building ID (EGID,GEID)')
             ->addOption('entrance-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the entrance ID (EDID)')
             ->addOption('language', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries in the given language, possible values: ' . $languages)
-            ->addOption('canton', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries in the given canton (GDEKT)')
-            ->addOption('municipality', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries of the given municipality, case sensitive (GGDENAME)')
-            ->addOption('street-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given street-name, case sensitive (STRNAME)')
-            ->addOption('street-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given street ID (ESID)')
+            ->addOption('canton', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries in the given canton')
+            ->addOption('municipality', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries of the given municipality, case sensitive')
+            ->addOption('street-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given street-name, case sensitive')
+            ->addOption('street-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given street ID, if available')
         ;
     }
 
@@ -57,6 +59,7 @@ final class BuildingDataListCommand extends Command
 
         try {
             $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
+            $countryCode = OptionHelper::getStringBackedEnumListOptionValues($input, 'country-code', CountryCodeEnum::class);
             $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
             $entranceIds = OptionHelper::getStringListOptionValues($input, 'entrance-id');
             $cantons = OptionHelper::getStringListOptionValues($input, 'canton');
@@ -72,6 +75,7 @@ final class BuildingDataListCommand extends Command
 
         $pagination = new Pagination($limit);
         $filter = new BuildingEntranceFilter(
+            countryCodes: $countryCode,
             cantonCodes: $cantons,
             buildingIds: $buildingIds,
             entranceIds: $entranceIds,
@@ -85,6 +89,7 @@ final class BuildingDataListCommand extends Command
             $table = $io->createTable();
             $table->setHeaders([
                 'ID',
+                'Country',
                 'Building ID',
                 'Entrance ID',
                 'Language',
@@ -98,6 +103,7 @@ final class BuildingDataListCommand extends Command
             foreach ($this->buildingEntranceRepository->getPaginatedBuildingEntrances($pagination, $filter) as $buildingEntrance) {
                 $table->addRow([
                     (string) $buildingEntrance->id,
+                    $buildingEntrance->countryCode->value,
                     $buildingEntrance->buildingId,
                     $buildingEntrance->entranceId,
                     $buildingEntrance->streetNameLanguage->value,

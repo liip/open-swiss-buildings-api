@@ -17,7 +17,7 @@ final readonly class AddressSearchIndexMessageHandler
 
     public function __invoke(AddressSearchIndexUpdatedAfterMessage $message): void
     {
-        foreach ($this->addressIndexer->indexBuildingAddressesImportedSince($message->timestamp) as $result) {
+        foreach ($this->addressIndexer->indexImportedSince($message->timestamp) as $result) {
             // Loop for indexing to happen
         }
     }

@@ -7,6 +7,7 @@ namespace App\Application\Contract;
 use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Domain\AddressSearch\Model\BuildingAddressScored;
 use App\Domain\AddressSearch\Model\PlaceScored;
+use App\Domain\AddressSearch\Model\SearchStats;
 
 interface BuildingAddressSearcherInterface
 {
@@ -19,4 +20,6 @@ interface BuildingAddressSearcherInterface
      * @return iterable<PlaceScored>
      */
     public function searchPlaces(AddressSearch $search): iterable;
+
+    public function stats(): SearchStats;
 }

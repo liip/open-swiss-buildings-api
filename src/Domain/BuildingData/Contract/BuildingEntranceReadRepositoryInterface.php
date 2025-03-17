@@ -16,14 +16,16 @@ interface BuildingEntranceReadRepositoryInterface
     public function getStatistics(CountryCodeEnum $countryCode): BuildingEntranceStatistics;
 
     /**
-     * Returns the amount of the available building entrances.
+     * Returns the amount of the available building entrances, filtered by the given country if given.
      */
-    public function countBuildingEntrances(): int;
+    public function countBuildingEntrances(?CountryCodeEnum $countryCode = null): int;
 
     /**
+     * Iterate over the available building entrances, filtered by the given country if given.
+     *
      * @return iterable<BuildingEntrance>
      */
-    public function getBuildingEntrances(): iterable;
+    public function getBuildingEntrances(?CountryCodeEnum $countryCode = null): iterable;
 
     public function findBuildingEntrance(Uuid $id): ?BuildingEntrance;
 

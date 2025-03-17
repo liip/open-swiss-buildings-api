@@ -9,6 +9,7 @@ use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use App\Domain\Resolving\Model\Job\ResolverJob;
 use App\Domain\Resolving\Model\Job\ResolverMetadata;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
@@ -26,7 +27,7 @@ final class ResolveCreateWithAddressSearchController extends AbstractController
     ) {}
 
     /**
-     * Resolves a list addresses into a list of buildings.
+     * Resolves a list addresses into a list of buildings within Switzerland.
      *
      * The CSV needs to contain the columns `street_housenumbers`, `swisszipcode` and `town`.
      * Additional columns in the CSV will be transferred unchanged to the result list.
@@ -66,7 +67,7 @@ final class ResolveCreateWithAddressSearchController extends AbstractController
     #[OA\Response(response: '200', description: 'Successfully created resolver job', content: new Model(type: ResolverJob::class))]
     public function __invoke(Request $request): Response
     {
-        $metadata = new ResolverMetadata();
+        $metadata = new ResolverMetadata(filterByCountry: CountryCodeEnum::CH);
 
         $contentType = RequestContentTypeDecider::getContentType($request);
         if (null !== $contentType) {

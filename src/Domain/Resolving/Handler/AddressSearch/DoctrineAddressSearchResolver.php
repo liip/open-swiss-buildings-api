@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace App\Domain\Resolving\Handler\AddressSearch;
 
 use App\Domain\BuildingData\Entity\BuildingEntrance;
-use App\Domain\Resolving\Contract\Job\TaskResolverInterface;
+use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use App\Domain\Resolving\Entity\ResolverAddress;
 use App\Domain\Resolving\Entity\ResolverAddressMatch;
 use App\Domain\Resolving\Entity\ResolverResult;
 use App\Domain\Resolving\Entity\ResolverTask;
 use App\Domain\Resolving\Exception\ResolverJobFailedException;
+use App\Domain\Resolving\Handler\AbstractDatabaseResolver;
+use App\Domain\Resolving\Handler\TasksResultsConditions;
 use App\Domain\Resolving\Model\AdditionalData;
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use Doctrine\ORM\EntityManagerInterface;
 
-final readonly class DoctrineAddressSearchResolver implements TaskResolverInterface
+final readonly class DoctrineAddressSearchResolver extends AbstractDatabaseResolver
 {
     public function __construct(
         private DoctrineStreetIdMatcher $streetIdMatcher,
@@ -27,8 +29,11 @@ final readonly class DoctrineAddressSearchResolver implements TaskResolverInterf
         private SearchStreetMatcher $searchStreetMatcher,
         private DoctrineStreetWithRangeMatcher $streetWithRangeMatcher,
         private SearchMatcher $searchMatcher,
-        private EntityManagerInterface $entityManager,
-    ) {}
+        ResolverJobReadRepositoryInterface $jobRepository,
+        EntityManagerInterface $entityManager,
+    ) {
+        parent::__construct($jobRepository, $entityManager);
+    }
 
     public function canResolveTasks(ResolverTypeEnum $type): bool
     {
@@ -67,12 +72,21 @@ final readonly class DoctrineAddressSearchResolver implements TaskResolverInterf
 
             // Collecting all possible tasks
             $this->buildTasks($job);
-            $this->resolveIntoResults($job);
+            $this->resolveTasksWithFiltering($job);
         } catch (\Throwable $e) {
             throw ResolverJobFailedException::wrap($e);
         }
     }
 
+    /**
+     * Given the entries in the ResolverAddressMatch and ResolverAddress table, combine them into a set of possible
+     * results and entries in the ResolverTask table.
+     * combining the entries includes:
+     * 1. use the higher confidence as the final results confidence
+     * 2. merge the additional_data from multiple entries, so to keep all possible matches.
+     *
+     * The final result set will be computed by the entries in the ResolverTask table ( @see resolveIntoResults() )
+     */
     private function buildTasks(ResolverJobIdentifier $job): void
     {
         $matchTable = $this->entityManager->getClassMetadata(ResolverAddressMatch::class)->getTableName();
@@ -101,18 +115,20 @@ final readonly class DoctrineAddressSearchResolver implements TaskResolverInterf
         $this->entityManager->getConnection()->executeStatement($sql, ['jobId' => $job->id]);
     }
 
-    private function resolveIntoResults(ResolverJobIdentifier $job): void
+    protected function buildResultInsertSQL(TasksResultsConditions $conditions): string
     {
         $resultTable = $this->entityManager->getClassMetadata(ResolverResult::class)->getTableName();
         $taskTable = $this->entityManager->getClassMetadata(ResolverTask::class)->getTableName();
         $buildingEntranceTable = $this->entityManager->getClassMetadata(BuildingEntrance::class)->getTableName();
 
-        // TODO PostgreSQL will generate UUIDv4 with gen_random_uuid(), switch to UUIDv7 with PostgreSQL version 17: https://commitfest.postgresql.org/43/4388/
-        $sql = "INSERT INTO {$resultTable} (id, job_id, confidence, match_type, country_code, building_id, entrance_id, building_entrance_id, additional_data) " .
-            "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, b.country_code, t.matching_building_id, t.matching_entrance_id, b.id, t.additional_data FROM {$taskTable} t " .
-            "LEFT JOIN {$buildingEntranceTable} b ON t.matching_building_id = b.building_id AND t.matching_entrance_id = b.entrance_id WHERE t.job_id = :jobId " .
-            'ON CONFLICT (job_id, country_code, building_entrance_id) DO NOTHING';
+        $conditions->addBuildingConditions('t.matching_building_id = b.building_id');
+        $conditions->addBuildingConditions('t.matching_entrance_id = b.entrance_id');
 
-        $this->entityManager->getConnection()->executeStatement($sql, ['jobId' => $job->id]);
+        // TODO PostgreSQL will generate UUIDv4 with gen_random_uuid(), switch to UUIDv7 with PostgreSQL version 17: https://commitfest.postgresql.org/43/4388/
+        return "INSERT INTO {$resultTable} (id, job_id, confidence, match_type, country_code, building_id, entrance_id, building_entrance_id, additional_data) " .
+            "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, b.country_code, t.matching_building_id, t.matching_entrance_id, b.id, t.additional_data FROM {$taskTable} t " .
+            "LEFT JOIN {$buildingEntranceTable} b ON {$conditions->getSQLBuildingConditions()}" .
+            " WHERE t.job_id = {$conditions->jobIdParam}" .
+            ' ON CONFLICT (job_id, country_code, building_entrance_id) DO NOTHING';
     }
 }
