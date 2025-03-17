@@ -83,7 +83,7 @@ final class AddressTest extends TestCase
         yield 'empty' => [Address::fromArray(self::getAddressAsArrayEmpty()), '', ''];
 
         $data = self::getAddressAsArrayWithValues();
-        yield 'values' => [Address::fromArray($data), 'Reppischtalstrasse 34 8914 Aeugstertal', 'Reppischtalstr. 34 8914 Aeugstertal'];
+        yield 'values' => [Address::fromArray($data), 'Reppischtalstrasse 34 8914 Aeugstertal CH', 'Reppischtalstr. 34 8914 Aeugstertal CH'];
     }
 
     #[DataProvider('createFormatForSearchDataProvider')]
