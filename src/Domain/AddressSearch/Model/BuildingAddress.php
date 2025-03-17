@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\AddressSearch\Model;
 
+use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\PostGis\Coordinates;
 use App\Infrastructure\Serialization\Decoder;
 use Symfony\Component\Uid\Uuid;

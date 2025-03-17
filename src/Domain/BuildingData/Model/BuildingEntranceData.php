@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\BuildingData\Model;
 
 use App\Infrastructure\Address\Model\Street;
+use App\Infrastructure\Model\LanguageEnum;
 
 final readonly class BuildingEntranceData
 {
@@ -23,7 +24,7 @@ final readonly class BuildingEntranceData
          * Federal Building-Address identifier.
          */
         public string $addressId,
-        public EntranceLanguageEnum $streetNameLanguage,
+        public LanguageEnum $streetNameLanguage,
         public string $streetId,
         public ?Street $street,
         public ?Street $streetAbbreviated,
@@ -64,7 +65,7 @@ final readonly class BuildingEntranceData
         string $geoCoordinateNorthLV95,
         string $municipality = '',
         ?string $addressId = null,
-        EntranceLanguageEnum $streetNameLanguage = EntranceLanguageEnum::DE,
+        LanguageEnum $streetNameLanguage = LanguageEnum::DE,
     ): self {
         return new self(
             $buildingId,

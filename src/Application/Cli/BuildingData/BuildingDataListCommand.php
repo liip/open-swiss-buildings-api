@@ -6,7 +6,7 @@ namespace App\Application\Cli\BuildingData;
 
 use App\Domain\BuildingData\Contract\BuildingEntranceReadRepositoryInterface;
 use App\Domain\BuildingData\Model\BuildingEntranceFilter;
-use App\Domain\BuildingData\Model\EntranceLanguageEnum;
+use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\Pagination;
 use App\Infrastructure\Symfony\Console\OptionHelper;
 use App\Infrastructure\Symfony\Console\Paginator;
@@ -36,7 +36,7 @@ final class BuildingDataListCommand extends Command
 
     protected function configure(): void
     {
-        $languages  = implode('|', array_map(static fn(EntranceLanguageEnum $case) => $case->value, EntranceLanguageEnum::cases()));
+        $languages  = implode('|', array_map(static fn(LanguageEnum $case) => $case->value, LanguageEnum::cases()));
 
         $this
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of items to show', self::DEFAULT_LIMIT)
@@ -63,7 +63,7 @@ final class BuildingDataListCommand extends Command
             $municipalities = OptionHelper::getStringListOptionValues($input, 'municipality');
             $streetNames = OptionHelper::getStringListOptionValues($input, 'street-name');
             $streetIds = OptionHelper::getStringListOptionValues($input, 'street-id');
-            $languages = OptionHelper::getStringBackedEnumListOptionValues($input, 'language', EntranceLanguageEnum::class);
+            $languages = OptionHelper::getStringBackedEnumListOptionValues($input, 'language', LanguageEnum::class);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 

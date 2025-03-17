@@ -6,11 +6,11 @@ namespace App\Domain\Bridge;
 
 use App\Domain\BuildingData\Contract\BuildingDataBridgedFactoryInterface;
 use App\Domain\BuildingData\Model\BuildingEntranceData;
-use App\Domain\BuildingData\Model\EntranceLanguageEnum;
 use App\Domain\FederalData\Contract\FederalBuildingDataRepositoryInterface;
 use App\Domain\FederalData\Model\BuildingEntranceData as FederalBuildingEntranceData;
 use App\Domain\FederalData\Model\EntranceLanguageEnum as FederalEntranceLanguageEnum;
 use App\Infrastructure\Address\StreetFactory;
+use App\Infrastructure\Model\LanguageEnum;
 
 final readonly class BuildingDataToFederalDataBridge implements BuildingDataBridgedFactoryInterface
 {
@@ -69,14 +69,14 @@ final readonly class BuildingDataToFederalDataBridge implements BuildingDataBrid
         );
     }
 
-    private function mapFederalLanguage(FederalEntranceLanguageEnum $federalLanguage): EntranceLanguageEnum
+    private function mapFederalLanguage(FederalEntranceLanguageEnum $federalLanguage): LanguageEnum
     {
         return match ($federalLanguage) {
-            FederalEntranceLanguageEnum::DE => EntranceLanguageEnum::DE,
-            FederalEntranceLanguageEnum::FR => EntranceLanguageEnum::FR,
-            FederalEntranceLanguageEnum::IT => EntranceLanguageEnum::IT,
-            FederalEntranceLanguageEnum::RM => EntranceLanguageEnum::RM,
-            FederalEntranceLanguageEnum::UNKNOWN => EntranceLanguageEnum::UNKNOWN,
+            FederalEntranceLanguageEnum::DE => LanguageEnum::DE,
+            FederalEntranceLanguageEnum::FR => LanguageEnum::FR,
+            FederalEntranceLanguageEnum::IT => LanguageEnum::IT,
+            FederalEntranceLanguageEnum::RM => LanguageEnum::RM,
+            FederalEntranceLanguageEnum::UNKNOWN => LanguageEnum::UNKNOWN,
         };
     }
 }
