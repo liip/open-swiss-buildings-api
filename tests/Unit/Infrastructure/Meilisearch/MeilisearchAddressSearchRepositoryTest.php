@@ -8,17 +8,16 @@ use App\Infrastructure\Meilisearch\Contract\IndexProviderInterface;
 use App\Infrastructure\Meilisearch\MeilisearchAddressSearchRepository;
 use App\Tests\Util\BuildingAddressModelBuilder;
 use Meilisearch\Endpoints\Indexes;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
 #[Small]
-#[CoversClass(MeilisearchAddressSearchRepository::class)]
 final class MeilisearchAddressSearchRepositoryTest extends TestCase
 {
     private MockObject&IndexProviderInterface $indexProvider;
+
     private MeilisearchAddressSearchRepository $searchRepository;
 
     protected function setUp(): void
@@ -68,12 +67,12 @@ final class MeilisearchAddressSearchRepositoryTest extends TestCase
             ->willReturnCallback(function (string $docs, string $id): array {
                 $docs = explode("\n", $docs);
                 $this->assertCount(2, $docs);
-                $doc1 = json_decode($docs[0], true, 512, \JSON_THROW_ON_ERROR);
+                $doc1 = (array) json_decode($docs[0], true, 512, \JSON_THROW_ON_ERROR);
                 $this->assertArrayHasKey('id', $doc1);
                 $this->assertSame(BuildingAddressModelBuilder::UUID1, $doc1['id']);
                 $this->assertArrayHasKey('jsonModel', $doc1);
 
-                $doc2 = json_decode($docs[1], true, 512, \JSON_THROW_ON_ERROR);
+                $doc2 = (array) json_decode($docs[1], true, 512, \JSON_THROW_ON_ERROR);
                 $this->assertArrayHasKey('id', $doc2);
                 $this->assertSame(BuildingAddressModelBuilder::UUID2, $doc2['id']);
                 $this->assertArrayHasKey('jsonModel', $doc2);

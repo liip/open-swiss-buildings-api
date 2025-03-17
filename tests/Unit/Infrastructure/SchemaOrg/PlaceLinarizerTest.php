@@ -37,6 +37,7 @@ final class PlaceLinarizerTest extends TestCase
         $linearized = PlaceLinearizer::linearized($place);
 
         $this->assertSame(BuildingAddressModelBuilder::UUID1, $linearized['identifier']);
+        $this->assertSame(BuildingAddressModelBuilder::COUNTRY_CODE, $linearized['postalAddress.addressCountry']);
         $this->assertSame(BuildingAddressModelBuilder::LOCALITY, $linearized['postalAddress.addressLocality']);
         $this->assertSame(BuildingAddressModelBuilder::MUNICIPALITY, $linearized['postalAddress.addressRegion']);
         $this->assertSame(BuildingAddressModelBuilder::POSTAL_CODE, $linearized['postalAddress.postalCode']);

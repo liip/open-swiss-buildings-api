@@ -18,7 +18,7 @@ final class StreetFactoryTest extends TestCase
     {
         $s = StreetFactory::createFromSeparateStrings('Hauptstrasse', null);
 
-        $this->assertNotInstanceOf(StreetNumberInterface::class, $s->number, var_export($s, true));
+        $this->assertNotInstanceOf(StreetNumberInterface::class, $s->number);
     }
 
     /**
@@ -56,7 +56,7 @@ final class StreetFactoryTest extends TestCase
     {
         $s = StreetFactory::createFromSeparateStrings('Hauptstrasse', $number);
 
-        $this->assertInstanceOf(StreetNumberInterface::class, $s->number, var_export($s, true));
+        $this->assertInstanceOf(StreetNumberInterface::class, $s->number);
         $this->assertTrue($s->number->equalsTo($expected), var_export($s->number, true));
     }
 }
