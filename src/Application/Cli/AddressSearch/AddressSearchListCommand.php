@@ -72,7 +72,7 @@ final class AddressSearchListCommand extends Command
         ]);
 
         foreach ($this->buildingAddressSearcher->searchBuildingAddress($filter) as $result) {
-            $updatedAt = \DateTimeImmutable::createFromFormat('U', (string) $result->buildingAddress->importedAtTimestamp) ?: null;
+            $updatedAt = \DateTimeImmutable::createFromFormat('Ymd', (string) $result->buildingAddress->importedAt) ?: null;
 
             $table->addRow([
                 $result->buildingAddress->id,

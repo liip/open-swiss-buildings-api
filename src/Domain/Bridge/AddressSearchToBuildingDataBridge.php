@@ -101,7 +101,7 @@ final readonly class AddressSearchToBuildingDataBridge implements BuildingAddres
             language: $buildingEntrance->streetNameLanguage->value,
             address: $address,
             coordinates: $buildingEntrance->coordinates,
-            importedAtTimestamp: (int) $buildingEntrance->importedAt->format('U'),
+            importedAt: (int) $buildingEntrance->importedAt->format('U'),
         );
     }
 

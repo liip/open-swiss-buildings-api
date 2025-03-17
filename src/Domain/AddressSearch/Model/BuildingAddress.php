@@ -19,9 +19,9 @@ use Symfony\Component\Uid\Uuid;
  *    entranceId: non-empty-string,
  *    streetId: string|null,
  *    language: value-of<LanguageEnum>,
- *    importedAtTimestamp: int,
  *    address: AddressAsArray,
  *    coordinates: GeoCoordinatesAsArray|null,
+ *    importedAt: int,
  *  }
  */
 final readonly class BuildingAddress implements \JsonSerializable
@@ -53,7 +53,10 @@ final readonly class BuildingAddress implements \JsonSerializable
         public string $language,
         public Address $address,
         public ?Coordinates $coordinates,
-        public int $importedAtTimestamp,
+        /**
+         * Date representation in the format YYYYMMDD.
+         */
+        public int $importedAt,
     ) {}
 
     /**
@@ -83,7 +86,7 @@ final readonly class BuildingAddress implements \JsonSerializable
             language: Decoder::readBackedEnum($data, 'language', LanguageEnum::class)->value,
             address: Decoder::readObject($data, 'address', Address::class),
             coordinates: Decoder::readOptionalObject($data, 'coordinates', Coordinates::class),
-            importedAtTimestamp: Decoder::readInt($data, 'importedAtTimestamp'),
+            importedAt: Decoder::readInt($data, 'importedAt'),
         );
     }
 
@@ -99,7 +102,7 @@ final readonly class BuildingAddress implements \JsonSerializable
             'entranceId' => $this->entranceId,
             'streetId' => $this->streetId,
             'language' => $this->language,
-            'importedAtTimestamp' => $this->importedAtTimestamp,
+            'importedAt' => $this->importedAt,
             'address' => $this->address->jsonSerialize(),
             'coordinates' => $this->coordinates?->jsonSerialize(),
         ];

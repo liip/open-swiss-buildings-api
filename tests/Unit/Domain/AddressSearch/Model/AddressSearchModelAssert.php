@@ -20,7 +20,7 @@ final class AddressSearchModelAssert
         TestCase::assertSame($expected->entranceId, $actual->entranceId);
         TestCase::assertSame($expected->addressId, $actual->addressId);
         TestCase::assertSame($expected->language, $actual->language);
-        TestCase::assertSame($expected->importedAtTimestamp, $actual->importedAtTimestamp);
+        TestCase::assertSame($expected->importedAt, $actual->importedAt);
 
         self::assertSameAddress($expected->address, $actual->address);
 

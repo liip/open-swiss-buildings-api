@@ -145,7 +145,7 @@ final readonly class MeilisearchAddressSearchRepository implements
 
     public function deleteByImportedAtBefore(\DateTimeImmutable $dateTime): void
     {
-        $this->deleteByFilter(BuildingAddressEntity::FIELD_IMPORTED_AT_TIMESTAMP . ' < ' . $dateTime->format('U'));
+        $this->deleteByFilter(BuildingAddressEntity::FIELD_IMPORTED_AT . ' < ' . $dateTime->format('Ymd'));
     }
 
     public function deleteByIds(array $ids): void

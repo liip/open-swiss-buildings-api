@@ -27,7 +27,7 @@ final class BuildingAddressTest extends TestCase
             'addressId' => '111',
             'streetId' => '7',
             'language' => '',
-            'importedAtTimestamp' => 0,
+            'importedAt' => 20250101,
             'address' => [
                 'streetName' => '',
                 'streetNameAbbreviation' => '',

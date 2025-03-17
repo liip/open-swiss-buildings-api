@@ -15,7 +15,7 @@ final class PlaceLinarizerTest extends TestCase
     {
         $place = Place::buildFromBuildingAddress(BuildingAddressModelBuilder::buildBuildingAddress(
             BuildingAddressModelBuilder::UUID1,
-            new \DateTimeImmutable(BuildingAddressModelBuilder::UPDATED_AT),
+            BuildingAddressModelBuilder::IMPORTED_AT,
             ['latitude' => '47.269117135498', 'longitude' => '8.4490957266308'],
         ));
 
@@ -26,7 +26,7 @@ final class PlaceLinarizerTest extends TestCase
     {
         $place = Place::buildFromBuildingAddress(BuildingAddressModelBuilder::buildBuildingAddress(
             BuildingAddressModelBuilder::UUID1,
-            new \DateTimeImmutable(BuildingAddressModelBuilder::UPDATED_AT),
+            BuildingAddressModelBuilder::IMPORTED_AT,
             ['latitude' => '47.269117135498', 'longitude' => '8.4490957266308'],
         ));
 
