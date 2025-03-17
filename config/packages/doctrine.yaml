@@ -6,8 +6,8 @@ doctrine:
                 url: '%env(resolve:DATABASE_URL)%'
                 profiling_collect_backtrace: '%kernel.debug%'
                 use_savepoints: true
-            federal:
-                url: 'sqlite:///%env(resolve:FEDERAL_DATABASE_FILE)%'
+            registry_ch:
+                url: 'sqlite:///%env(resolve:REGISTRY_DATABASE_CH_FILE)%'
                 profiling_collect_backtrace: '%kernel.debug%'
                 use_savepoints: true
 
@@ -35,17 +35,17 @@ doctrine:
                         dir: '%kernel.project_dir%/src/Domain/Resolving/Entity'
                         prefix: 'App\Domain\Resolving\Entity'
                         alias: Resolving
-            federal:
-                connection: federal
+            registry_ch:
+                connection: registry_ch
                 report_fields_where_declared: true
                 validate_xml_mapping: true
                 auto_mapping: false
                 mappings:
-                    FederalData:
+                    DataCH:
                         is_bundle: false
-                        dir: '%kernel.project_dir%/src/Domain/FederalData/Entity'
-                        prefix: 'App\Domain\FederalData\Entity'
-                        alias: FederalData
+                        dir: '%kernel.project_dir%/src/Domain/Registry/DataCH/Entity'
+                        prefix: 'App\Domain\Registry\DataCH\Entity'
+                        alias: DataCH
         controller_resolver:
             auto_mapping: false
 
