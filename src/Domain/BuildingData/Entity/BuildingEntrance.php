@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\BuildingData\Entity;
 
-use App\Domain\BuildingData\Model\EntranceLanguageEnum;
 use App\Domain\BuildingData\Repository\BuildingEntranceRepository;
 use App\Infrastructure\Address\Model\AddressFieldsTrait;
+use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\PostGis\Coordinates;
 use App\Infrastructure\PostGis\CoordinatesParser;
 use App\Infrastructure\PostGis\SRIDEnum;
@@ -78,7 +78,7 @@ class BuildingEntrance
      * Street name language.
      */
     #[ORM\Column(length: 2)]
-    public EntranceLanguageEnum $streetNameLanguage = EntranceLanguageEnum::UNKNOWN;
+    public LanguageEnum $streetNameLanguage = LanguageEnum::UNKNOWN;
 
     /**
      * Municipality code (numeric, 4chars).

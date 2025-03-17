@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\BuildingData\Model;
 
+use App\Infrastructure\Model\LanguageEnum;
+
 final readonly class BuildingEntranceFilter
 {
     public function __construct(
@@ -38,7 +40,7 @@ final readonly class BuildingEntranceFilter
         public ?array $streetIds = null,
 
         /**
-         * @var list<EntranceLanguageEnum>|null
+         * @var list<LanguageEnum>|null
          */
         public ?array $languages = null,
     ) {}

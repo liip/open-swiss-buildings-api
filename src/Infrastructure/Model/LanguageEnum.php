@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\AddressSearch\Model;
+namespace App\Infrastructure\Model;
 
 enum LanguageEnum: string
 {

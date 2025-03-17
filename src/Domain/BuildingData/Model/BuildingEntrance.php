@@ -6,6 +6,7 @@ namespace App\Domain\BuildingData\Model;
 
 use App\Infrastructure\Address\Model\Street;
 use App\Infrastructure\Address\Model\StreetNumber;
+use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\PostGis\Coordinates;
 use App\Infrastructure\PostGis\CoordinatesParser;
 use App\Infrastructure\Serialization\Decoder;
@@ -21,7 +22,7 @@ final readonly class BuildingEntrance
         public string $streetId,
         public ?Street $street,
         public ?Street $streetAbbreviated,
-        public EntranceLanguageEnum $streetNameLanguage,
+        public LanguageEnum $streetNameLanguage,
         public string $postalCode,
         public string $locality,
         public string $municipalityCode,
@@ -49,7 +50,7 @@ final readonly class BuildingEntrance
             Decoder::readString($data, 'street_id'),
             Street::createOptional(Decoder::readOptionalNonEmptyString($data, 'street_name', true), $number),
             Street::createOptional(Decoder::readOptionalNonEmptyString($data, 'street_name_abbreviated', true), $number),
-            Decoder::readBackedEnum($data, 'street_name_language', EntranceLanguageEnum::class),
+            Decoder::readBackedEnum($data, 'street_name_language', LanguageEnum::class),
             Decoder::readString($data, 'postal_code'),
             Decoder::readString($data, 'locality'),
             Decoder::readString($data, 'municipality_code'),
@@ -78,7 +79,7 @@ final readonly class BuildingEntrance
             Decoder::readString($data, 'streetId'),
             Street::createOptional(Decoder::readOptionalNonEmptyString($data, 'streetName', true), $number),
             Street::createOptional(Decoder::readOptionalNonEmptyString($data, 'streetNameAbbreviated', true), $number),
-            Decoder::readBackedEnum($data, 'streetNameLanguage', EntranceLanguageEnum::class),
+            Decoder::readBackedEnum($data, 'streetNameLanguage', LanguageEnum::class),
             Decoder::readString($data, 'postalCode'),
             Decoder::readString($data, 'locality'),
             Decoder::readString($data, 'municipalityCode'),
