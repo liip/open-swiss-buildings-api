@@ -12,7 +12,7 @@ use App\Domain\Resolving\Exception\ResolverJobNotFoundException;
 use App\Domain\Resolving\Model\Result\ResolverResult;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeEnum;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
