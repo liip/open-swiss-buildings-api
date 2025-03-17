@@ -77,7 +77,7 @@ final class AddressSearchIndexCommand extends Command
         $io->write("Indexing ID <comment>{$id}</comment>: ");
         try {
             $uuid = Uuid::fromString($id);
-            $this->addressIndexer->indexBuildingAddress($uuid);
+            $this->addressIndexer->indexById($uuid);
             $io->writeln('<info>done</info>');
 
             return true;

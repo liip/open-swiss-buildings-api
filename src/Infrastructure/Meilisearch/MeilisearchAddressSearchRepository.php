@@ -82,7 +82,7 @@ final readonly class MeilisearchAddressSearchRepository implements
             $filters[] = FilterBuilder::buildListFilter(BuildingAddressEntity::FIELD_COUNTRY_CODE, $codes);
         }
 
-        $params['filter'] = null === $filters ? null : FilterBuilder::mergeFilters($filters);
+        $params['filter'] = null === $filters ? null : FilterBuilder::mergeOrFilters($filters);
 
         // If we have a filter, but no query provided: we use a wildcard to match all entries and
         // then have Meilisearch apply the filter
@@ -148,9 +148,15 @@ final readonly class MeilisearchAddressSearchRepository implements
         }
     }
 
-    public function deleteByImportedAtBefore(\DateTimeImmutable $dateTime): void
+    public function deleteByImportedAtBefore(\DateTimeImmutable $dateTime, ?CountryCodeEnum $countryCode = null): void
     {
-        $this->deleteByFilter(BuildingAddressEntity::FIELD_IMPORTED_AT . ' < ' . $dateTime->format('Ymd'));
+        $filters = [];
+        $filters[] = BuildingAddressEntity::FIELD_IMPORTED_AT . ' < ' . $dateTime->format('Ymd');
+        if ($countryCode instanceof CountryCodeEnum) {
+            $filters[] = BuildingAddressEntity::FIELD_COUNTRY_CODE . ' = ' . $countryCode->value;
+        }
+
+        $this->deleteByFilter(FilterBuilder::mergeAndFilters($filters));
     }
 
     public function deleteByIds(array $ids): void

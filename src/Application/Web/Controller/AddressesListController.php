@@ -45,9 +45,9 @@ final class AddressesListController extends AbstractController
                 mediaType: 'text/csv',
                 schema: new OA\Schema(
                     type: 'string',
-                    example: 'identifier,postalAddress.addressLocality,postalAddress.addressRegion,postalAddress.postalCode,postalAddress.streetAddress,postalAddress.inLanguage,geo.latitude,geo.longitude,additionalProperty.buildingId,additionalProperty.entranceId,additionalProperty.addressId,additionalProperty.municipalityCode'
+                    example: 'identifier,postalAddress.addressCountry,postalAddress.addressLocality,postalAddress.addressRegion,postalAddress.postalCode,postalAddress.streetAddress,postalAddress.inLanguage,geo.latitude,geo.longitude,additionalProperty.buildingId,additionalProperty.entranceId,additionalProperty.addressId,additionalProperty.municipalityCode'
                     . "\n" .
-                    '018f05aa-3539-7d15-93ca-d97860c4ecd7,"Affoltern am Albis","Affoltern am Albis",8910,"Grossholzerstrasse 20",de,47.269117135498,8.4490957266308,1,0,100000334,2',
+                    '018f05aa-3539-7d15-93ca-d97860c4ecd7,"CH","Affoltern am Albis","Affoltern am Albis",8910,"Grossholzerstrasse 20",de,47.269117135498,8.4490957266308,1,0,100000334,2',
                 ),
             ),
             new OA\JsonContent(ref: new Model(type: AddressListResponse::class)),

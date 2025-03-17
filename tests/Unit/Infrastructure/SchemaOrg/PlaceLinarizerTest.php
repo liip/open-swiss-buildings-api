@@ -7,8 +7,12 @@ namespace App\Tests\Unit\Infrastructure\SchemaOrg;
 use App\Infrastructure\SchemaOrg\Place;
 use App\Infrastructure\SchemaOrg\PlaceLinearizer;
 use App\Tests\Util\BuildingAddressModelBuilder;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
+#[Small]
+#[CoversClass(PlaceLinearizer::class)]
 final class PlaceLinarizerTest extends TestCase
 {
     public function testHeaders(): void

@@ -8,6 +8,7 @@ use App\Domain\BuildingData\Contract\BuildingDataBridgedFactoryInterface;
 use App\Domain\BuildingData\Contract\BuildingEntranceImporterInterface;
 use App\Domain\BuildingData\Contract\BuildingEntranceWriteRepositoryInterface;
 use App\Domain\BuildingData\Event\BuildingEntrancesHaveBeenImported;
+use App\Infrastructure\Model\CountryCodeEnum;
 use Psr\Clock\ClockInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -20,17 +21,17 @@ final readonly class BuildingEntranceImporter implements BuildingEntranceImporte
         private ClockInterface $clock,
     ) {}
 
-    public function countBuildingEntrances(): int
+    public function countBuildingEntrances(?CountryCodeEnum $countryCode = null): int
     {
-        return $this->buildingDataFactory->countBuildingData();
+        return $this->buildingDataFactory->countBuildingData($countryCode);
     }
 
-    public function importBuildingData(): iterable
+    public function importBuildingData(?CountryCodeEnum $countryCode = null): iterable
     {
         $timestamp = $this->clock->now();
 
         yield from $this->entranceWriteRepository->store(
-            $this->buildingDataFactory->getBuildingData(),
+            $this->buildingDataFactory->getBuildingData($countryCode),
         );
 
         $this->eventDispatcher->dispatch(new BuildingEntrancesHaveBeenImported($timestamp));

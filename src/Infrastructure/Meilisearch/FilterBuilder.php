@@ -20,7 +20,15 @@ final class FilterBuilder
     /**
      * @param list<non-empty-string> $filters
      */
-    public static function mergeFilters(array $filters): string
+    public static function mergeAndFilters(array $filters): string
+    {
+        return implode(' AND ', $filters);
+    }
+
+    /**
+     * @param list<non-empty-string> $filters
+     */
+    public static function mergeOrFilters(array $filters): string
     {
         return implode(' OR ', $filters);
     }

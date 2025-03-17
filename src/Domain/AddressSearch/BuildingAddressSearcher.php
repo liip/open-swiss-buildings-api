@@ -9,6 +9,7 @@ use App\Domain\AddressSearch\Contract\AddressSearchReadRepositoryInterface;
 use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Domain\AddressSearch\Model\BuildingAddressScored;
 use App\Domain\AddressSearch\Model\PlaceScored;
+use App\Domain\AddressSearch\Model\SearchStats;
 
 final readonly class BuildingAddressSearcher implements BuildingAddressSearcherInterface
 {
@@ -27,5 +28,13 @@ final readonly class BuildingAddressSearcher implements BuildingAddressSearcherI
             /* @var BuildingAddressScored $buildingAddressScored */
             yield PlaceScored::buildFromBuildingAddressScored($buildingAddressScored);
         }
+    }
+
+    public function stats(): SearchStats
+    {
+        return new SearchStats(
+            status: 'ok',
+            indexedAddresses: $this->addressSearchRepositoryReader->countIndexedAddresses(),
+        );
     }
 }
