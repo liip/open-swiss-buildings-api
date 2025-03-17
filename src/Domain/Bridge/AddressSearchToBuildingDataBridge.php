@@ -115,6 +115,7 @@ final readonly class AddressSearchToBuildingDataBridge implements BuildingAddres
             locality: $buildingEntrance->locality,
             municipality: $buildingEntrance->municipality,
             municipalityCode: $buildingEntrance->municipalityCode,
+            countryCode: $buildingEntrance->countryCode->value,
         );
     }
 }

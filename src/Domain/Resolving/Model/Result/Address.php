@@ -18,15 +18,17 @@ final readonly class Address implements \Stringable, \JsonSerializable
         public string $streetName,
         #[OA\Property(property: 'street_house_number')]
         public string $streetHouseNumber,
+        #[OA\Property(property: 'country_code')]
+        public string $countryCode,
     ) {}
 
     public function __toString(): string
     {
-        return "{$this->streetName} {$this->streetHouseNumber}, {$this->postalCode} {$this->locality}";
+        return "{$this->streetName} {$this->streetHouseNumber}, {$this->postalCode} {$this->locality} - {$this->countryCode}";
     }
 
     /**
-     * @return array{municipality_code: string, postal_code: string, locality: string, street_name: string, street_house_number: string}
+     * @return array{municipality_code: string, postal_code: string, locality: string, street_name: string, street_house_number: string, country_code: string}
      */
     public function jsonSerialize(): array
     {
@@ -36,6 +38,7 @@ final readonly class Address implements \Stringable, \JsonSerializable
             'locality' => $this->locality,
             'street_name' => $this->streetName,
             'street_house_number' => $this->streetHouseNumber,
+            'country_code' => $this->countryCode,
         ];
     }
 }

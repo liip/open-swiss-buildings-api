@@ -11,6 +11,7 @@ use App\Domain\Resolving\Model\Job\ResolverJobStateEnum;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use App\Infrastructure\Address\Model\Street;
 use App\Infrastructure\Address\Model\StreetNumber;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Tests\Util\ResolvingApi;
 use PHPUnit\Framework\Attributes\Large;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -572,6 +573,7 @@ final class ResolverJobAddressSearchTest extends WebTestCase
     private function createLiipBuildingResult(array $defaultOverride): array
     {
         return array_merge([
+            'country_code' => 'CH',
             'egid' => '2366055',
             'edid' => '0',
             'municipality_code' => '261',
@@ -596,6 +598,7 @@ final class ResolverJobAddressSearchTest extends WebTestCase
     private function createEmptyBuildingResult(array $defaultOverride): array
     {
         return array_merge([
+            'country_code' => '',
             'egid' => '',
             'edid' => '',
             'municipality_code' => '',
@@ -617,6 +620,7 @@ final class ResolverJobAddressSearchTest extends WebTestCase
      * @param non-empty-string|null $streetNumberSuffix
      */
     private function createLiipBuildingEntranceData(
+        CountryCodeEnum $countryCode = CountryCodeEnum::CH,
         string $entranceId = '0',
         string $buildingId = '2366055',
         string $streetId = '10004212',
@@ -630,6 +634,7 @@ final class ResolverJobAddressSearchTest extends WebTestCase
         }
 
         return BuildingEntranceData::create(
+            countryCode: $countryCode,
             buildingId: $buildingId,
             entranceId: $entranceId,
             streetId: $streetId,

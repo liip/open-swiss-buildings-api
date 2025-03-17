@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\AddressSearch\Model;
 
+use App\Infrastructure\Model\CountryCodeEnum;
+
 final readonly class AddressSearch
 {
     public const int DEFAULT_LIMIT = 40;
@@ -35,5 +37,10 @@ final readonly class AddressSearch
          * @var list<non-empty-string>|null
          */
         public ?array $filterByBuildingIds = null,
+
+        /**
+         * @var list<CountryCodeEnum>|null
+         */
+        public ?array $filterByCountryCodes = null,
     ) {}
 }

@@ -6,6 +6,7 @@ namespace App\Domain\BuildingData\Entity;
 
 use App\Domain\BuildingData\Repository\BuildingEntranceRepository;
 use App\Infrastructure\Address\Model\AddressFieldsTrait;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\PostGis\Coordinates;
 use App\Infrastructure\PostGis\CoordinatesParser;
@@ -22,14 +23,16 @@ use Symfony\Component\Uid\UuidV7;
 #[ORM\Index(fields: ['entranceId'], name: 'entranceId_idx')]
 #[ORM\Index(fields: ['importedAt'], name: 'importedAt_idx')]
 #[ORM\Index(fields: ['cantonCode'], name: 'cantonCode_idx')]
+#[ORM\Index(fields: ['countryCode'], name: 'countryCode_idx')]
 #[ORM\Index(fields: ['streetName', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'], name: 'building_entrance_idx')]
 #[ORM\Index(fields: ['streetNameAbbreviated', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'], name: 'building_entrance_abbreviation_idx')]
 #[ORM\Index(fields: ['streetNameNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'], name: 'building_entrance_normalized_idx')]
 #[ORM\Index(fields: ['streetNameAbbreviatedNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'], name: 'building_entrance_abbreviation_normalized_idx')]
 #[ORM\Index(fields: ['streetId', 'streetHouseNumber', 'streetHouseNumberSuffix'], name: 'building_entrance_street_id_idx')]
 #[ORM\Index(fields: ['streetId', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized'], name: 'building_entrance_street_id_normalized_idx')]
-// #[ORM\Index(fields: ['geoCoordinatesWgs84'], name: 'building_entrance_geo_coordinates_wgs84_idx_custom'), type: 'USING GIST'] // Not supported by Doctrine. Added manually as a migration and set up IgnoredFieldsListener to have Migrations Diff not try to remove it.
-#[ORM\UniqueConstraint(name: 'building_entrance_language', fields: ['buildingId', 'entranceId', 'streetNameLanguage'])]
+// The following is not supported by Doctrine. Added manually as a migration and set up IgnoredFieldsListener to have Migrations Diff not try to remove it.
+// #[ORM\Index(fields: ['geoCoordinatesWgs84'], name: 'building_entrance_geo_coordinates_wgs84_idx_custom'), type: 'USING GIST']
+#[ORM\UniqueConstraint(name: 'building_entrance_language', fields: ['countryCode', 'buildingId', 'entranceId', 'streetNameLanguage'])]
 class BuildingEntrance
 {
     use AddressFieldsTrait;
@@ -39,25 +42,31 @@ class BuildingEntrance
     public UuidV7 $id;
 
     /**
-     * Federal Building identifier (numeric, 9chars).
+     * Country code.
+     */
+    #[ORM\Column(length: 2)]
+    public CountryCodeEnum $countryCode = CountryCodeEnum::CH;
+
+    /**
+     * Building identifier (numeric, 9chars).
      */
     #[ORM\Column(length: 9)]
     public string $buildingId = '';
 
     /**
-     * Federal Entrance identifier (numeric, 2chars).
+     * Entrance identifier (numeric, 2chars).
      */
     #[ORM\Column(length: 2)]
     public string $entranceId = '';
 
     /**
-     * Federal Building-Address identifier (numeric, 9chars).
+     * Building-Address identifier (numeric, 9chars).
      */
     #[ORM\Column(length: 9)]
     public string $addressId = '';
 
     /**
-     * Federal street ID.
+     * Street ID.
      */
     #[ORM\Column(length: 8)]
     public string $streetId = '';

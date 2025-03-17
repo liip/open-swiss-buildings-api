@@ -25,6 +25,7 @@ final readonly class DoctrineGeoJsonTaskResolver implements TaskResolverInterfac
         'job_id' => 'tasks.job_id',
         'confidence' => 'tasks.confidence',
         'match_type' => 'tasks.match_type',
+        'country_code' => 'building.country_code',
         'building_id' => 'building.building_id',
         'entrance_id' => 'building.entrance_id',
         'building_entrance_id' => 'building.id',
@@ -83,7 +84,7 @@ final readonly class DoctrineGeoJsonTaskResolver implements TaskResolverInterfac
             $sql = "INSERT INTO {$resultTable} AS results (" . implode(',', array_keys(self::COLUMNS)) . ') ' .
                 $this->buildSelectQuery(self::COLUMNS) .
                 ' WHERE tasks.id = :taskId' .
-                ' ON CONFLICT (job_id, building_entrance_id) ' .
+                ' ON CONFLICT (job_id, country_code, building_entrance_id) ' .
                 ' DO UPDATE SET additional_data = results.additional_data::jsonb || excluded.additional_data::jsonb';
 
             $prepared = $this->entityManager->getConnection()->prepare($sql);

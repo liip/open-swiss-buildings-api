@@ -33,6 +33,7 @@ final class DoctrineResolverResultRepository extends ServiceEntityRepository imp
         'r.confidence',
         'r.matchType',
         'r.buildingEntranceId',
+        'r.countryCode',
         'r.buildingId',
         'e.entranceId',
         'e.municipalityCode',
@@ -127,11 +128,19 @@ final class DoctrineResolverResultRepository extends ServiceEntityRepository imp
             && null !== ($postalCode = Decoder::readOptionalString($row, 'postalCode'))
             && null !== ($locality = Decoder::readOptionalString($row, 'locality'))
             && null !== ($streetName = Decoder::readOptionalNonEmptyString($row, 'streetName', true))
+            && null !== ($countryCode = Decoder::readOptionalNonEmptyString($row, 'countryCode', true))
         ) {
             $streetHouseNumber = Decoder::readOptionalPositiveInt($row, 'streetHouseNumber', true);
             $numberSuffix = Decoder::readOptionalNonEmptyString($row, 'streetHouseNumberSuffix', true);
             $numberSuffix ??= '';
-            $address = new Address($municipalityCode, $postalCode, $locality, $streetName, $streetHouseNumber . $numberSuffix);
+            $address = new Address(
+                $municipalityCode,
+                $postalCode,
+                $locality,
+                $streetName,
+                $streetHouseNumber . $numberSuffix,
+                $countryCode,
+            );
         }
 
         $coordinates = null;
@@ -143,6 +152,7 @@ final class DoctrineResolverResultRepository extends ServiceEntityRepository imp
             confidence: Confidence::fromInt(Decoder::readInt($row, 'confidence')),
             matchType: Decoder::readString($row, 'matchType'),
             buildingEntranceId: Decoder::readOptionalUuidAsString($row, 'buildingEntranceId'),
+            countryCode: Decoder::readOptionalNonEmptyString($row, 'countryCode'),
             buildingId: Decoder::readOptionalString($row, 'buildingId', true),
             entranceId: Decoder::readOptionalNonEmptyString($row, 'entranceId'),
             address: $address,

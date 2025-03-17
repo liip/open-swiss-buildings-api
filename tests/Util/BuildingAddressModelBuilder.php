@@ -26,6 +26,7 @@ final class BuildingAddressModelBuilder
     public const string POSTAL_CODE = '8914';
     public const string MUNICIPALITY = 'ZH';
     public const string MUNICIPALITY_CODE = '3';
+    public const string COUNTRY_CODE = 'CH';
 
     private function __construct() {}
 
@@ -40,6 +41,7 @@ final class BuildingAddressModelBuilder
     ): BuildingAddress {
         return BuildingAddress::fromArray([
             'id' => $uuid,
+            'countryCode' => self::COUNTRY_CODE,
             'buildingId' => self::BUILDING_ID,
             'entranceId' => self::ENTRANCE_ID,
             'addressId' => self::ADDRESS_ID,
@@ -53,6 +55,7 @@ final class BuildingAddressModelBuilder
                 'locality' => self::LOCALITY,
                 'municipality' => self::MUNICIPALITY,
                 'municipalityCode' => self::MUNICIPALITY_CODE,
+                'countryCode' => self::COUNTRY_CODE,
             ],
             'coordinates' => $coordinates,
         ]);

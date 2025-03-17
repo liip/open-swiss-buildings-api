@@ -39,10 +39,11 @@ final class ResolveJobResultsController extends AbstractController
      *
      * When requesting a CSV, it will contain the following columns:
      * * `id`: Unique stable identifier of the address
-     * * `egid`: Swiss building ID
-     * * `edid`: Swiss building entrance ID
+     * * `country_code`: The 2-letter country code of the address (CH, LI)
+     * * `egid`: Building ID
+     * * `edid`: Building entrance ID
      * * `municipality_code`: Code of the municipality ("BFS Gemeindenummer")
-     * * `postal_code`: Swiss postal code
+     * * `postal_code`: Postal code
      * * `locality`: Locality of the address
      * * `street_name`: Name of the street
      * * `street_house_number`: House number of the address
@@ -73,9 +74,9 @@ final class ResolveJobResultsController extends AbstractController
                 mediaType: 'text/csv',
                 schema: new OA\Schema(
                     type: 'string',
-                    example: 'id,egid,edid,municipality_code,postal_code,locality,street_name,street_house_number,original_address,matching,confidence,latitude,longitude,match_type,userdata.group' .
-                             "\n018e417d-ed8d-73e8-9efa-719fa94a2eb4,9011206,0,261,8005,Zürich,Limmatstrasse,111,\"Limmatstrasse 111, 8005 Zürich (ZH)\",<em>Limmatstrasse</em> <em>111</em> <em>8005</em> <em>Zürich</em>,0.8,1.2,13.8,exact," .
-                             "\n018e4178-496a-7839-a565-0513b61c0ae0,150404,0,261,8005,Zürich,Limmatstrasse,112,\"Limmatstrasse 112, 8005 Zürich\",<em>Limmatstrasse</em> <em>112</em> <em>8005</em> <em>Zürich</em>,1,2.5,14.1,exact,B",
+                    example: 'id,country_code,egid,edid,municipality_code,postal_code,locality,street_name,street_house_number,original_address,matching,confidence,latitude,longitude,match_type,userdata.group' .
+                             "\n018e417d-ed8d-73e8-9efa-719fa94a2eb4,CH,9011206,0,261,8005,Zürich,Limmatstrasse,111,\"Limmatstrasse 111, 8005 Zürich (ZH)\",<em>Limmatstrasse</em> <em>111</em> <em>8005</em> <em>Zürich</em>,0.8,1.2,13.8,exact," .
+                             "\n018e4178-496a-7839-a565-0513b61c0ae0,CH,150404,0,261,8005,Zürich,Limmatstrasse,112,\"Limmatstrasse 112, 8005 Zürich\",<em>Limmatstrasse</em> <em>112</em> <em>8005</em> <em>Zürich</em>,1,2.5,14.1,exact,B",
                 ),
             ),
             new OA\JsonContent(

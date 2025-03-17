@@ -5,23 +5,25 @@ declare(strict_types=1);
 namespace App\Domain\BuildingData\Model;
 
 use App\Infrastructure\Address\Model\Street;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Model\LanguageEnum;
 
 final readonly class BuildingEntranceData
 {
     public function __construct(
+        public CountryCodeEnum $countryCode,
         /**
-         * Federal Building identifier.
+         * Building identifier.
          */
         public string $buildingId,
 
         /**
-         * Federal Entrance identifier.
+         * Entrance identifier.
          */
         public string $entranceId,
 
         /**
-         * Federal Building-Address identifier.
+         * Building-Address identifier.
          */
         public string $addressId,
         public LanguageEnum $streetNameLanguage,
@@ -52,6 +54,7 @@ final readonly class BuildingEntranceData
     ) {}
 
     public static function create(
+        CountryCodeEnum $countryCode,
         string $buildingId,
         string $entranceId,
         string $streetId,
@@ -68,6 +71,7 @@ final readonly class BuildingEntranceData
         LanguageEnum $streetNameLanguage = LanguageEnum::DE,
     ): self {
         return new self(
+            $countryCode,
             $buildingId,
             $entranceId,
             $addressId ?? "{$buildingId}-{$entranceId}",

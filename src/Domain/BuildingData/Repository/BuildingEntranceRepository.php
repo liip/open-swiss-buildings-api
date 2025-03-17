@@ -12,10 +12,10 @@ use App\Domain\BuildingData\Model\BuildingEntrance;
 use App\Domain\BuildingData\Model\BuildingEntranceData;
 use App\Domain\BuildingData\Model\BuildingEntranceFilter;
 use App\Domain\BuildingData\Model\BuildingEntranceStatistics;
-use App\Domain\BuildingData\Model\CantonCodeEnum;
 use App\Infrastructure\Address\AddressNormalizer;
 use App\Infrastructure\Doctrine\BatchInsertStatementBuilder;
 use App\Infrastructure\Doctrine\PostgreSQLCursorFetcher;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Pagination;
 use App\Infrastructure\PostGis\CoordinatesParser;
 use App\Infrastructure\PostGis\SRIDEnum;
@@ -59,6 +59,7 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
     {
         $columnDefinitions = [
             'id' => ':id%i%',
+            'country_code' => ':country_code%i%',
             'building_id' => ':building_id%i%',
             'entrance_id' => ':entrance_id%i%',
             'address_id' => ':address_id%i%',
@@ -84,14 +85,14 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         ];
         $conflictUpdates = array_values(array_filter(
             array_keys($columnDefinitions),
-            static fn($column): bool => !\in_array($column, ['id', 'building_id', 'entrance_id', 'street_name_language'], true),
+            static fn($column): bool => !\in_array($column, ['id', 'country_code', 'building_id', 'entrance_id', 'street_name_language'], true),
         ));
 
         $batchSql = BatchInsertStatementBuilder::generate(
             $this->getClassMetadata()->getTableName(),
             self::INSERT_BATCH_SIZE,
             $columnDefinitions,
-            ['building_id', 'entrance_id', 'street_name_language'],
+            ['country_code', 'building_id', 'entrance_id', 'street_name_language'],
             $conflictUpdates,
         );
 
@@ -115,6 +116,7 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
             $stmt->bindValue('building_id' . $i, $buildingEntrance->buildingId);
             $stmt->bindValue('entrance_id' . $i, $buildingEntrance->entranceId);
             $stmt->bindValue('address_id' . $i, $buildingEntrance->addressId);
+            $stmt->bindValue('country_code' . $i, $buildingEntrance->countryCode->value);
             $stmt->bindValue('street_id' . $i, $buildingEntrance->streetId);
             $stmt->bindValue('street_name' . $i, $streetName ?? '');
             $stmt->bindValue('street_name_normalized' . $i, null !== $streetName ? $this->normalizer->normalize($streetName) : '');
@@ -156,7 +158,7 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
                 $this->getClassMetadata()->getTableName(),
                 \count($batchEntries),
                 $columnDefinitions,
-                ['building_id', 'entrance_id', 'street_name_language'],
+                ['building_id', 'entrance_id', 'country_code', 'street_name_language'],
                 $conflictUpdates,
             );
             $batchStmt = $this->getEntityManager()->getConnection()->prepare($batchSql);
@@ -173,24 +175,28 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         }
     }
 
-    public function getStatistics(): BuildingEntranceStatistics
+    public function getStatistics(CountryCodeEnum $countryCode): BuildingEntranceStatistics
     {
-        $count = $this->fetchCount($this->getEntityManager()->createQuery(
-            'SELECT COUNT(b.id) FROM ' . BuildingEntranceEntity::class . ' b',
-        ));
+        $qb = $this->createQueryBuilder('b')
+            ->select('count(b.id) AS total')
+            ->addSelect('b.cantonCode AS cantonCode')
+            ->where('b.countryCode = :countryCode')
+            ->groupBy('b.cantonCode')
+            ->setParameter('countryCode', $countryCode->value)
+        ;
 
+        /** @phpstan-ignore doctrine.queryBuilderDynamicArgument */
+        $result = $qb->getQuery()->getArrayResult();
+
+        $total = 0;
         $byCanton = [];
-        foreach (CantonCodeEnum::cases() as $code) {
-            $byCanton[$code->name] = $this->fetchCount(
-                $this->getEntityManager()->createQuery(
-                    'SELECT COUNT(b.id) FROM ' . BuildingEntranceEntity::class . ' b WHERE b.cantonCode = :canton',
-                )
-                ->setParameter('canton', $code->name),
-            );
+        foreach ($result as $aggregatedResult) {
+            $byCanton[$aggregatedResult['cantonCode']] = $aggregatedResult['total'];
+            $total += abs((int) $aggregatedResult['total']);
         }
 
         return new BuildingEntranceStatistics(
-            total: $count,
+            total: $total,
             byCanton: $byCanton,
         );
     }
@@ -313,6 +319,10 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         if (null !== ($entranceIds = $filter->entranceIds)) {
             $whereClauses[] = 'b.entranceId IN (:entranceIds)';
             $parameters['entranceIds'] = $entranceIds;
+        }
+        if (null !== ($countryCodes = $filter->countryCodes)) {
+            $whereClauses[] = 'b.countryCode IN (:countryCodes)';
+            $parameters['countryCodes'] = $countryCodes;
         }
         if (null !== ($municipalities = $filter->municipalities)) {
             $whereClauses[] = 'b.municipality IN (:municipalities)';

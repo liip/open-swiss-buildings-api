@@ -10,6 +10,7 @@ use App\Domain\Resolving\Model\Job\ResolverJobStateEnum;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use App\Infrastructure\Address\Model\Street;
 use App\Infrastructure\Address\Model\StreetNumber;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Tests\Util\ResolvingApi;
 use PHPUnit\Framework\Attributes\Large;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -52,12 +53,13 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
                 streetId: '7',
                 street: new Street('Limmatstrasse', new StreetNumber(183)),
                 streetAbbreviated: new Street('Limmatstr', new StreetNumber(183)),
-                cantonCode: 'ZH',
                 postalCode: '8005',
                 locality: 'Zürich',
                 municipalityCode: '111',
+                cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
+                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 
@@ -78,6 +80,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => 'Zürich',
             'street_name' => 'Limmatstrasse',
             'street_house_number' => '183',
+            'country_code' => 'CH',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '32.124506172887',
@@ -96,12 +99,13 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
                 streetId: '7',
                 street: new Street('Limmatstrasse', new StreetNumber(183)),
                 streetAbbreviated: new Street('Limmatstr', new StreetNumber(183)),
-                cantonCode: 'ZH',
                 postalCode: '8005',
                 locality: 'Zürich',
                 municipalityCode: '111',
+                cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
+                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 
@@ -122,6 +126,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => 'Zürich',
             'street_name' => 'Limmatstrasse',
             'street_house_number' => '183',
+            'country_code' => 'CH',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '32.124506172887',
@@ -141,12 +146,13 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
                 streetId: '7',
                 street: new Street('Limmatstrasse', new StreetNumber(183)),
                 streetAbbreviated: new Street('Limmatstr', new StreetNumber(183)),
-                cantonCode: 'ZH',
                 postalCode: '8005',
                 locality: 'Zürich',
                 municipalityCode: '111',
+                cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
+                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 
@@ -168,6 +174,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => 'Zürich',
             'street_name' => 'Limmatstrasse',
             'street_house_number' => '183',
+            'country_code' => 'CH',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '32.124506172887',
@@ -186,12 +193,13 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
                 streetId: '7',
                 street: new Street('Limmatstrasse', new StreetNumber(183)),
                 streetAbbreviated: new Street('Limmatstr', new StreetNumber(183)),
-                cantonCode: 'ZH',
                 postalCode: '8005',
                 locality: 'Zürich',
                 municipalityCode: '111',
+                cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
+                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 
@@ -214,6 +222,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => 'Zürich',
             'street_name' => 'Limmatstrasse',
             'street_house_number' => '183',
+            'country_code' => 'CH',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '32.124506172887',
@@ -227,15 +236,16 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
         $importer = self::getContainer()->get(BuildingEntranceImporterInterface::class);
         $importer->importManualBuildingData([
             BuildingEntranceData::create(
+                countryCode: CountryCodeEnum::CH,
                 buildingId: '123',
                 entranceId: '0',
                 streetId: '7',
                 street: new Street('Limmatstrasse', new StreetNumber(183)),
                 streetAbbreviated: new Street('Limmatstr', new StreetNumber(183)),
-                cantonCode: 'ZH',
                 postalCode: '8005',
                 locality: 'Zürich',
                 municipalityCode: '111',
+                cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
             ),
@@ -259,6 +269,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => 'Zürich',
             'street_name' => 'Limmatstrasse',
             'street_house_number' => '183',
+            'country_code' => 'CH',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '32.124506172887',
@@ -273,6 +284,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => '',
             'street_name' => '',
             'street_house_number' => '',
+            'country_code' => '',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '',
@@ -286,15 +298,16 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
         $importer = self::getContainer()->get(BuildingEntranceImporterInterface::class);
         $importer->importManualBuildingData([
             BuildingEntranceData::create(
+                countryCode: CountryCodeEnum::CH,
                 buildingId: '123',
                 entranceId: '0',
                 streetId: '7',
                 street: new Street('Limmatstrasse', new StreetNumber(183)),
                 streetAbbreviated: new Street('Limmatstr', new StreetNumber(183)),
-                cantonCode: 'ZH',
                 postalCode: '8005',
                 locality: 'Zürich',
                 municipalityCode: '111',
+                cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
             ),
@@ -317,6 +330,7 @@ final class ResolverJobBuildingIdsTest extends WebTestCase
             'locality' => '',
             'street_name' => '',
             'street_house_number' => '',
+            'country_code' => '',
             'confidence' => '1',
             'match_type' => 'buildingId',
             'latitude' => '',

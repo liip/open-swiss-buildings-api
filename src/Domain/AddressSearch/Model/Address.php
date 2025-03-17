@@ -15,6 +15,7 @@ use App\Infrastructure\Serialization\Decoder;
  *    locality: string,
  *    municipality: string,
  *    municipalityCode: string,
+ *    countryCode: string,
  *  }
  */
 final class Address implements \JsonSerializable
@@ -27,6 +28,7 @@ final class Address implements \JsonSerializable
         public string $locality,
         public string $municipality,
         public string $municipalityCode,
+        public string $countryCode,
     ) {}
 
     /**
@@ -42,6 +44,7 @@ final class Address implements \JsonSerializable
             locality: Decoder::readString($data, 'locality'),
             municipality: Decoder::readString($data, 'municipality'),
             municipalityCode: Decoder::readString($data, 'municipalityCode'),
+            countryCode: Decoder::readString($data, 'countryCode'),
         );
     }
 
@@ -68,6 +71,7 @@ final class Address implements \JsonSerializable
             'locality' => $this->locality,
             'municipality' => $this->municipality,
             'municipalityCode' => $this->municipalityCode,
+            'countryCode' => $this->countryCode,
         ];
     }
 }

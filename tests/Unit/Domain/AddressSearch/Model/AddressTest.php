@@ -29,6 +29,7 @@ final class AddressTest extends TestCase
             'locality' => '',
             'municipality' => '',
             'municipalityCode' => '',
+            'countryCode' => '',
         ];
     }
 
@@ -45,6 +46,7 @@ final class AddressTest extends TestCase
             'locality' => BuildingAddressModelBuilder::LOCALITY,
             'municipality' => BuildingAddressModelBuilder::MUNICIPALITY,
             'municipalityCode' => BuildingAddressModelBuilder::MUNICIPALITY_CODE,
+            'countryCode' => BuildingAddressModelBuilder::COUNTRY_CODE,
         ];
     }
 

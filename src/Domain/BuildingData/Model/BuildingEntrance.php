@@ -6,6 +6,7 @@ namespace App\Domain\BuildingData\Model;
 
 use App\Infrastructure\Address\Model\Street;
 use App\Infrastructure\Address\Model\StreetNumber;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Model\LanguageEnum;
 use App\Infrastructure\PostGis\Coordinates;
 use App\Infrastructure\PostGis\CoordinatesParser;
@@ -16,6 +17,7 @@ final readonly class BuildingEntrance
 {
     public function __construct(
         public Uuid $id,
+        public CountryCodeEnum $countryCode,
         public string $buildingId,
         public string $entranceId,
         public string $addressId,
@@ -44,6 +46,7 @@ final readonly class BuildingEntrance
 
         return new self(
             Uuid::fromString(Decoder::readNonEmptyString($data, 'id')),
+            Decoder::readBackedEnum($data, 'country_code', CountryCodeEnum::class),
             Decoder::readString($data, 'building_id'),
             Decoder::readString($data, 'entrance_id'),
             Decoder::readString($data, 'address_id'),
@@ -73,6 +76,7 @@ final readonly class BuildingEntrance
 
         return new self(
             Decoder::readUuid($data, 'id'),
+            Decoder::readBackedEnum($data, 'countryCode', CountryCodeEnum::class),
             Decoder::readString($data, 'buildingId'),
             Decoder::readString($data, 'entranceId'),
             Decoder::readString($data, 'addressId'),

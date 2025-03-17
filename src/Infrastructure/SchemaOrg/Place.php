@@ -21,6 +21,7 @@ final readonly class Place
         return new self(
             identifier: $buildingAddress->id,
             postalAddress: new PostalAddress(
+                addressCountry: $buildingAddress->address->countryCode,
                 addressLocality: $buildingAddress->address->locality,
                 addressRegion: $buildingAddress->address->municipality,
                 postalCode: $buildingAddress->address->postalCode,
