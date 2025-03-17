@@ -21,6 +21,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.17",
         "jsor/doctrine-postgis": "dev-dbal-deprecations#c82761b99023f09e2b9f5ea53baf8719ee7a5b02 as v2.2",
+        "league/csv": "^9.22",
         "meilisearch/meilisearch-php": "^1.13",
         "nelmio/api-doc-bundle": "^5.0",
         "nyholm/dsn": "^2.0",
