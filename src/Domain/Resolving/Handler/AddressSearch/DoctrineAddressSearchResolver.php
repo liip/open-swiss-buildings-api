@@ -108,10 +108,10 @@ final readonly class DoctrineAddressSearchResolver implements TaskResolverInterf
         $buildingEntranceTable = $this->entityManager->getClassMetadata(BuildingEntrance::class)->getTableName();
 
         // TODO PostgreSQL will generate UUIDv4 with gen_random_uuid(), switch to UUIDv7 with PostgreSQL version 17: https://commitfest.postgresql.org/43/4388/
-        $sql = "INSERT INTO {$resultTable} (id, job_id, confidence, match_type, building_id, entrance_id, building_entrance_id, additional_data) " .
-            "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, t.matching_building_id, t.matching_entrance_id, b.id, t.additional_data FROM {$taskTable} t " .
+        $sql = "INSERT INTO {$resultTable} (id, job_id, confidence, match_type, country_code, building_id, entrance_id, building_entrance_id, additional_data) " .
+            "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, b.country_code, t.matching_building_id, t.matching_entrance_id, b.id, t.additional_data FROM {$taskTable} t " .
             "LEFT JOIN {$buildingEntranceTable} b ON t.matching_building_id = b.building_id AND t.matching_entrance_id = b.entrance_id WHERE t.job_id = :jobId " .
-            'ON CONFLICT (job_id, building_entrance_id) DO NOTHING';
+            'ON CONFLICT (job_id, country_code, building_entrance_id) DO NOTHING';
 
         $this->entityManager->getConnection()->executeStatement($sql, ['jobId' => $job->id]);
     }

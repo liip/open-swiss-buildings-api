@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace App\Domain\BuildingData\Model;
 
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Model\LanguageEnum;
 
 final readonly class BuildingEntranceFilter
 {
     public function __construct(
+        /**
+         * @var list<CountryCodeEnum>|null
+         */
+        public ?array $countryCodes = null,
+
         /**
          * @var list<non-empty-string>|null
          */

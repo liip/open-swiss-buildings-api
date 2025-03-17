@@ -10,6 +10,7 @@ use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Domain\AddressSearch\Model\BuildingAddress;
 use App\Infrastructure\Meilisearch\Contract\IndexProviderInterface;
 use App\Infrastructure\Meilisearch\Model\BuildingAddressEntity;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Pagination;
 use Meilisearch\Contracts\DocumentsQuery;
 use Meilisearch\Exceptions\ApiException;
@@ -75,6 +76,10 @@ final readonly class MeilisearchAddressSearchRepository implements
         }
         if (null !== $addressSearch->filterByIds) {
             $filters[] = FilterBuilder::buildListFilter(BuildingAddressEntity::FIELD_ID, $addressSearch->filterByIds);
+        }
+        if (null !== $addressSearch->filterByCountryCodes) {
+            $codes = array_map(static fn(CountryCodeEnum $enum) => $enum->value, $addressSearch->filterByCountryCodes);
+            $filters[] = FilterBuilder::buildListFilter(BuildingAddressEntity::FIELD_COUNTRY_CODE, $codes);
         }
 
         $params['filter'] = null === $filters ? null : FilterBuilder::mergeFilters($filters);

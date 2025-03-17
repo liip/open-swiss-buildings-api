@@ -11,6 +11,7 @@ use App\Domain\Resolving\Model\Job\ResolverJobStateEnum;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use App\Infrastructure\Address\Model\Street;
 use App\Infrastructure\Address\Model\StreetNumber;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Tests\Util\ResolvingApi;
 use PHPUnit\Framework\Attributes\Large;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -19,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 final class ResolverJobGeoJsonTest extends WebTestCase
 {
     private ResolvingApi $api;
+    private const int DEFAULT_COLUMNS_COUNT = 13;
 
     protected function setUp(): void
     {
@@ -65,7 +67,7 @@ final class ResolverJobGeoJsonTest extends WebTestCase
         $this->assertCount(1, $rows);
 
         $columnNames = array_keys($rows[0]->data);
-        $this->assertCount(12, $columnNames);
+        $this->assertCount(self::DEFAULT_COLUMNS_COUNT, $columnNames);
 
         $this->api->assertCsvRow($this->getExpectedVseResultFromCSV(), $rows[0]);
     }
@@ -106,9 +108,9 @@ final class ResolverJobGeoJsonTest extends WebTestCase
 
         // Test that the additional columns are added in the right order
         $columnNames = array_keys($rows[0]->data);
-        $this->assertCount(14, $columnNames);
-        $this->assertSame('userdata.prop1', $columnNames[12]);
-        $this->assertSame('userdata.prop2', $columnNames[13]);
+        $this->assertCount(self::DEFAULT_COLUMNS_COUNT + 2, $columnNames);
+        $this->assertSame('userdata.prop1', $columnNames[self::DEFAULT_COLUMNS_COUNT]);
+        $this->assertSame('userdata.prop2', $columnNames[self::DEFAULT_COLUMNS_COUNT + 1]);
 
         $this->api->assertCsvRow($this->getExpectedVseResultFromCSV([
             'userdata.prop1' => 'one',
@@ -124,9 +126,9 @@ final class ResolverJobGeoJsonTest extends WebTestCase
 
         // Test that the additional columns are added in the right order
         $columnNames = array_keys($rows[0]->data);
-        $this->assertCount(14, $columnNames);
-        $this->assertSame('userdata.prop1', $columnNames[12]);
-        $this->assertSame('userdata.prop2', $columnNames[13]);
+        $this->assertCount(self::DEFAULT_COLUMNS_COUNT + 2, $columnNames);
+        $this->assertSame('userdata.prop1', $columnNames[self::DEFAULT_COLUMNS_COUNT]);
+        $this->assertSame('userdata.prop2', $columnNames[self::DEFAULT_COLUMNS_COUNT + 1]);
 
         $this->api->assertCsvRow($this->getExpectedVseResultFromCSV([
             'userdata.prop1' => 'one',
@@ -142,9 +144,9 @@ final class ResolverJobGeoJsonTest extends WebTestCase
 
         // Test that the additional columns are added in the right order
         $columnNames = array_keys($rows[0]->data);
-        $this->assertCount(14, $columnNames);
-        $this->assertSame('userdata.prop1', $columnNames[12]);
-        $this->assertSame('userdata.prop2', $columnNames[13]);
+        $this->assertCount(self::DEFAULT_COLUMNS_COUNT + 2, $columnNames);
+        $this->assertSame('userdata.prop1', $columnNames[self::DEFAULT_COLUMNS_COUNT]);
+        $this->assertSame('userdata.prop2', $columnNames[self::DEFAULT_COLUMNS_COUNT + 1]);
 
         $this->api->assertCsvRow($this->getExpectedVseResultFromCSV([
             'userdata.prop1' => 'one||two',
@@ -160,9 +162,9 @@ final class ResolverJobGeoJsonTest extends WebTestCase
 
         // Test that the additional columns are added in the right order
         $columnNames = array_keys($rows[0]->data);
-        $this->assertCount(14, $columnNames);
-        $this->assertSame('userdata.prop1', $columnNames[12]);
-        $this->assertSame('userdata.prop2', $columnNames[13]);
+        $this->assertCount(self::DEFAULT_COLUMNS_COUNT + 2, $columnNames);
+        $this->assertSame('userdata.prop1', $columnNames[self::DEFAULT_COLUMNS_COUNT]);
+        $this->assertSame('userdata.prop2', $columnNames[self::DEFAULT_COLUMNS_COUNT + 1]);
 
         $this->api->assertCsvRow($this->getExpectedVseResultFromCSV([
             'userdata.prop1' => 'one||two',
@@ -173,6 +175,7 @@ final class ResolverJobGeoJsonTest extends WebTestCase
     private function createSVEBuildingEntranceData(): BuildingEntranceData
     {
         return BuildingEntranceData::create(
+            countryCode: CountryCodeEnum::CH,
             buildingId: '263093336',
             entranceId: '0',
             streetId: '10030023',
@@ -196,6 +199,7 @@ final class ResolverJobGeoJsonTest extends WebTestCase
     private function getExpectedVseResultFromCSV(array $userdata = []): array
     {
         return [
+            'country_code' => 'CH',
             'egid' => '263093336',
             'edid' => '0',
             'municipality_code' => '4001',
@@ -220,6 +224,7 @@ final class ResolverJobGeoJsonTest extends WebTestCase
         $data = [
             'confidence' => 1,
             'match_type' => 'geoJson',
+            'country_code' => 'CH',
             'building_id' => '263093336',
             'entrance_id' => '0',
             'address' => [
@@ -228,6 +233,7 @@ final class ResolverJobGeoJsonTest extends WebTestCase
                 'locality' => 'Aarau',
                 'street_name' => 'Feerstrasse',
                 'street_house_number' => '5.1',
+                'country_code' => 'CH',
             ],
         ];
 

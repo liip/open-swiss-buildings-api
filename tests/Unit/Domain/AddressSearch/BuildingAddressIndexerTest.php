@@ -56,13 +56,14 @@ final class BuildingAddressIndexerTest extends TestCase
     {
         $id = new Uuid(self::UUID1);
         $address = new Address(
-            'Limmatstrasse',
-            'Limmatstr',
-            '183',
-            '8005',
-            'Zürich',
-            'ZH',
-            '3',
+            streetName: 'Limmatstrasse',
+            streetNameAbbreviation: 'Limmatstr',
+            streetHouseNumber: '183',
+            postalCode: '8005',
+            locality: 'Zürich',
+            municipality: 'ZH',
+            municipalityCode: '3',
+            countryCode: 'CH',
         );
 
         $this->buildingAddressRepository->expects($this->once())

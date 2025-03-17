@@ -31,8 +31,8 @@ final readonly class DoctrineBuildingIdsResolver implements TaskResolverInterfac
         $buildingEntranceTable = $this->entityManager->getClassMetadata(BuildingEntrance::class)->getTableName();
 
         // TODO PostgreSQL will generate UUIDv4 with gen_random_uuid(), switch to UUIDv7 with PostgreSQL version 17: https://commitfest.postgresql.org/43/4388/
-        $sql = "INSERT INTO {$resultTable} (id, job_id, confidence, match_type, building_id, building_entrance_id, additional_data) " .
-            "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, t.matching_building_id, b.id, t.additional_data FROM {$taskTable} t " .
+        $sql = "INSERT INTO {$resultTable} (id, job_id, confidence, match_type, country_code, building_id, building_entrance_id, additional_data) " .
+            "SELECT gen_random_uuid(), t.job_id, t.confidence, t.match_type, b.country_code, t.matching_building_id, b.id, t.additional_data FROM {$taskTable} t " .
             "LEFT JOIN {$buildingEntranceTable} b ON t.matching_building_id = b.building_id WHERE t.job_id = :jobId";
 
         try {

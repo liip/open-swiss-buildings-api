@@ -34,6 +34,7 @@ final readonly class JobResultCSVResponseCreator implements JobResultResponseCre
                     [
                         'id',
                         'confidence',
+                        'country_code',
                         'egid',
                         'edid',
                         'municipality_code',
@@ -58,6 +59,7 @@ final readonly class JobResultCSVResponseCreator implements JobResultResponseCre
                         [
                             $result->buildingEntranceId,
                             $result->getConfidenceAsFloat(),
+                            $result->countryCode,
                             $result->buildingId,
                             $result->entranceId,
                             $result->address?->municipalityCode,

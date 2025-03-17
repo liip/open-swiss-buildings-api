@@ -32,6 +32,12 @@ final readonly class ResolverResult implements \JsonSerializable
     /**
      * @var non-empty-string|null
      */
+    #[OA\Property(property: 'country_code')]
+    public ?string $countryCode;
+
+    /**
+     * @var non-empty-string|null
+     */
     #[OA\Property(property: 'building_id')]
     public ?string $buildingId;
 
@@ -54,6 +60,7 @@ final readonly class ResolverResult implements \JsonSerializable
 
     /**
      * @param non-empty-string|null $buildingEntranceId
+     * @param non-empty-string|null $countryCode
      * @param non-empty-string|null $buildingId
      * @param non-empty-string|null $entranceId
      * @param AdditionalData        $additionalData     a list of additional data/columns of the result
@@ -62,6 +69,7 @@ final readonly class ResolverResult implements \JsonSerializable
         Confidence $confidence,
         string $matchType,
         ?string $buildingEntranceId,
+        ?string $countryCode,
         ?string $buildingId,
         ?string $entranceId,
         ?Address $address,
@@ -71,6 +79,7 @@ final readonly class ResolverResult implements \JsonSerializable
         $this->confidence = $confidence;
         $this->matchType = $matchType;
         $this->buildingEntranceId = $buildingEntranceId;
+        $this->countryCode = $countryCode;
         $this->buildingId = $buildingId;
         $this->entranceId = $entranceId;
         $this->coordinates = $coordinates;
@@ -92,7 +101,7 @@ final readonly class ResolverResult implements \JsonSerializable
         for ($i = 0; $i < $counter; ++$i) {
             $part = $parts[$i];
             $matchInfo[] = match ($part) {
-                'buildingId' => 'Matched on building ID (EGID)',
+                'buildingId' => 'Matched on building ID (EGID/GEID)',
                 'municipalityCode' => 'Matched on municipality code',
                 'geoJson' => 'Matched on GeoJSON',
                 DoctrineStreetMatcher::TYPE_STREET_EXACT => 'Street matched exactly',
@@ -139,6 +148,7 @@ final readonly class ResolverResult implements \JsonSerializable
 
         if (null !== $this->buildingId) {
             $data['building_id'] = $this->buildingId;
+            $data['country_code'] = $this->countryCode;
 
             if (null !== $this->entranceId && null !== $this->address) {
                 $data['entrance_id'] = $this->entranceId;
