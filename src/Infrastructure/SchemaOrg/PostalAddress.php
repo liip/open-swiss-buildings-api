@@ -8,6 +8,10 @@ final readonly class PostalAddress implements \Stringable
 {
     public function __construct(
         /**
+         * The country, in 2-letter ISO 3166-1 alpha-2 format, for example "CH".
+         */
+        public string $addressCountry,
+        /**
          * The locality in which the street address is, and which is in the region.
          */
         public string $addressLocality,
@@ -31,6 +35,6 @@ final readonly class PostalAddress implements \Stringable
 
     public function __toString(): string
     {
-        return "{$this->streetAddress}, {$this->postalCode} {$this->addressLocality}";
+        return "{$this->streetAddress}, {$this->postalCode} {$this->addressLocality} - {$this->addressCountry}";
     }
 }

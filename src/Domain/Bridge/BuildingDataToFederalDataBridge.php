@@ -10,6 +10,7 @@ use App\Domain\FederalData\Contract\FederalBuildingDataRepositoryInterface;
 use App\Domain\FederalData\Model\BuildingEntranceData as FederalBuildingEntranceData;
 use App\Domain\FederalData\Model\EntranceLanguageEnum as FederalEntranceLanguageEnum;
 use App\Infrastructure\Address\StreetFactory;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Model\LanguageEnum;
 
 final readonly class BuildingDataToFederalDataBridge implements BuildingDataBridgedFactoryInterface
@@ -52,6 +53,7 @@ final readonly class BuildingDataToFederalDataBridge implements BuildingDataBrid
         }
 
         return new BuildingEntranceData(
+            countryCode: CountryCodeEnum::CH,
             buildingId: $federalBuildingEntrance->buildingId,
             entranceId: $federalBuildingEntrance->entranceId,
             addressId: $federalBuildingEntrance->addressId,

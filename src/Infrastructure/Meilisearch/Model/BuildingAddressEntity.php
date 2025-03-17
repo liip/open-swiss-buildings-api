@@ -13,6 +13,7 @@ final readonly class BuildingAddressEntity
 
     public const string FIELD_JSON_MODEL = 'jsonModel';
     public const string FIELD_ID = 'id';
+    public const string FIELD_COUNTRY_CODE = 'country';
     public const string FIELD_BUILDING_ID = 'buildingId';
     public const string FIELD_IMPORTED_AT = 'importedAt';
     public const string FIELD_FULL_ADDRESS = 'fullAddress';
@@ -20,6 +21,7 @@ final readonly class BuildingAddressEntity
 
     public const array FILTERABLE_FIELDS = [
         self::FIELD_ID,
+        self::FIELD_COUNTRY_CODE,
         self::FIELD_BUILDING_ID,
         self::FIELD_IMPORTED_AT,
     ];
@@ -51,6 +53,7 @@ final readonly class BuildingAddressEntity
     {
         return [
             self::FIELD_ID => $buildingAddress->id,
+            self::FIELD_COUNTRY_CODE => $buildingAddress->address->countryCode,
             self::FIELD_BUILDING_ID => $buildingAddress->buildingId,
             self::FIELD_FULL_ADDRESS => $buildingAddress->address->formatForSearch(),
             self::FIELD_FULL_ADDRESS_ABBREVIATED => $buildingAddress->address->formatForSearch(false),

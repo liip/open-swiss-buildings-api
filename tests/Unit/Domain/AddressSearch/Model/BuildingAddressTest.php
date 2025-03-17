@@ -22,6 +22,7 @@ final class BuildingAddressTest extends TestCase
     {
         return [
             'id' => '000',
+            'countryCode' => 'CH',
             'buildingId' => '123',
             'entranceId' => '0',
             'addressId' => '111',
@@ -36,6 +37,7 @@ final class BuildingAddressTest extends TestCase
                 'locality' => '',
                 'municipality' => '',
                 'municipalityCode' => '',
+                'countryCode' => '',
             ],
             'coordinates' => null,
         ];

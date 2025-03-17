@@ -12,7 +12,7 @@ final readonly class BuildingEntranceStatistics
          */
         public int $total,
         /**
-         * @var array<value-of<CantonCodeEnum>, non-negative-int>
+         * @var array<string, non-negative-int>
          */
         public array $byCanton,
     ) {}

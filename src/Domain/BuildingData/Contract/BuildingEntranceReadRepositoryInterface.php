@@ -7,12 +7,13 @@ namespace App\Domain\BuildingData\Contract;
 use App\Domain\BuildingData\Model\BuildingEntrance;
 use App\Domain\BuildingData\Model\BuildingEntranceFilter;
 use App\Domain\BuildingData\Model\BuildingEntranceStatistics;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Pagination;
 use Symfony\Component\Uid\Uuid;
 
 interface BuildingEntranceReadRepositoryInterface
 {
-    public function getStatistics(): BuildingEntranceStatistics;
+    public function getStatistics(CountryCodeEnum $countryCode): BuildingEntranceStatistics;
 
     /**
      * Returns the amount of the available building entrances.

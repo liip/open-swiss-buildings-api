@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Cli\BuildingData;
 
 use App\Domain\BuildingData\Contract\BuildingEntranceReadRepositoryInterface;
+use App\Infrastructure\Model\CountryCodeEnum;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,15 +28,14 @@ final class BuildingDataStatsCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $stats = $this->buildingEntranceRepository->getStatistics();
+        foreach (CountryCodeEnum::cases() as $countryCode) {
+            $stats = $this->buildingEntranceRepository->getStatistics($countryCode);
 
-        $io->section('Stats by canton');
-        foreach ($stats->byCanton as $code => $count) {
-            $io->writeln(" - <info>{$code}</info>: {$count}");
+            $io->section("Stats for {$countryCode->value}, total: {$stats->total}");
+            foreach ($stats->byCanton as $code => $count) {
+                $io->writeln(" - <info>{$code}</info>: {$count}");
+            }
         }
-
-        $io->section('Total');
-        $io->writeln("Total stored building entrances: <info>{$stats->total}</info>");
 
         return Command::SUCCESS;
     }

@@ -13,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverResultRepository::class)]
 #[ORM\Index(name: 'resolver_result_job_id', fields: ['jobId'])]
-#[ORM\UniqueConstraint(name: 'resolver_result_entry', fields: ['jobId', 'buildingEntranceId'])]
+#[ORM\UniqueConstraint(name: 'resolver_result_entry', fields: ['jobId', 'countryCode', 'buildingEntranceId'])]
 class ResolverResult
 {
     #[ORM\Id]
@@ -29,6 +29,9 @@ class ResolverResult
 
     #[ORM\Column]
     private int $confidence;
+
+    #[ORM\Column(nullable: true, length: 2)]
+    public ?string $countryCode;
 
     #[ORM\Column(nullable: true)]
     public ?string $buildingId;
