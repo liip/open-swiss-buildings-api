@@ -8419,16 +8419,16 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v7.2.0",
+            "version": "v7.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "8843019fa7140a4aa079f1a8d71fd010f61de5f2"
+                "reference": "4ffde1c860a100533b02697d9aaf5f45759ec26a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/8843019fa7140a4aa079f1a8d71fd010f61de5f2",
-                "reference": "8843019fa7140a4aa079f1a8d71fd010f61de5f2",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/4ffde1c860a100533b02697d9aaf5f45759ec26a",
+                "reference": "4ffde1c860a100533b02697d9aaf5f45759ec26a",
                 "shasum": ""
             },
             "require": {
@@ -8481,7 +8481,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v7.2.0"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v7.2.4"
             },
             "funding": [
                 {
@@ -8497,7 +8497,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-19T10:12:55+00:00"
+            "time": "2025-02-14T14:27:24+00:00"
         }
     ],
     "aliases": [
@@ -8524,6 +8524,6 @@
         "ext-pdo_pgsql": "*",
         "ext-pdo_sqlite": "*"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
