@@ -26,6 +26,7 @@ final class PlaceTest extends TestCase
         $this->assertSame(BuildingAddressModelBuilder::UUID1, $place->identifier);
 
         // Address properties
+        $this->assertSame(BuildingAddressModelBuilder::COUNTRY_CODE, $place->postalAddress->addressCountry);
         $this->assertSame(BuildingAddressModelBuilder::LOCALITY, $place->postalAddress->addressLocality);
         $this->assertSame(BuildingAddressModelBuilder::MUNICIPALITY, $place->postalAddress->addressRegion);
         $this->assertSame(BuildingAddressModelBuilder::POSTAL_CODE, $place->postalAddress->postalCode);

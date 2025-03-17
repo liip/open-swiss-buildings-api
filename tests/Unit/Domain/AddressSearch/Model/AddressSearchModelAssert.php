@@ -34,6 +34,7 @@ final class AddressSearchModelAssert
 
     public static function assertSameAddress(Address $expected, Address $actual): void
     {
+        TestCase::assertSame($expected->countryCode, $actual->countryCode);
         TestCase::assertSame($expected->streetName, $actual->streetName);
         TestCase::assertSame($expected->streetNameAbbreviation, $actual->streetNameAbbreviation);
         TestCase::assertSame($expected->streetHouseNumber, $actual->streetHouseNumber);
