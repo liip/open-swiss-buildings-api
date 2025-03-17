@@ -14,6 +14,7 @@ use App\Domain\BuildingData\Contract\BuildingEntranceReadRepositoryInterface;
 use App\Domain\BuildingData\Event\BuildingEntrancesHaveBeenImported;
 use App\Domain\BuildingData\Event\BuildingEntrancesHaveBeenPruned;
 use App\Domain\BuildingData\Model\BuildingEntrance;
+use App\Infrastructure\Model\CountryCodeEnum;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -42,21 +43,22 @@ final readonly class AddressSearchToBuildingDataBridge implements BuildingAddres
     #[AsEventListener]
     public function onBuildingEntrancesDeleted(BuildingEntrancesHaveBeenPruned $event): void
     {
-        $this->logger->info('Deleting documents from the search index, not imported since {date}', [
+        $this->logger->info('Deleting documents from the search index, not imported since {date} (country={countryCode})', [
             'date' => $event->importedAtBefore->format(\DateTimeInterface::ATOM),
+            'countryCode' => $event->countryCode,
         ]);
 
-        $this->addressSearchRepository->deleteByImportedAtBefore($event->importedAtBefore);
+        $this->addressSearchRepository->deleteByImportedAtBefore($event->importedAtBefore, $event->countryCode);
     }
 
-    public function countBuildingAddresses(): int
+    public function countBuildingEntrances(?CountryCodeEnum $countryCode = null): int
     {
-        return $this->buildingEntranceRepository->countBuildingEntrances();
+        return $this->buildingEntranceRepository->countBuildingEntrances($countryCode);
     }
 
-    public function getBuildingAddresses(): iterable
+    public function getBuildingAddresses(?CountryCodeEnum $countryCode = null): iterable
     {
-        foreach ($this->buildingEntranceRepository->getBuildingEntrances() as $buildingEntrance) {
+        foreach ($this->buildingEntranceRepository->getBuildingEntrances($countryCode) as $buildingEntrance) {
             yield $this->createBuildingAddressFromBuildingEntrance($buildingEntrance);
         }
     }
@@ -101,7 +103,7 @@ final readonly class AddressSearchToBuildingDataBridge implements BuildingAddres
             language: $buildingEntrance->streetNameLanguage->value,
             address: $address,
             coordinates: $buildingEntrance->coordinates,
-            importedAt: (int) $buildingEntrance->importedAt->format('U'),
+            importedAt: (int) $buildingEntrance->importedAt->format('Ymd'),
         );
     }
 

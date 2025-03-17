@@ -7,6 +7,7 @@ namespace App\Domain\AddressSearch;
 use App\Application\Contract\BuildingAddressIndexerInterface;
 use App\Domain\AddressSearch\Contract\AddressSearchWriteRepositoryInterface;
 use App\Domain\AddressSearch\Contract\BuildingAddressBridgedFactoryInterface;
+use App\Infrastructure\Model\CountryCodeEnum;
 use Symfony\Component\Uid\Uuid;
 
 final readonly class BuildingAddressIndexer implements BuildingAddressIndexerInterface
@@ -16,24 +17,24 @@ final readonly class BuildingAddressIndexer implements BuildingAddressIndexerInt
         private AddressSearchWriteRepositoryInterface $addressRepository,
     ) {}
 
-    public function countBuildingAddresses(): int
+    public function count(?CountryCodeEnum $countryCode = null): int
     {
-        return $this->buildingAddressRepository->countBuildingAddresses();
+        return $this->buildingAddressRepository->countBuildingEntrances($countryCode);
     }
 
-    public function indexBuildingAddresses(): iterable
+    public function indexAll(?CountryCodeEnum $countryCode = null): iterable
     {
-        $buildingAddresses = $this->buildingAddressRepository->getBuildingAddresses();
+        $buildingAddresses = $this->buildingAddressRepository->getBuildingAddresses($countryCode);
         yield from $this->addressRepository->indexBuildingAddresses($buildingAddresses);
     }
 
-    public function indexBuildingAddressesImportedSince(\DateTimeImmutable $timestamp): iterable
+    public function indexImportedSince(\DateTimeImmutable $timestamp): iterable
     {
         $buildingAddresses = $this->buildingAddressRepository->getBuildingAddressesImportedSince($timestamp);
         yield from $this->addressRepository->indexBuildingAddresses($buildingAddresses);
     }
 
-    public function indexBuildingAddress(Uuid $id): void
+    public function indexById(Uuid $id): void
     {
         $buildingAddress = $this->buildingAddressRepository->getBuildingAddress($id);
 

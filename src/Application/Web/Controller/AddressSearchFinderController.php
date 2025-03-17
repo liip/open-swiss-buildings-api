@@ -8,6 +8,7 @@ use App\Application\Contract\BuildingAddressSearcherInterface;
 use App\Application\Web\Model\AddressSearchFinderQueryString;
 use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Domain\AddressSearch\Model\PlaceScored;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeEnum;
 use Nelmio\ApiDocBundle\Attribute\Model;
@@ -52,7 +53,7 @@ final class AddressSearchFinderController extends AbstractController
             ),
             new OA\MediaType(
                 mediaType: 'text/csv',
-                schema: new OA\Schema(type: 'string', example: "score,identifier,address_id,building_id,entrance_id,address,latitude,longitude\n95,018e4183-b201-7575-81bf-7799da1be5d6,101731502,302048818,0,\"Limmatstrasse 264, 8005 Zürich\",32.124486490902,-19.91799616386\n90,018e4183-b201-7575-81bf-7799d9427b9d,101731501,302048817,1,\"Limmatstrasse 264a, 8005 Zürich\",32.124486490902,-19.91799616386\n"),
+                schema: new OA\Schema(type: 'string', example: "score,identifier,country_code,address_id,building_id,entrance_id,address,latitude,longitude\n95,018e4183-b201-7575-81bf-7799da1be5d6,101731502,302048818,0,\"Limmatstrasse 264, 8005 Zürich\",32.124486490902,-19.91799616386\n90,018e4183-b201-7575-81bf-7799d9427b9d,101731501,302048817,1,\"Limmatstrasse 264a, 8005 Zürich\",32.124486490902,-19.91799616386\n"),
             ),
         ],
     )]
@@ -65,6 +66,7 @@ final class AddressSearchFinderController extends AbstractController
             limit: $queryString->limit,
             minScore: $queryString->minScore,
             filterByQuery: $queryString->query,
+            filterByCountryCodes: null !== $queryString->countryCode ? [CountryCodeEnum::from($queryString->countryCode)] : null,
         );
 
         $results = $this->buildingAddressReader->searchPlaces($addressSearchFilter);
@@ -103,6 +105,7 @@ final class AddressSearchFinderController extends AbstractController
                 fputcsv($out, [
                     'score',
                     'identifier',
+                    'country_code',
                     'address_id',
                     'building_id',
                     'entrance_id',
@@ -114,6 +117,7 @@ final class AddressSearchFinderController extends AbstractController
                     fputcsv($out, [
                         $result->score,
                         $result->place->identifier,
+                        $result->place->postalAddress->addressCountry,
                         $result->place->additionalProperty->addressId,
                         $result->place->additionalProperty->buildingId,
                         $result->place->additionalProperty->entranceId,

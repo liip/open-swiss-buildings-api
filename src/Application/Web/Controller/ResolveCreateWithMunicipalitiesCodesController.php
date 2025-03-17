@@ -9,6 +9,7 @@ use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use App\Domain\Resolving\Model\Job\ResolverJob;
 use App\Domain\Resolving\Model\Job\ResolverMetadata;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
@@ -26,7 +27,7 @@ final class ResolveCreateWithMunicipalitiesCodesController extends AbstractContr
     ) {}
 
     /**
-     * Resolves a list of municipalities codes ("BFS Gemeindenummer") into a list of buildings.
+     * Resolves a list of municipalities codes ("BFS Gemeindenummer") into a list of buildings within Switzerland.
      *
      * The CSV needs to contain the column `bfsnumber` with the number according to the
      * <a href="https://www.bfs.admin.ch/bfs/de/home/grundlagen/agvch.html">Swiss official commune register</a>.
@@ -50,7 +51,7 @@ final class ResolveCreateWithMunicipalitiesCodesController extends AbstractContr
     #[OA\Response(response: '200', description: 'Successfully created resolver job', content: new Model(type: ResolverJob::class))]
     public function __invoke(Request $request): Response
     {
-        $metadata = new ResolverMetadata();
+        $metadata = new ResolverMetadata(filterByCountry: CountryCodeEnum::CH);
 
         $contentType = RequestContentTypeDecider::getContentType($request);
         if (null !== $contentType) {

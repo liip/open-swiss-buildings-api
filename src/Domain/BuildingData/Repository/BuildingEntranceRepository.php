@@ -201,21 +201,26 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         );
     }
 
-    public function deleteOutdatedBuildingEntrances(int $activeDays): int
+    public function deleteOutdatedBuildingEntrances(int $activeDays, ?CountryCodeEnum $countryCode = null): int
     {
         $importDateBefore = $this->clock->now()->sub(new \DateInterval("P{$activeDays}D"));
 
-        $query = $this->getEntityManager()
-            ->createQuery(
-                'DELETE FROM ' . BuildingEntranceEntity::class . ' b ' .
-                'WHERE b.importedAt <= :importedAt',
-            )
+        $qb = $this->createQueryBuilder('b')
+            ->where('b.importedAt <=  :importedat')
             ->setParameter('importedAt', $importDateBefore, Types::DATETIME_IMMUTABLE)
         ;
 
+        if ($countryCode instanceof CountryCodeEnum) {
+            $qb->andWhere('b.countryCode = :countryCode')
+                ->setParameter('countryCode', $countryCode)
+            ;
+        }
+
+        /** @phpstan-ignore doctrine.queryBuilderDynamicArgument */
+        $query = $qb->delete()->getQuery();
         $result = (int) $query->execute();
 
-        $this->eventDispatcher->dispatch(new BuildingEntrancesHaveBeenPruned($importDateBefore));
+        $this->eventDispatcher->dispatch(new BuildingEntrancesHaveBeenPruned($importDateBefore, $countryCode));
 
         return $result;
     }
@@ -248,15 +253,20 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         }
     }
 
-    public function countBuildingEntrances(): int
+    public function countBuildingEntrances(?CountryCodeEnum $countryCode = null): int
     {
-        $query = $this->getEntityManager()
-            ->createQuery(
-                'SELECT COUNT(b.id) FROM ' . BuildingEntranceEntity::class . ' b',
-            )
+        $qb = $this->createQueryBuilder('b')
+            ->select('count(b.id) AS total')
         ;
 
-        $count = $query->getSingleScalarResult();
+        if ($countryCode instanceof CountryCodeEnum) {
+            $qb->andWhere('b.countryCode = :countryCode')
+                ->setParameter('countryCode', $countryCode)
+            ;
+        }
+
+        /** @phpstan-ignore doctrine.queryBuilderDynamicArgument */
+        $count = $qb->getQuery()->getSingleScalarResult();
         if (!is_numeric($count)) {
             throw new \UnexpectedValueException('Expected query result to be numeric, but got ' . get_debug_type($count));
         }
@@ -264,12 +274,18 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         return (int) $count;
     }
 
-    public function getBuildingEntrances(): iterable
+    public function getBuildingEntrances(?CountryCodeEnum $countryCode = null): iterable
     {
         $tableName = $this->getClassMetadata()->getTableName();
         $sql = "SELECT b.*, ST_AsEWKT(b.geo_coordinates_wgs84) AS geo_coordinates_wgs84 FROM {$tableName} b";
+        $parameters = [];
 
-        foreach (PostgreSQLCursorFetcher::fetch($this->getEntityManager()->getConnection(), $sql) as $row) {
+        if ($countryCode instanceof CountryCodeEnum) {
+            $sql .= ' WHERE b.country_code = :countryCode';
+            $parameters = ['countryCode' => $countryCode->value];
+        }
+
+        foreach (PostgreSQLCursorFetcher::fetch($this->getEntityManager()->getConnection(), $sql, $parameters) as $row) {
             yield BuildingEntrance::fromScalarArray($row);
         }
     }

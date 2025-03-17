@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Resolving\Model\Job;
 
+use App\Infrastructure\Model\CountryCodeEnum;
 use OpenApi\Attributes as OA;
 
 /**
@@ -18,6 +19,7 @@ use OpenApi\Attributes as OA;
  *     charset?: non-empty-string,
  *     csv-delimiter?: non-empty-string,
  *     csv-enclosure?: non-empty-string,
+ *     filter-by-country?: value-of<CountryCodeEnum>,
  * }
  */
 final readonly class ResolverMetadata implements \JsonSerializable
@@ -55,6 +57,7 @@ final readonly class ResolverMetadata implements \JsonSerializable
          */
         #[OA\Property(property: 'csv_enclosure')]
         public ?string $csvEnclosure = null,
+        public ?CountryCodeEnum $filterByCountry = null,
     ) {
         if (null !== $this->csvDelimiter && 1 !== \strlen($this->csvDelimiter)) {
             throw new \InvalidArgumentException('CSV delimiter needs to be one single-byte character');
@@ -73,6 +76,7 @@ final readonly class ResolverMetadata implements \JsonSerializable
      *     charset?: non-empty-string|null,
      *     csv-delimiter?: non-empty-string|null,
      *     csv-enclosure?: non-empty-string|null,
+     *     filter-by-country?: non-empty-string|null,
      * } $data
      */
     public static function fromArray(array $data): self
@@ -92,12 +96,21 @@ final readonly class ResolverMetadata implements \JsonSerializable
             }
         }
 
+        $filterByCountry = null;
+        if (null !== $filterByCountryString = $data['filter-by-country'] ?? null) {
+            $filterByCountry = CountryCodeEnum::tryFrom($filterByCountryString);
+            if (null === $filterByCountry) {
+                throw new \InvalidArgumentException('Invalid CountryCode');
+            }
+        }
+
         return new self(
             additionalColumns: $additionalColumns,
             geoJsonSRID: $data['geojson-srid'] ?? null,
             charset: $data['charset'] ?? null,
             csvDelimiter: $data['csv-delimiter'] ?? null,
             csvEnclosure: $data['csv-enclosure'] ?? null,
+            filterByCountry: $filterByCountry,
         );
     }
 
@@ -112,6 +125,7 @@ final readonly class ResolverMetadata implements \JsonSerializable
             charset: $this->charset,
             csvDelimiter: $this->csvDelimiter,
             csvEnclosure: $this->csvEnclosure,
+            filterByCountry: $this->filterByCountry,
         );
     }
 
@@ -126,6 +140,7 @@ final readonly class ResolverMetadata implements \JsonSerializable
             charset: $this->charset,
             csvDelimiter: $csvDelimiter,
             csvEnclosure: $this->csvEnclosure,
+            filterByCountry: $this->filterByCountry,
         );
     }
 
@@ -140,6 +155,7 @@ final readonly class ResolverMetadata implements \JsonSerializable
             charset: $this->charset,
             csvDelimiter: $this->csvDelimiter,
             csvEnclosure: $csvEnclosure,
+            filterByCountry: $this->filterByCountry,
         );
     }
 
@@ -154,6 +170,7 @@ final readonly class ResolverMetadata implements \JsonSerializable
             charset: $charset,
             csvDelimiter: $this->csvDelimiter,
             csvEnclosure: $this->csvEnclosure,
+            filterByCountry: $this->filterByCountry,
         );
     }
 
@@ -168,6 +185,19 @@ final readonly class ResolverMetadata implements \JsonSerializable
             charset: $this->charset,
             csvDelimiter: $this->csvDelimiter,
             csvEnclosure: $this->csvEnclosure,
+            filterByCountry: $this->filterByCountry,
+        );
+    }
+
+    public function withFilterByCountry(CountryCodeEnum $filterByCountry): self
+    {
+        return new self(
+            additionalColumns: $this->additionalColumns,
+            geoJsonSRID: $this->geoJsonSRID,
+            charset: $this->charset,
+            csvDelimiter: $this->csvDelimiter,
+            csvEnclosure: $this->csvEnclosure,
+            filterByCountry: $filterByCountry,
         );
     }
 
@@ -192,6 +222,9 @@ final readonly class ResolverMetadata implements \JsonSerializable
         if (null !== $this->csvEnclosure) {
             $data['csv-enclosure'] = $this->csvEnclosure;
         }
+        if (null !== $this->filterByCountry) {
+            $data['filter-by-country'] = $this->filterByCountry->value;
+        }
 
         return $data;
     }
@@ -202,7 +235,8 @@ final readonly class ResolverMetadata implements \JsonSerializable
      *     geojson_srid?: non-negative-int,
      *     charset?: non-empty-string,
      *     csv_delimiter?: non-empty-string,
-     *     csv_enclosure?: non-empty-string
+     *     csv_enclosure?: non-empty-string,
+     *     filter_by_country?: non-empty-string,
      * }
      */
     public function jsonSerialize(): array
@@ -222,6 +256,9 @@ final readonly class ResolverMetadata implements \JsonSerializable
         }
         if (null !== $this->csvEnclosure) {
             $data['csv_enclosure'] = $this->csvEnclosure;
+        }
+        if (null !== $this->filterByCountry) {
+            $data['filter_by_country'] = $this->filterByCountry->value;
         }
 
         return $data;

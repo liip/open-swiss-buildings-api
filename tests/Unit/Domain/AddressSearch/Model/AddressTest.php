@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Domain\AddressSearch\Model;
 
 use App\Domain\AddressSearch\Model\Address;
 use App\Tests\Util\BuildingAddressModelBuilder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
@@ -14,6 +15,7 @@ use PHPUnit\Framework\TestCase;
  * @phpstan-import-type AddressAsArray from Address
  */
 #[Small]
+#[CoversClass(Address::class)]
 final class AddressTest extends TestCase
 {
     /**

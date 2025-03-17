@@ -6,6 +6,7 @@ namespace App\Application\Cli\AddressSearch;
 
 use App\Application\Contract\BuildingAddressSearcherInterface;
 use App\Domain\AddressSearch\Model\AddressSearch;
+use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Symfony\Console\OptionHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,8 +21,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class AddressSearchListCommand extends Command
 {
-    private const int DEFAULT_LIMIT = 3;
-    private const string DATE_FORMAT = 'Y-m-d\TH:i:s';
+    private const int DEFAULT_LIMIT = 10;
+    private const string DATE_FORMAT = 'Y-m-d';
 
     public function __construct(
         private readonly BuildingAddressSearcherInterface $buildingAddressSearcher,
@@ -35,7 +36,8 @@ final class AddressSearchListCommand extends Command
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of items to show', self::DEFAULT_LIMIT)
             // Filters
             ->addOption('id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the ID)')
-            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the building ID (EGID)')
+            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the given building ID (EGID, GEID)')
+            ->addOption('country-code', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the given country code')
         ;
     }
 
@@ -47,6 +49,7 @@ final class AddressSearchListCommand extends Command
             $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
             $ids = OptionHelper::getStringListOptionValues($input, 'id');
             $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
+            $countryCodes = OptionHelper::getStringBackedEnumListOptionValues($input, 'country-code', CountryCodeEnum::class);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 
@@ -57,11 +60,13 @@ final class AddressSearchListCommand extends Command
             limit: $limit,
             filterByIds: $ids,
             filterByBuildingIds: $buildingIds,
+            filterByCountryCodes: $countryCodes,
         );
 
         $table = $io->createTable();
         $table->setHeaders([
             'ID',
+            'Country',
             'Building ID',
             'Entrance ID',
             'Language',
@@ -76,6 +81,7 @@ final class AddressSearchListCommand extends Command
 
             $table->addRow([
                 $result->buildingAddress->id,
+                $result->buildingAddress->address->countryCode,
                 $result->buildingAddress->buildingId,
                 $result->buildingAddress->entranceId,
                 $result->buildingAddress->language,

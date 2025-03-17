@@ -16,6 +16,10 @@ final class AddressSearchFinderQueryString
     #[OA\Property(description: 'Search query', example: 'Affoltern')]
     public string $query;
 
+    #[OA\Property(description: 'Country code to filter for', enum: ['CH', 'LI'])]
+    #[Assert\Choice(choices: ['CH', 'LI'])]
+    public ?string $countryCode = null;
+
     /**
      * @var int<1, 50>
      */

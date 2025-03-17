@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\BuildingData\Contract;
 
 use App\Domain\BuildingData\Model\BuildingEntranceData;
+use App\Infrastructure\Model\CountryCodeEnum;
 
 interface BuildingEntranceWriteRepositoryInterface
 {
@@ -22,5 +23,5 @@ interface BuildingEntranceWriteRepositoryInterface
      *
      * @param positive-int $activeDays
      */
-    public function deleteOutdatedBuildingEntrances(int $activeDays): int;
+    public function deleteOutdatedBuildingEntrances(int $activeDays, ?CountryCodeEnum $countryCode = null): int;
 }

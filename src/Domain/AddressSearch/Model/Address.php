@@ -55,6 +55,7 @@ final class Address implements \JsonSerializable
             $this->streetHouseNumber,
             $this->postalCode,
             $this->locality,
+            $this->countryCode,
         ]));
     }
 
