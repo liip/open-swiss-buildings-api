@@ -18,7 +18,7 @@ final class PlaceTest extends TestCase
         $coordinates = ['latitude' => '8.4858953043729', 'longitude' => '47.267684673199'];
         $buildingAddress = BuildingAddressModelBuilder::buildBuildingAddress(
             BuildingAddressModelBuilder::UUID1,
-            new \DateTimeImmutable(),
+            BuildingAddressModelBuilder::IMPORTED_AT,
             $coordinates,
         );
 

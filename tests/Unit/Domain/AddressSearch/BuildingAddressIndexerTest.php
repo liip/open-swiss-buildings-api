@@ -76,7 +76,7 @@ final class BuildingAddressIndexerTest extends TestCase
                 language: 'de',
                 address: $address,
                 coordinates: new Coordinates(latitude: '1', longitude: '2'),
-                importedAtTimestamp: 0,
+                importedAt: 20250503,
             ))
         ;
 

@@ -14,14 +14,14 @@ final readonly class BuildingAddressEntity
     public const string FIELD_JSON_MODEL = 'jsonModel';
     public const string FIELD_ID = 'id';
     public const string FIELD_BUILDING_ID = 'buildingId';
-    public const string FIELD_IMPORTED_AT_TIMESTAMP = 'importedAtTimestamp';
+    public const string FIELD_IMPORTED_AT = 'importedAt';
     public const string FIELD_FULL_ADDRESS = 'fullAddress';
     public const string FIELD_FULL_ADDRESS_ABBREVIATED = 'fullAddressAbbreviated';
 
     public const array FILTERABLE_FIELDS = [
         self::FIELD_ID,
         self::FIELD_BUILDING_ID,
-        self::FIELD_IMPORTED_AT_TIMESTAMP,
+        self::FIELD_IMPORTED_AT,
     ];
     public const array SEARCHABLE_FIELDS = [
         self::FIELD_FULL_ADDRESS,
@@ -43,7 +43,7 @@ final readonly class BuildingAddressEntity
     private function __construct() {}
 
     /**
-     * @return array<string, string>
+     * @return array<string, string|int>
      *
      * @throws \JsonException
      */
@@ -55,6 +55,7 @@ final readonly class BuildingAddressEntity
             self::FIELD_FULL_ADDRESS => $buildingAddress->address->formatForSearch(),
             self::FIELD_FULL_ADDRESS_ABBREVIATED => $buildingAddress->address->formatForSearch(false),
             self::FIELD_JSON_MODEL => json_encode($buildingAddress, \JSON_THROW_ON_ERROR),
+            self::FIELD_IMPORTED_AT => $buildingAddress->importedAt,
         ];
     }
 

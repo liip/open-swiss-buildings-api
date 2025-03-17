@@ -8,16 +8,17 @@ use App\Infrastructure\Meilisearch\Contract\IndexProviderInterface;
 use App\Infrastructure\Meilisearch\MeilisearchAddressSearchRepository;
 use App\Tests\Util\BuildingAddressModelBuilder;
 use Meilisearch\Endpoints\Indexes;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
 #[Small]
+#[CoversClass(MeilisearchAddressSearchRepository::class)]
 final class MeilisearchAddressSearchRepositoryTest extends TestCase
 {
     private MockObject&IndexProviderInterface $indexProvider;
-
     private MeilisearchAddressSearchRepository $searchRepository;
 
     protected function setUp(): void
@@ -37,7 +38,7 @@ final class MeilisearchAddressSearchRepositoryTest extends TestCase
         $indexClient = $this->mockGetBuildingEntranceIndex();
         $indexClient->expects($this->once())
             ->method('deleteDocuments')
-            ->with(['filter' => 'importedAtTimestamp < ' . $dateTime->format('U')])
+            ->with(['filter' => 'importedAt < 20201112'])
             ->willReturn(['taskUid' => 'task-id'])
         ;
 

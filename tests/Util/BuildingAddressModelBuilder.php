@@ -19,7 +19,7 @@ final class BuildingAddressModelBuilder
     public const string ADDRESS_ID = '100962765';
     public const string LANGUAGE = 'de';
     public const string LOCALITY = 'Aeugstertal';
-    public const string UPDATED_AT = '2020-11-12 10:11:12';
+    public const int IMPORTED_AT = 20250102;
     public const string STREET_NAME = 'Reppischtalstrasse';
     public const string STREET_NAME_ABBREVIATED = 'Reppischtalstr.';
     public const string STREET_HOUSE_NUMBER = '34';
@@ -35,7 +35,7 @@ final class BuildingAddressModelBuilder
      */
     public static function buildBuildingAddress(
         string $uuid,
-        \DateTimeImmutable $updatedAt = new \DateTimeImmutable(self::UPDATED_AT),
+        int $importedAt = self::IMPORTED_AT,
         ?array $coordinates = null,
     ): BuildingAddress {
         return BuildingAddress::fromArray([
@@ -44,7 +44,7 @@ final class BuildingAddressModelBuilder
             'entranceId' => self::ENTRANCE_ID,
             'addressId' => self::ADDRESS_ID,
             'language' => self::LANGUAGE,
-            'importedAtTimestamp' => (int) $updatedAt->format('U'),
+            'importedAt' => $importedAt,
             'address' => [
                 'streetName' => self::STREET_NAME,
                 'streetNameAbbreviation' => self::STREET_NAME_ABBREVIATED,
