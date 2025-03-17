@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use App\Kernel;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\ClassMetadataFactory;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -17,6 +19,11 @@ $kernel->boot();
 
 $doctrine = $kernel->getContainer()->get('doctrine');
 
+/**
+ * Implement a specific ClassMetadataFactory service, handling the multiple doctrine managers.
+ *
+ * @see https://github.com/phpstan/phpstan-doctrine/issues/445#issuecomment-1875922319
+ */
 $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
     private Registry $doctrine;
 
@@ -25,7 +32,7 @@ $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
         $this->doctrine = $doctrine;
     }
 
-    public function getAllMetadata()
+    public function getAllMetadata(): array
     {
         $all = [];
 
@@ -36,12 +43,12 @@ $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
         return $all;
     }
 
-    public function getMetadataFor($className)
+    public function getMetadataFor($className): ClassMetadata
     {
         return $this->doctrine->getManagerForClass($className)->getClassMetadata($className);
     }
 
-    public function isTransient($className)
+    public function isTransient($className): bool
     {
         $isTransient = true;
 
@@ -52,7 +59,7 @@ $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
         return $isTransient;
     }
 
-    public function hasMetadataFor($className)
+    public function hasMetadataFor($className): bool
     {
         $hasMetadata = false;
 
@@ -79,12 +86,12 @@ return new class ($doctrine, $metadataFactory) implements ObjectManager {
         $this->metadataFactory = $metadataFactory;
     }
 
-    public function getRepository($className)
+    public function getRepository($className): ObjectRepository
     {
         return $this->doctrine->getRepository($className);
     }
 
-    public function getClassMetadata($className)
+    public function getClassMetadata($className): ClassMetadata
     {
         return $this->doctrine->getManagerForClass($className)->getClassMetadata($className);
     }
