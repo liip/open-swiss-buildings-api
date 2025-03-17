@@ -6,7 +6,7 @@ namespace App\Application\Web\Controller;
 
 use App\Application\Contract\BuildingAddressFinderInterface;
 use App\Infrastructure\SchemaOrg\Place;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

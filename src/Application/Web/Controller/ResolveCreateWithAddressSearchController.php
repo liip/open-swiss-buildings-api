@@ -10,7 +10,7 @@ use App\Domain\Resolving\Model\Job\ResolverJob;
 use App\Domain\Resolving\Model\Job\ResolverMetadata;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

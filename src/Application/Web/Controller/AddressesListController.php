@@ -13,7 +13,7 @@ use App\Infrastructure\SchemaOrg\Place;
 use App\Infrastructure\SchemaOrg\PlaceLinearizer;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeDecider;
 use App\Infrastructure\Symfony\HttpFoundation\RequestContentTypeEnum;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
