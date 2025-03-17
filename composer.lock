@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd4bfa68fc1b4f0f035585a87691c831",
+    "content-hash": "7c517ca9346222249ce21b7aa74d1546",
     "packages": [
         {
             "name": "brick/geo",
@@ -8521,7 +8521,8 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo_pgsql": "*",
-        "ext-pdo_sqlite": "*"
+        "ext-pdo_sqlite": "*",
+        "ext-zip": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
