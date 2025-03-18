@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Application\Messaging\Message\AsyncMessage;
+use App\Application\Messaging\Message\AsyncDefaultMessage;
+use App\Application\Messaging\Message\AsyncResolveMessage;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Config\Framework\Messenger\RoutingConfig;
 use Symfony\Config\Framework\Messenger\TransportConfig;
@@ -14,41 +15,53 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
     $messenger = $framework->messenger();
     $messenger->failureTransport('failed');
 
-    $async = $messenger->transport('async');
-    // @todo: remove when https://github.com/symfony/symfony/pull/54008 is fixed
-    assert($async instanceof TransportConfig);
-
+    // @todo: remove the annotations when https://github.com/symfony/symfony/pull/54008 is fixed
+    /** @var TransportConfig $asyncDefault */
+    $asyncDefault = $messenger->transport('async');
+    /** @var TransportConfig $asyncResolve */
+    $asyncResolve = $messenger->transport('resolve');
+    /** @var TransportConfig $failed */
     $failed = $messenger->transport('failed');
-    // @todo: remove when https://github.com/symfony/symfony/pull/54008 is fixed
-    assert($failed instanceof TransportConfig);
 
     if ('test' === $container->env()) {
         // Use in-memory transport for tests, and don't handle messages asynchronously
-        $async->dsn('in-memory://');
+        $asyncDefault->dsn('in-memory://');
+        $asyncResolve->dsn('in-memory://');
         $failed->dsn('in-memory://');
 
         return;
     }
 
-    $async->dsn(env('MESSENGER_TRANSPORT_DSN'))
+    /** @var RoutingConfig $asyncResolveRouting */
+    $asyncResolveRouting = $messenger->routing(AsyncResolveMessage::class);
+    $asyncResolveRouting->senders(['resolve']);
+    $asyncResolve->dsn(env('MESSENGER_TRANSPORT_DSN'))
+        /* @phpstan-ignore argument.type */
+        ->options(['queue_name' => 'resolve'])
         ->retryStrategy()
-            ->maxRetries(3)
-            // 30s delay (in milliseconds) for the first retry
-            ->delay(30_000)
-            // causes the delay to be higher for each retry
-            // 30s → 2m → 10m
-            ->multiplier(5)
-            // Max time (in ms) that a retry should ever be delayed: 20 minutes
-            ->maxDelay(15 * 60_000)
-            // applies randomness to the delay that can prevent the thundering herd effect
-            // the value (between 0 and 1.0) is the percentage of 'delay' that will be added/subtracted
-            ->jitter(0.2)
+        ->maxRetries(3)
+        // 30s delay (in milliseconds) for the first retry
+        ->delay(30_000)
+        // causes the delay to be higher for each retry
+        // 30s → 2m → 10m
+        ->multiplier(5)
+        // Max time (in ms) that a retry should ever be delayed: 20 minutes
+        ->maxDelay(15 * 60_000)
+        // applies randomness to the delay that can prevent the thundering herd effect
+        // the value (between 0 and 1.0) is the percentage of 'delay' that will be added/subtracted
+        ->jitter(0.2)
     ;
 
-    $failed->dsn('doctrine://default?queue_name=failed');
+    /** @var RoutingConfig $asyncDefaultRouting */
+    $asyncDefaultRouting = $messenger->routing(AsyncDefaultMessage::class);
+    $asyncDefaultRouting->senders(['async']);
+    $asyncDefault->dsn(env('MESSENGER_TRANSPORT_DSN'))
+        /* @phpstan-ignore argument.type */
+        ->options(['queue_name' => 'async'])
+    ;
 
-    $sender = $messenger->routing(AsyncMessage::class);
-    // @todo: remove when https://github.com/symfony/symfony/pull/54008 is fixed
-    assert($sender instanceof RoutingConfig);
-    $sender->senders(['async']);
+    $failed->dsn(env('MESSENGER_TRANSPORT_DSN'))
+        /* @phpstan-ignore argument.type */
+        ->options(['queue_name' => 'failed'])
+    ;
 };
