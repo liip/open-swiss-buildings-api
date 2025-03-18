@@ -35,14 +35,13 @@ Limmatstrasse 183,8005,Zürich,A
 
 Once the resolve process is finished, the result can be fetched and would look like this:
 ```
-id,confidence,egid,edid,municipality_code,postal_code,locality,street_name,street_house_number,latitude,longitude,match_type,original_address,extrainformation
-018ef6f9-5301-72f0-a0e6-c4170dcdade0,1,150404,0,261,8005,Zürich,Limmatstrasse,112,47.383714644865,8.5333052733667,exact,"Limmatstrasse 112, 8005 Zürich",B
-018ef6f9-5305-792b-a63d-9674ef070492,1,150427,0,261,8005,Zürich,Limmatstrasse,119,47.383946709755,8.5322481218705,exact,"Limmatstrasse 119, 8005 Zürich",X
-018ef700-c19d-7dfe-a0c1-308b327c44e3,1,2366055,0,261,8005,Zürich,Limmatstrasse,183,47.386170922358,8.5292387777084,exact,"Limmatstrasse 183, 8005 Zürich",A
-018ef701-f436-7990-953a-ea2159eb31a5,1,9011206,0,261,8005,Zürich,Limmatstrasse,111,47.383750821972,8.5325010116967,exact,"Limmatstrasse 111, 8005 Zürich",
-018ef702-2560-7137-be1e-4134b02356d2,1,9083913,0,261,8005,Zürich,Limmatstrasse,114,47.383955253925,8.5333727812119,exact,"Limmatstrasse 114, 8005 Zürich",
+id,confidence,country_code,egid,edid,municipality_code,postal_code,locality,street_name,street_house_number,latitude,longitude,match_type,original_address,extrainformation
+018ef6f9-5301-72f0-a0e6-c4170dcdade0,1,CH,150404,0,261,8005,Zürich,Limmatstrasse,112,47.383714644865,8.5333052733667,exact,"Limmatstrasse 112, 8005 Zürich",B
+018ef6f9-5305-792b-a63d-9674ef070492,1,CH,150427,0,261,8005,Zürich,Limmatstrasse,119,47.383946709755,8.5322481218705,exact,"Limmatstrasse 119, 8005 Zürich",X
+018ef700-c19d-7dfe-a0c1-308b327c44e3,1,CH,2366055,0,261,8005,Zürich,Limmatstrasse,183,47.386170922358,8.5292387777084,exact,"Limmatstrasse 183, 8005 Zürich",A
+018ef701-f436-7990-953a-ea2159eb31a5,1,CH,9011206,0,261,8005,Zürich,Limmatstrasse,111,47.383750821972,8.5325010116967,exact,"Limmatstrasse 111, 8005 Zürich",
+018ef702-2560-7137-be1e-4134b02356d2,1,CH,9083913,0,261,8005,Zürich,Limmatstrasse,114,47.383955253925,8.5333727812119,exact,"Limmatstrasse 114, 8005 Zürich",
 ```
-
 
 ## Glossary
 
