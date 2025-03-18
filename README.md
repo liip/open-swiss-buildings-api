@@ -1,19 +1,22 @@
 # Open Swiss Buildings API
 
 This is an API for the [Swiss Buildings Register](https://www.housing-stat.ch/) (Eidgenössisches Gebäude- und Wohnungsregister GWR).
+The API dataset has been extended to also include building information taken from the
+[Liechtenstein Building Registry](https://www.statistikportal.li/de/erhebungen-register/gebaeude-und-wohnungsregister).
+
 It provides ways to resolve input data into address lists.
 Additionally, it provides an autocomplete-search for addresses.
 
 ## Background
 
-The application fetches the data about buildings from the [Swiss Buildings Register](https://www.housing-stat.ch/)
-and stores them in a PostgreSQL database.
+The application fetches the data about buildings from the two registries (for Switzerland and Liechtenstein) and stores
+them in a PostgreSQL database.
 
 For the autocomplete and address resolving, the data is also stores in a search engine.
 
 ## Usage
 
-The API is able to resolve various input data into lists of addresses containing the Swiss building ID (EGID) and its coordinates.
+The API is able to resolve various input data into lists of addresses containing the building ID (EGID or GEID) and its coordinates.
 
 Each import has some required columns.
 Additional columns will be copied to the output on the corresponding lines.
