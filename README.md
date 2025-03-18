@@ -46,6 +46,16 @@ id,confidence,country_code,egid,edid,municipality_code,postal_code,locality,stre
 018ef702-2560-7137-be1e-4134b02356d2,1,CH,9083913,0,261,8005,Zürich,Limmatstrasse,114,47.383955253925,8.5333727812119,exact,"Limmatstrasse 114, 8005 Zürich",
 ```
 
+For more details on the options to handle different input data for resolving addresses, please refer to the OpenAPI
+generated from this project.
+
+We currently handle the following resolving types (inputs):
+
+- GeoJSON polygons;
+- list of building IDs (available only for Switzerland);
+- list of municipality IDs (available only for Switzerland);
+- list of addresses (available only for Switzerland);
+
 ## Glossary
 
 The naming is inspired from [Schema.org](https://schema.org/), especially the one for [postal addresses](https://schema.org/PostalAddress).
