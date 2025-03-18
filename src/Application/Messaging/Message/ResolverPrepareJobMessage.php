@@ -6,7 +6,7 @@ namespace App\Application\Messaging\Message;
 
 use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 
-final readonly class ResolverPrepareJobMessage implements AsyncMessage
+final readonly class ResolverPrepareJobMessage implements AsyncResolveMessage
 {
     public function __construct(
         public ResolverJobIdentifier $job,
