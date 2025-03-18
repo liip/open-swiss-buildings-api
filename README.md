@@ -94,7 +94,7 @@ The naming is inspired from [Schema.org](https://schema.org/), especially the on
 
 To deploy this application, you need the following services/containers:
 * This application
-* PostgreSQL
+* PostgreSQL (with GIS extension)
 * Meilisearch
 
 The configuration of the application is done using environment variables.
