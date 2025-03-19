@@ -57,6 +57,9 @@ RUN mv phive.phar /usr/local/bin/phive
 # Image used in Prod
 FROM base AS app-prod
 
+# Copy additional scripts into /opt folder
+COPY --link docker/opt/*.sh /opt/
+
 # Copying services to S6 lists
 COPY --link docker/services/ /etc/s6-overlay/s6-rc.d/
 # Remove old services defined with S6 v1 as we redefined them later
@@ -64,11 +67,7 @@ RUN set -eux; \
     rm -fr /etc/services.d/* ;
 
 # Configuring S6 to discover services: for each service defined in /etc/s6-overlay/s6-rc.d/
-# we create a file with the service's name under `/etc/s6-overlay/s6-rc.d/user/contents.d` to let them auto-run
-# this is according to the v2 specification of S6
-RUN set -eux; \
-    find /etc/s6-overlay/s6-rc.d -type d -maxdepth 1 -mindepth 1 ! -name user ! -name user2 -exec basename {} \; \
-    | xargs -I{} touch /etc/s6-overlay/s6-rc.d/user/contents.d/{} ;
+RUN /opt/s6-v2-autorun.sh
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1

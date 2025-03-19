@@ -1,5 +1,5 @@
 #!/bin/sh
 with-contenv
 foreground { echo "Doctrine: running database migrations ..." }
-su php -s "/bin/ash" \
-    -c "/www/bin/console doctrine:migrations:migrate -n -v"
+
+/opt/run-as-php.sh "/www/bin/console doctrine:migrations:migrate -n -v"
