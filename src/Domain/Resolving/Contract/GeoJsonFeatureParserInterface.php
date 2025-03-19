@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Resolving\Contract;
 
-use Brick\Geo\IO\GeoJSON\Feature;
-use Brick\Geo\IO\GeoJSON\FeatureCollection;
+use Brick\Geo\Io\GeoJson\Feature;
+use Brick\Geo\Io\GeoJson\FeatureCollection;
 
 interface GeoJsonFeatureParserInterface
 {

@@ -16,7 +16,7 @@ use App\Domain\Resolving\Model\Job\ResolverMetadata;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use App\Infrastructure\PostGis\SRIDEnum;
-use Brick\Geo\IO\GeoJSON\Feature;
+use Brick\Geo\Io\GeoJson\Feature;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\MockObject\MockObject;

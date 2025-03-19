@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Infrastructure\PostGis\GeoJson;
 
 use App\Infrastructure\PostGis\GeoJson\GeoJsonFeatureParser;
-use Brick\Geo\IO\GeoJSON\FeatureCollection;
-use Brick\Geo\IO\GeoJSONReader;
+use Brick\Geo\Io\GeoJson\FeatureCollection;
+use Brick\Geo\Io\GeoJsonReader;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[Small]
 final class GeoJsonFeatureParserTest extends TestCase
 {
-    private static GeoJSONReader $geoJsonReader;
+    private static GeoJsonReader $geoJsonReader;
     private GeoJsonFeatureParser $extractor;
 
     protected function setUp(): void
@@ -23,7 +23,7 @@ final class GeoJsonFeatureParserTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$geoJsonReader = new GeoJSONReader();
+        self::$geoJsonReader = new GeoJsonReader();
     }
 
     public function testExtractPropertyValues(): void

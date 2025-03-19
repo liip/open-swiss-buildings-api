@@ -6,8 +6,8 @@ namespace App\Infrastructure\PostGis;
 
 use Brick\Geo\CoordinateSystem;
 use Brick\Geo\Exception\GeometryException;
-use Brick\Geo\IO\EWKTReader;
-use Brick\Geo\IO\EWKTWriter;
+use Brick\Geo\Io\EwktReader;
+use Brick\Geo\Io\EwktWriter;
 use Brick\Geo\Point;
 
 final class CoordinatesParser
@@ -21,7 +21,7 @@ final class CoordinatesParser
     public static function extractCoordsFromLV95ByParts(string $east, string $north): array
     {
         static $ewktWriter, $emptyPoint;
-        $ewktWriter = $ewktWriter ?? new EWKTWriter();
+        $ewktWriter = $ewktWriter ?? new EwktWriter();
         $emptyPoint = $emptyPoint ?? $ewktWriter->write(new Point(CoordinateSystem::xy(SRIDEnum::LV95->value)));
 
         if ('' === $east || '' === $north) {
@@ -43,7 +43,7 @@ final class CoordinatesParser
         }
 
         static $ewktReader;
-        $ewktReader = $ewktReader ?? new EWKTReader();
+        $ewktReader = $ewktReader ?? new EwktReader();
 
         try {
             $point = $ewktReader->read($coordinates);

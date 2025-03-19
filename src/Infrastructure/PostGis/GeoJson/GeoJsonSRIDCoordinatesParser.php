@@ -6,8 +6,8 @@ namespace App\Infrastructure\PostGis\GeoJson;
 
 use App\Domain\Resolving\Contract\GeoJsonCoordinatesParserInterface;
 use App\Infrastructure\PostGis\SRIDEnum;
-use Brick\Geo\IO\GeoJSON\FeatureCollection;
-use Brick\Geo\IO\GeoJSONReader;
+use Brick\Geo\Io\GeoJson\FeatureCollection;
+use Brick\Geo\Io\GeoJsonReader;
 use Brick\Geo\MultiPolygon;
 use Brick\Geo\Point;
 use Brick\Geo\Polygon;
@@ -85,7 +85,7 @@ final class GeoJsonSRIDCoordinatesParser implements GeoJsonCoordinatesParserInte
     public function guessSRIDfromJsonContents(string $contents): ?SRIDEnum
     {
         try {
-            $geoJson = (new GeoJSONReader())->read($contents);
+            $geoJson = (new GeoJsonReader())->read($contents);
         } catch (\Throwable $e) {
             return null;
         }
