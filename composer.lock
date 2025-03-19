@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e73a0c89b682f6e952af7387d2991f7",
+    "content-hash": "143a2fb507df446fe82693c9c2beba3a",
     "packages": [
         {
             "name": "brick/geo",
-            "version": "0.12.0",
+            "version": "0.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/geo.git",
-                "reference": "ff2de20484249763cc68c6fe7c01e83ce216531d"
+                "reference": "2dbe34089b93e8b5fcba120055829d5d9a440bbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/geo/zipball/ff2de20484249763cc68c6fe7c01e83ce216531d",
-                "reference": "ff2de20484249763cc68c6fe7c01e83ce216531d",
+                "url": "https://api.github.com/repos/brick/geo/zipball/2dbe34089b93e8b5fcba120055829d5d9a440bbd",
+                "reference": "2dbe34089b93e8b5fcba120055829d5d9a440bbd",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/geo/issues",
-                "source": "https://github.com/brick/geo/tree/0.12.0"
+                "source": "https://github.com/brick/geo/tree/0.13.0"
             },
             "funding": [
                 {
@@ -60,7 +60,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-09T22:43:11+00:00"
+            "time": "2025-03-17T09:30:04+00:00"
         },
         {
             "name": "composer/pcre",

@@ -16,9 +16,9 @@ use App\Domain\Resolving\Model\Data\ResolverJobRawData;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use Brick\Geo\Exception\GeometryException;
-use Brick\Geo\IO\GeoJSON\FeatureCollection;
-use Brick\Geo\IO\GeoJSONReader;
-use Brick\Geo\IO\GeoJSONWriter;
+use Brick\Geo\Io\GeoJson\FeatureCollection;
+use Brick\Geo\Io\GeoJsonReader;
+use Brick\Geo\Io\GeoJsonWriter;
 
 final readonly class GeoJsonJobPreparer implements JobPreparerInterface
 {
@@ -76,7 +76,7 @@ final readonly class GeoJsonJobPreparer implements JobPreparerInterface
             // If no SRID is defined on the metadata, we extract it from the GeoJson
             $geoJsonSRID = $geoJsonSRID ?? $this->geoJsonCoordinatesParser->extractSRIDFromGeoJson($contents);
 
-            $geoJson = (new GeoJSONReader())->read($contents);
+            $geoJson = (new GeoJsonReader())->read($contents);
             unset($contents);
         } catch (\JsonException $e) {
             throw new InvalidInputDataException('Invalid JSON contents', $e);
@@ -97,7 +97,7 @@ final readonly class GeoJsonJobPreparer implements JobPreparerInterface
         }
         $this->metadataRepository->updateMetadata($jobData->id, $metadata);
 
-        $writer = new GeoJSONWriter();
+        $writer = new GeoJsonWriter();
         try {
             foreach ($geoJson->getFeatures() as $feature) {
                 $geometry = $feature->getGeometry();
