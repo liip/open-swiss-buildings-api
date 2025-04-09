@@ -1,32 +1,36 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: Open Swiss Buildings API
+            title: Open Buildings API
             description: |
-                An API to search addresses from the <a href="https://www.housing-stat.ch/de/index.html">Swiss Buildings
-                Register</a> (in German the <em>Eidgenösssiches Gebäude- und Wohnungsregister GWR</em>, in short GWR).
-                The GWR has a unique ID for each building in Switzerland, the EGID (Eidgenössische Gebäude ID).
+                An API to search addresses from the <a href="https://www.housing-stat.ch/de/index.html">Swiss</a> and
+                the <a href="https://www.statistikportal.li/de/erhebungen-register/gebaeude-und-wohnungsregister">
+                Liechtenstein</a> Buildings Registries (in German the <em>Eidgenösssiches Gebäude- und Wohnungsregister
+                GWR</em>, in short GWR).
+                <br />
+                Both registries have a unique ID (within that registry) for each building in their country.
+                The ID is called EGID (Eidgenössische Gebäude ID) for the swiss registry, and GEID in the Liechtenstein one.
                 As one building can have several entrances with different house numbers, it also has the entrance
                 identifier EDID (Eingangsidentificator).
                 For each building, the GWR provides the postal address, coordinates and to which political
                 municipality the building belongs to.
-                <br/>
+                <br />
                 The GWR can contain multiple entries for the same EGID/EDID combination in different languages.
                 Such entries receive a different ID on the API for each language.
                 The autocomplete search is not aware of the language.
                 The resolve processes will return each language in the result.
-                <br/>
+                <br />
                 The <tt>/address-search/find</tt> call takes a single string with an address (fragment) and returns
                 the closest matches.
                 It is suitable for autocomplete search of addresses.
-                <br/>
+                <br />
                 The <tt>/resolve/*</tt> calls are used to resolve whole lists of addresses from various formats.
                 The input data can have additional user defined data, which is attributed to the resolved addresses.
                 The resolve calls queue the uploaded data and return the initial status of the resolution process with an ID.
                 Use the ID to poll <tt>/resolve/jobs/{id}</tt> until the job is finished, then fetch the result with
                 <tt>/resolve/jobs/{id}/results</tt>.
-                <br/>
-                The GWR contains not only built buildings, but a couple of different states.
+                <br />
+                The Swiss GWR contains not only built buildings, but also buildings in various states.
                 This API only processes buildings that are:
                 <ul>
                     <li>Under Construction (1003)
@@ -40,6 +44,8 @@ nelmio_api_doc:
                     <li>Demolished (1007)
                     <li>Not built (1008)
                 </ul>
+                <br />
+                In the Liechtenstein registry such states are not available, and the registry only provide the build ones.
             version: 1.0.0
     html_config:
         assets_mode: offline
