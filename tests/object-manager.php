@@ -25,7 +25,7 @@ $doctrine = $kernel->getContainer()->get('doctrine');
  * @see https://github.com/phpstan/phpstan-doctrine/issues/445#issuecomment-1875922319
  */
 $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
-    private Registry $doctrine;
+    private readonly Registry $doctrine;
 
     public function __construct(Registry $doctrine)
     {
@@ -77,8 +77,8 @@ $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
 };
 
 return new class ($doctrine, $metadataFactory) implements ObjectManager {
-    private Registry $doctrine;
-    private ClassMetadataFactory $metadataFactory;
+    private readonly Registry $doctrine;
+    private readonly ClassMetadataFactory $metadataFactory;
 
     public function __construct(Registry $doctrine, ClassMetadataFactory $metadataFactory)
     {
