@@ -40,6 +40,7 @@ return RectorConfig::configure()
         typeDeclarations: true,
         instanceOf: true,
         strictBooleans: true,
+        phpunitCodeQuality: true,
         doctrineCodeQuality: true,
         symfonyCodeQuality: true,
     )
@@ -47,7 +48,6 @@ return RectorConfig::configure()
     ->withComposerBased(doctrine: true, symfony: true)
     ->withSets([
         PHPUnitSetList::PHPUNIT_100,
-        PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ])
     ->withRules([
         ReadOnlyClassRector::class,
