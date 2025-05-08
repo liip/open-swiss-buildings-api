@@ -52,7 +52,7 @@ return RectorConfig::configure()
     ->withAttributesSets(symfony: true, doctrine: true, phpunit: true)
     ->withComposerBased(doctrine: true, symfony: true)
     ->withSets([
-        PHPUnitSetList::PHPUNIT_100,
+        PHPUnitSetList::PHPUNIT_110,
     ])
     ->withCodingStyleLevel(8)
     ->withRules([
