@@ -3,10 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
-use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector;
@@ -42,13 +40,12 @@ return RectorConfig::configure()
         typeDeclarations: true,
         instanceOf: true,
         strictBooleans: true,
-        symfonyCodeQuality: true
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: true,
     )
     ->withAttributesSets(symfony: true, doctrine: true, phpunit: true)
     ->withComposerBased(doctrine: true, symfony: true)
     ->withSets([
-        DoctrineSetList::DOCTRINE_ORM_214,
-        DoctrineSetList::DOCTRINE_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_100,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ])
