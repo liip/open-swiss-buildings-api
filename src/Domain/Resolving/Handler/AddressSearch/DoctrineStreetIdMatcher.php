@@ -45,7 +45,7 @@ final readonly class DoctrineStreetIdMatcher
             $confidence,
             self::TYPE_STREET_HOUSE_NUMBER_WITHOUT_SUFFIX,
             "a.street_house_number = b.street_house_number AND b.street_house_number_suffix = ''",
-            'a.street_house_number != 0 AND a.street_house_number_suffix != \'\'',
+            "a.street_house_number != 0 AND a.street_house_number_suffix != ''",
         );
     }
 
@@ -60,7 +60,7 @@ final readonly class DoctrineStreetIdMatcher
             $confidence,
             self::TYPE_STREET_HOUSE_NUMBERS_WITH_SUFFIX,
             "a.street_house_number = b.street_house_number AND b.street_house_number_suffix != ''",
-            'a.street_house_number != 0 AND a.street_house_number_suffix = \'\'',
+            "a.street_house_number != 0 AND a.street_house_number_suffix = ''",
         );
     }
 
@@ -75,7 +75,7 @@ final readonly class DoctrineStreetIdMatcher
             $confidence,
             self::TYPE_STREET_HOUSE_NUMBERS_WITH_OTHER_SUFFIX,
             "a.street_house_number = b.street_house_number AND b.street_house_number_suffix != ''",
-            'a.street_house_number != 0 AND a.street_house_number_suffix != \'\'',
+            "a.street_house_number != 0 AND a.street_house_number_suffix != ''",
         );
     }
 

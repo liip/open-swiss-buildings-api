@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
@@ -28,6 +30,8 @@ return RectorConfig::configure()
         DisallowedShortTernaryRuleFixerRector::class,
         EventListenerToEventSubscriberRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
+        NewlineAfterStatementRector::class,
+        CatchExceptionNameMatchingTypeRector::class,
     ])
     ->withCache(
         cacheDirectory: 'var/cache/ci/rector',
@@ -50,6 +54,7 @@ return RectorConfig::configure()
     ->withSets([
         PHPUnitSetList::PHPUNIT_100,
     ])
+    ->withCodingStyleLevel(8)
     ->withRules([
         ReadOnlyPropertyRector::class,
         ReadOnlyClassRector::class,
