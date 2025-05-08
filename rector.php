@@ -11,7 +11,6 @@ use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector;
 use Rector\Symfony\CodeQuality\Rector\Class_\EventListenerToEventSubscriberRector;
-use Rector\Symfony\Set\SymfonySetList;
 
 $symfonyContainer = __DIR__ . '/var/cache/test/App_KernelTestDebugContainer.xml';
 if (file_exists(__DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml')) {
@@ -43,11 +42,11 @@ return RectorConfig::configure()
         typeDeclarations: true,
         instanceOf: true,
         strictBooleans: true,
+        symfonyCodeQuality: true
     )
     ->withAttributesSets(symfony: true, doctrine: true, phpunit: true)
     ->withComposerBased(doctrine: true, symfony: true)
     ->withSets([
-        SymfonySetList::SYMFONY_CODE_QUALITY,
         DoctrineSetList::DOCTRINE_ORM_214,
         DoctrineSetList::DOCTRINE_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_100,
