@@ -15,8 +15,8 @@ use Symfony\Component\Uid\Uuid;
 
 final class WriteResolverAddress
 {
-    private Uuid $id;
-    private Uuid $jobId;
+    private readonly Uuid $id;
+    private readonly Uuid $jobId;
 
     /**
      * Hash to identify unique addresses, and update/merge their metadata.
@@ -55,14 +55,14 @@ final class WriteResolverAddress
     /**
      * @var non-empty-string|null
      */
-    private ?string $postalCode;
+    private readonly ?string $postalCode;
 
     /**
      * @var non-empty-string|null
      */
-    private ?string $locality;
+    private readonly ?string $locality;
 
-    private AdditionalData $additionalData;
+    private readonly AdditionalData $additionalData;
 
     public function __construct(
         Uuid $jobId,

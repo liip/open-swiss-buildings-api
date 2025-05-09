@@ -64,8 +64,8 @@ final class StreetParserTest extends TestCase
         $street = new Street('Viale 1814', new StreetNumber(2));
         yield [$street, 'Viale 1814 2'];
 
-        $street = new Street('Grand\'Rue', new StreetNumber(19, 'A'));
-        yield [$street, 'Grand\'Rue 19A'];
+        $street = new Street("Grand'Rue", new StreetNumber(19, 'A'));
+        yield [$street, "Grand'Rue 19A"];
 
         $street = new Street(null, new StreetNumber(9, 'a'));
         yield [$street, '9a'];

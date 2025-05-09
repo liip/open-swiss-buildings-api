@@ -25,7 +25,7 @@ final class IgnoredFieldsListener
     /**
      * @param array{string: list<string>} $ignoredIndexes
      */
-    public function __construct(private array $ignoredIndexes) {}
+    public function __construct(private readonly array $ignoredIndexes) {}
 
     public function postGenerateSchema(GenerateSchemaEventArgs $args): void
     {

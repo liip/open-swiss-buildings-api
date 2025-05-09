@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
-use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector;
 use Rector\Symfony\CodeQuality\Rector\Class_\EventListenerToEventSubscriberRector;
-use Rector\Symfony\Set\SymfonySetList;
 
 $symfonyContainer = __DIR__ . '/var/cache/test/App_KernelTestDebugContainer.xml';
 if (file_exists(__DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml')) {
@@ -30,6 +30,8 @@ return RectorConfig::configure()
         DisallowedShortTernaryRuleFixerRector::class,
         EventListenerToEventSubscriberRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
+        NewlineAfterStatementRector::class,
+        CatchExceptionNameMatchingTypeRector::class,
     ])
     ->withCache(
         cacheDirectory: 'var/cache/ci/rector',
@@ -43,19 +45,18 @@ return RectorConfig::configure()
         typeDeclarations: true,
         instanceOf: true,
         strictBooleans: true,
+        phpunitCodeQuality: true,
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: true,
     )
     ->withAttributesSets(symfony: true, doctrine: true, phpunit: true)
-    ->withComposerBased(doctrine: true)
+    ->withComposerBased(doctrine: true, symfony: true)
     ->withSets([
-        SymfonySetList::SYMFONY_72,
-        SymfonySetList::SYMFONY_CODE_QUALITY,
-        DoctrineSetList::DOCTRINE_ORM_214,
-        DoctrineSetList::DOCTRINE_CODE_QUALITY,
-        PHPUnitSetList::PHPUNIT_100,
-        PHPUnitSetList::PHPUNIT_CODE_QUALITY,
+        PHPUnitSetList::PHPUNIT_110,
     ])
+    ->withCodingStyleLevel(8)
     ->withRules([
-        InlineConstructorDefaultToPropertyRector::class,
+        ReadOnlyPropertyRector::class,
         ReadOnlyClassRector::class,
     ])
 ;
