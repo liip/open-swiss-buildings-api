@@ -148,6 +148,12 @@ If you don't use the official image, you need to run the following commands as s
 ./bin/console messenger:consume --limit=10 scheduler_default
 ```
 
+### Cronjobs
+
+The Swiss and Liechtenstein registries are imported regularly with the `RegistryDataChRefresherHandler`
+and `RegistryDataLiRefresherHandler` respectively. Those handlers are marked with annotations for
+the Symfony Scheduler. Thus, the messenger workers will run the import every monday morning.
+
 ## Contributing
 
 The project uses [Docker Compose](https://docs.docker.com/compose/) for the local development.
