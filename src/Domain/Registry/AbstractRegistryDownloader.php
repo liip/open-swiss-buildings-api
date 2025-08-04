@@ -15,9 +15,9 @@ abstract class AbstractRegistryDownloader
     private ?ProgressBar $progressBar = null;
 
     public function __construct(
-        private readonly ClientInterface         $http,
+        private readonly ClientInterface $http,
         private readonly RequestFactoryInterface $requestFactory,
-        private readonly Filesystem              $filesystem,
+        private readonly Filesystem $filesystem,
     ) {}
 
     abstract protected function getRegistryURL(): string;
@@ -63,9 +63,8 @@ abstract class AbstractRegistryDownloader
             throw new \UnexpectedValueException("Could not open target file {$target}");
         }
 
-
         if (null !== $this->progressBar && $length = $response->getHeaderLine('content-length')) {
-            $downloadKb = (int) ((int)$length/1024);
+            $downloadKb = (int) ((int) $length / 1024);
             $this->progressBar->start($downloadKb);
             $progress = 0;
             while (!feof($stream)) {
@@ -74,7 +73,7 @@ abstract class AbstractRegistryDownloader
                     throw new \UnexpectedValueException('Failed to read buffer');
                 }
                 $progress += fwrite($targetStream, $buffer);
-                $this->progressBar->setProgress((int) ($progress/1024));
+                $this->progressBar->setProgress((int) ($progress / 1024));
             }
         } else {
             stream_copy_to_stream($stream, $targetStream);
@@ -83,16 +82,5 @@ abstract class AbstractRegistryDownloader
         $this->progressBar?->finish();
 
         return true;
-    }
-
-    public function progress(int $notificationCode, int $severity, string $message, int $messageCode, int $bytesTransferred, int $bytesMax): void
-    {
-        dump($notificationCode);
-        if (null === $this->progressBar) {
-            return;
-        }
-        if (STREAM_NOTIFY_PROGRESS === $notificationCode) {
-            $this->progressBar->setProgress($bytesTransferred);
-        }
     }
 }

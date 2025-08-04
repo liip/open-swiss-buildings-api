@@ -22,21 +22,6 @@ final class StreetFactoryTest extends TestCase
     }
 
     /**
-     * @return iterable<array{StreetNumber, non-empty-string}>
-     */
-    public static function provideHouseNumbers(): iterable
-    {
-        yield [new StreetNumber(1), '1'];
-        yield [new StreetNumber(1, 'b'), '1 b'];
-        yield [new StreetNumber(1, 'b'), '1b'];
-        yield [new StreetNumber(1, '.1'), '1.1'];
-        yield [new StreetNumber(null, '.1'), '.1'];
-        yield [new StreetNumber(null, 'b'), 'b'];
-        yield [new StreetNumber(35, 'b.1'), '35b.1'];
-        yield [new StreetNumber(15, '.e15'), '15.e15'];
-    }
-
-    /**
      * @param non-empty-string $number
      */
     #[DataProvider('provideHouseNumbers')]
@@ -58,5 +43,20 @@ final class StreetFactoryTest extends TestCase
 
         $this->assertInstanceOf(StreetNumberInterface::class, $s->number);
         $this->assertTrue($s->number->equalsTo($expected), var_export($s->number, true));
+    }
+
+    /**
+     * @return iterable<array{StreetNumber, non-empty-string}>
+     */
+    public static function provideHouseNumbers(): iterable
+    {
+        yield [new StreetNumber(1), '1'];
+        yield [new StreetNumber(1, 'b'), '1 b'];
+        yield [new StreetNumber(1, 'b'), '1b'];
+        yield [new StreetNumber(1, '.1'), '1.1'];
+        yield [new StreetNumber(null, '.1'), '.1'];
+        yield [new StreetNumber(null, 'b'), 'b'];
+        yield [new StreetNumber(35, 'b.1'), '35b.1'];
+        yield [new StreetNumber(15, '.e15'), '15.e15'];
     }
 }

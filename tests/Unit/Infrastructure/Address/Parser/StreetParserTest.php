@@ -17,9 +17,19 @@ use PHPUnit\Framework\TestCase;
 final class StreetParserTest extends TestCase
 {
     /**
+     * @param non-empty-string $street
+     */
+    #[DataProvider('provideStreetIsCreatedWithRangeCases')]
+    public function testStreetIsCreatedWithRange(Street $expected, string $street): void
+    {
+        $street = StreetParser::createStreetFromString($street);
+        $this->assertTrue($expected->equalsTo($street), (string) $street);
+    }
+
+    /**
      * @return iterable<array{Street, string}>
      */
-    public static function provideCreateWithRange(): iterable
+    public static function provideStreetIsCreatedWithRangeCases(): iterable
     {
         $street = new Street('Chèvrerie des 4 Vents');
         yield [$street, 'Chèvrerie des 4 Vents'];
@@ -75,15 +85,5 @@ final class StreetParserTest extends TestCase
 
         $street = new Street('Chèvrerie', null);
         yield [$street, 'Chèvrerie 0'];
-    }
-
-    /**
-     * @param non-empty-string $street
-     */
-    #[DataProvider('provideCreateWithRange')]
-    public function testStreetIsCreatedWithRange(Street $expected, string $street): void
-    {
-        $street = StreetParser::createStreetFromString($street);
-        $this->assertTrue($expected->equalsTo($street), (string) $street);
     }
 }

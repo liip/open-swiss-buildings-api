@@ -5,13 +5,15 @@ declare(strict_types=1);
 use App\Application\Messaging\Message\AsyncDefaultMessage;
 use App\Application\Messaging\Message\AsyncResolveMessage;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Config\FrameworkConfig;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 
-return static function ($framework, ContainerConfigurator $container): void {
+return static function (FrameworkConfig $framework, ContainerConfigurator $container): void {
     $messenger = $framework->messenger();
     $messenger->failureTransport('failed');
 
+    // @todo: remove the annotations when https://github.com/symfony/symfony/pull/54008 is fixed
     $asyncDefault = $messenger->transport('async');
     $asyncResolve = $messenger->transport('resolve');
     $failed = $messenger->transport('failed');

@@ -20,6 +20,12 @@ final class AddressNormalizerTest extends TestCase
         $this->addressNormalizer = new AddressNormalizer(new AsciiSlugger('de'));
     }
 
+    #[DataProvider('provideLocalityNormalizationCases')]
+    public function testLocalityNormalization(string $expected, string $locality, string $municipality, string $cantonCode): void
+    {
+        $this->assertSame($expected, $this->addressNormalizer->normalizeLocality($locality, $municipality, $cantonCode));
+    }
+
     /**
      * @return iterable<array{string, string}>
      */
@@ -28,11 +34,5 @@ final class AddressNormalizerTest extends TestCase
         yield ['altdorf', 'Altdorf UR', 'Altdorf (UR)', 'UR'];
         yield ['bertschikon', 'Bertschikon (Gossau ZH)', 'Gossau (ZH)', 'ZH'];
         yield ['goldiwil', 'Goldiwil (Thun)', 'Thun', 'BE'];
-    }
-
-    #[DataProvider('provideLocalityNormalizationCases')]
-    public function testLocalityNormalization(string $expected, string $locality, string $municipality, string $cantonCode): void
-    {
-        $this->assertSame($expected, $this->addressNormalizer->normalizeLocality($locality, $municipality, $cantonCode));
     }
 }

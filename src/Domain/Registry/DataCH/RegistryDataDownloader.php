@@ -31,8 +31,8 @@ final readonly class RegistryDataDownloader implements RegistryDataDownloaderInt
     {
         $zipFilename = $this->getDatabaseFilename() . '.zip';
 
-        $downloaded = $this->downloader->download(target:
-            $zipFilename,
+        $downloaded = $this->downloader->download(
+            target: $zipFilename,
             force: !$this->filesystem->exists($this->getDatabaseFilename()),
             progressBar: $progressBar,
         );

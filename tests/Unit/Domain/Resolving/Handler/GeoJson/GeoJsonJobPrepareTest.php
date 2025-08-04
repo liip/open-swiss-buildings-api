@@ -48,20 +48,20 @@ final class GeoJsonJobPrepareTest extends TestCase
         );
     }
 
+    #[DataProvider('provideCanPrepareJobCases')]
+    public function testCanPrepareJob(bool $expected, ResolverTypeEnum $type): void
+    {
+        $this->assertSame($expected, $this->jobPreparer->canPrepareJob($type));
+    }
+
     /**
      * @return iterable<array{bool, ResolverTypeEnum}>
      */
-    public static function createCanPrepareJobProvider(): iterable
+    public static function provideCanPrepareJobCases(): iterable
     {
         foreach (ResolverTypeEnum::cases() as $type) {
             yield [ResolverTypeEnum::GEO_JSON === $type, $type];
         }
-    }
-
-    #[DataProvider('createCanPrepareJobProvider')]
-    public function testCanPrepareJob(bool $expected, ResolverTypeEnum $type): void
-    {
-        $this->assertSame($expected, $this->jobPreparer->canPrepareJob($type));
     }
 
     public function testPrepareJobThrowsOnClosedResource(): void
