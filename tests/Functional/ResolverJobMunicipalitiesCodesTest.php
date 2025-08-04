@@ -123,6 +123,7 @@ final class ResolverJobMunicipalitiesCodesTest extends WebTestCase
         $importer = self::getContainer()->get(BuildingEntranceImporterInterface::class);
         $importer->importManualBuildingData([
             BuildingEntranceData::create(
+                countryCode: CountryCodeEnum::CH,
                 buildingId: '123',
                 entranceId: '0',
                 streetId: '7',
@@ -134,7 +135,6 @@ final class ResolverJobMunicipalitiesCodesTest extends WebTestCase
                 cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
-                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 
@@ -170,6 +170,7 @@ final class ResolverJobMunicipalitiesCodesTest extends WebTestCase
         $importer = self::getContainer()->get(BuildingEntranceImporterInterface::class);
         $importer->importManualBuildingData([
             BuildingEntranceData::create(
+                countryCode: CountryCodeEnum::CH,
                 buildingId: '123',
                 entranceId: '0',
                 streetId: '7',
@@ -181,7 +182,6 @@ final class ResolverJobMunicipalitiesCodesTest extends WebTestCase
                 cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
-                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 
@@ -265,6 +265,7 @@ final class ResolverJobMunicipalitiesCodesTest extends WebTestCase
         $importer = self::getContainer()->get(BuildingEntranceImporterInterface::class);
         $importer->importManualBuildingData([
             BuildingEntranceData::create(
+                countryCode: CountryCodeEnum::CH,
                 buildingId: '123',
                 entranceId: '0',
                 streetId: '7',
@@ -276,7 +277,6 @@ final class ResolverJobMunicipalitiesCodesTest extends WebTestCase
                 cantonCode: 'ZH',
                 geoCoordinateEastLV95: '1',
                 geoCoordinateNorthLV95: '2',
-                countryCode: CountryCodeEnum::CH,
             ),
         ]);
 

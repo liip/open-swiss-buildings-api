@@ -442,7 +442,7 @@ final class GeoJsonJobPrepareTest extends TestCase
         $this->assertSame([] === $additionalData, $task->additionalData->isEmpty());
         $this->assertSame($additionalData, $task->additionalData->jsonSerialize());
         $this->assertNotNull($task->matchingGeoJson);
-        $this->assertStringContainsString($matchingGeoJson, $task->matchingGeoJson);
+        $this->assertStringContainsString($matchingGeoJson, (string) $task->matchingGeoJson);
     }
 
     private function setupCoordinateParser(SRIDEnum $srid, bool $extract, int $buildInvokations): void
