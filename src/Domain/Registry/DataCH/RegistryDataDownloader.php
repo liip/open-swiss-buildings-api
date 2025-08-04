@@ -8,6 +8,7 @@ use App\Domain\Registry\Contract\RegistryDataDownloaderInterface;
 use App\Domain\Registry\DataCH\Contract\RegistryDatabaseExtractorInterface;
 use App\Domain\Registry\DataCH\Contract\RegistryDownloaderInterface;
 use App\Infrastructure\Model\CountryCodeEnum;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -26,11 +27,15 @@ final readonly class RegistryDataDownloader implements RegistryDataDownloaderInt
         return CountryCodeEnum::CH;
     }
 
-    public function download(): bool
+    public function download(?ProgressBar $progressBar = null): bool
     {
         $zipFilename = $this->getDatabaseFilename() . '.zip';
 
-        $downloaded = $this->downloader->download(target: $zipFilename, force: !$this->filesystem->exists($this->getDatabaseFilename()));
+        $downloaded = $this->downloader->download(
+            target: $zipFilename,
+            force: !$this->filesystem->exists($this->getDatabaseFilename()),
+            progressBar: $progressBar,
+        );
         if ($downloaded) {
             $this->extractor->extractDatabase($zipFilename, $this->getDatabaseFilename());
             $this->filesystem->remove($zipFilename);

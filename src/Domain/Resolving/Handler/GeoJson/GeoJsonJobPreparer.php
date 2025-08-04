@@ -56,7 +56,7 @@ final readonly class GeoJsonJobPreparer implements JobPreparerInterface
     {
         $jobResource = $jobData->getResource();
 
-        if (!\is_resource($jobResource) || false === $contents = stream_get_contents($jobResource)) {
+        if (!\is_resource($jobResource) || false === $contents = stream_get_contents($jobResource)) { /* @phpstan-ignore identical.alwaysFalse */ // stream_get_contents can return false
             throw new InvalidInputDataException('Unable to load raw data from the Job resource');
         }
 

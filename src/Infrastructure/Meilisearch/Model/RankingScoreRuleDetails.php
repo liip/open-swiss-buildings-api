@@ -186,9 +186,9 @@ final readonly class RankingScoreRuleDetails implements \Stringable
             rule: RankingScoreRuleEnum::EXACTNESS,
             order: $order,
             score: $score,
-            matchType: $matchType,
             matchingWords: $matchingWords,
             maxMatchingWords: $maxMatchingWords,
+            matchType: $matchType,
         );
     }
 

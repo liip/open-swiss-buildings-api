@@ -16,9 +16,21 @@ use PHPUnit\Framework\TestCase;
 final class CoordinatesParserTest extends TestCase
 {
     /**
+     * @param array{east: string, north: string}|null $expectedCoords
+     */
+    #[DataProvider('provideExtractCoordsFromLV95ByPartsCases')]
+    public function testExtractCoordsFromLV95ByParts(?array $expectedCoords, string $expectedGeoCoords, string $east, string $north): void
+    {
+        $result = CoordinatesParser::extractCoordsFromLV95ByParts($east, $north);
+
+        $this->assertSame($expectedCoords, $result['coords']);
+        $this->assertSame($expectedGeoCoords, $result['geoCoords']);
+    }
+
+    /**
      * @return iterable<array{array{east: string, north: string}|null,string, string,string}>
      */
-    public static function provideCoordsFromLV95ByPartsCases(): iterable
+    public static function provideExtractCoordsFromLV95ByPartsCases(): iterable
     {
         yield [null, 'SRID=2056; POINT EMPTY', '', ''];
         yield [null, 'SRID=2056; POINT EMPTY', '2688354.766', ''];
@@ -31,16 +43,10 @@ final class CoordinatesParserTest extends TestCase
         ];
     }
 
-    /**
-     * @param array{east: string, north: string}|null $expectedCoords
-     */
-    #[DataProvider('provideCoordsFromLV95ByPartsCases')]
-    public function testExtractCoordsFromLV95ByParts(?array $expectedCoords, string $expectedGeoCoords, string $east, string $north): void
+    #[DataProvider('provideParseWGS84ReturnsNullCases')]
+    public function testParseWGS84ReturnsNull(?string $coordinates): void
     {
-        $result = CoordinatesParser::extractCoordsFromLV95ByParts($east, $north);
-
-        $this->assertSame($expectedCoords, $result['coords']);
-        $this->assertSame($expectedGeoCoords, $result['geoCoords']);
+        $this->assertNotInstanceOf(Coordinates::class, CoordinatesParser::parseWGS84($coordinates));
     }
 
     /**
@@ -55,10 +61,14 @@ final class CoordinatesParserTest extends TestCase
         yield ['SRID=2056; POINT (2682348.561 1248943.136)'];
     }
 
-    #[DataProvider('provideParseWGS84ReturnsNullCases')]
-    public function testParseWGS84ReturnsNull(?string $coordinates): void
+    #[DataProvider('provideParseWGS84Cases')]
+    public function testParseWGS84(Coordinates $expectedCoordinates, string $coordinates): void
     {
-        $this->assertNotInstanceOf(Coordinates::class, CoordinatesParser::parseWGS84($coordinates));
+        $coords = CoordinatesParser::parseWGS84($coordinates);
+        $this->assertInstanceOf(Coordinates::class, $coords);
+
+        $this->assertSame($expectedCoordinates->latitude, $coords->latitude);
+        $this->assertSame($expectedCoordinates->longitude, $coords->longitude);
     }
 
     /**
@@ -68,15 +78,5 @@ final class CoordinatesParserTest extends TestCase
     {
         $coord = new Coordinates(latitude: '8.52929', longitude: '47.38623');
         yield [$coord, 'SRID=4326; POINT (47.38623 8.52929)'];
-    }
-
-    #[DataProvider('provideParseWGS84Cases')]
-    public function testParseWGS84(Coordinates $expectedCoordinates, string $coordinates): void
-    {
-        $coords = CoordinatesParser::parseWGS84($coordinates);
-        $this->assertInstanceOf(Coordinates::class, $coords);
-
-        $this->assertSame($expectedCoordinates->latitude, $coords->latitude);
-        $this->assertSame($expectedCoordinates->longitude, $coords->longitude);
     }
 }

@@ -44,22 +44,22 @@ final class BuildingAddressTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{BuildingAddressAsArray}>
-     */
-    public static function createFromArrayDataProvider(): iterable
-    {
-        yield 'empty' => [self::functionGetEmptyBuildingAddressArray()];
-    }
-
-    /**
      * @param BuildingAddressAsArray $data
      */
-    #[DataProvider('createFromArrayDataProvider')]
+    #[DataProvider('provideCreateFromArrayAndJsonSerializeCases')]
     public function testCreateFromArrayAndJsonSerialize(array $data): void
     {
         $buildingAddress = BuildingAddress::fromArray($data);
         $buildingAddress1 = BuildingAddress::fromArray($buildingAddress->jsonSerialize());
 
         AddressSearchModelAssert::assertSameBuildingAddress($buildingAddress, $buildingAddress1);
+    }
+
+    /**
+     * @return iterable<string, array{BuildingAddressAsArray}>
+     */
+    public static function provideCreateFromArrayAndJsonSerializeCases(): iterable
+    {
+        yield 'empty' => [self::functionGetEmptyBuildingAddressArray()];
     }
 }

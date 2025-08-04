@@ -103,21 +103,10 @@ final class PhpCsvReaderTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{non-empty-array<string>, non-empty-string}>
-     */
-    public static function provideDelimiterGuessCases(): iterable
-    {
-        yield 'delimiter: ,' => [['field1,field2'], ','];
-        yield 'delimiter: ;' => [['field1;field2'], ';'];
-        yield 'delimiter: tab' => [["field1\tfield2"], "\t"];
-        yield 'delimiter: default' => [['field1'], ','];
-    }
-
-    /**
      * @param non-empty-array<string> $lines
      * @param non-empty-string        $delimiter
      */
-    #[DataProvider('provideDelimiterGuessCases')]
+    #[DataProvider('provideDelimiterCanBeGuessedCases')]
     public function testDelimiterCanBeGuessed(array $lines, string $delimiter): void
     {
         $resource = $this->createResource($lines);
@@ -130,18 +119,19 @@ final class PhpCsvReaderTest extends TestCase
     /**
      * @return iterable<string, array{non-empty-array<string>, non-empty-string}>
      */
-    public static function provideEnclosureGuessCases(): iterable
+    public static function provideDelimiterCanBeGuessedCases(): iterable
     {
-        yield 'enclosure: "' => [['"field 1","field 2"'], '"'];
-        yield "delimiter: '" => [["'field 1','field 2'"], "'"];
-        yield 'delimiter: default' => [['field1'], '"'];
+        yield 'delimiter: ,' => [['field1,field2'], ','];
+        yield 'delimiter: ;' => [['field1;field2'], ';'];
+        yield 'delimiter: tab' => [["field1\tfield2"], "\t"];
+        yield 'delimiter: default' => [['field1'], ','];
     }
 
     /**
      * @param non-empty-array<string> $lines
      * @param non-empty-string        $enclosure
      */
-    #[DataProvider('provideEnclosureGuessCases')]
+    #[DataProvider('provideEnclosureCanBeGuessedCases')]
     public function testEnclosureCanBeGuessed(array $lines, string $enclosure): void
     {
         $resource = $this->createResource($lines);
@@ -149,6 +139,16 @@ final class PhpCsvReaderTest extends TestCase
         $reader = new PhpCsvReader($resource);
 
         $this->assertSame($enclosure, $reader->getEnclosure());
+    }
+
+    /**
+     * @return iterable<string, array{non-empty-array<string>, non-empty-string}>
+     */
+    public static function provideEnclosureCanBeGuessedCases(): iterable
+    {
+        yield 'enclosure: "' => [['"field 1","field 2"'], '"'];
+        yield "delimiter: '" => [["'field 1','field 2'"], "'"];
+        yield 'delimiter: default' => [['field1'], '"'];
     }
 
     public function testDataCanBeRead(): void
@@ -268,19 +268,7 @@ final class PhpCsvReaderTest extends TestCase
         $this->assertRow(5, ['field1' => 'value7', 'field2' => 'value8'], $rows[3]);
     }
 
-    /**
-     * @return array<string, array{string}>
-     */
-    public static function provideBoms(): iterable
-    {
-        yield 'utf-32-le' => ["\xFF\xFE\x00\x00"];
-        yield 'utf-32-be' => ["\x00\x00\xFE\xFF"];
-        yield 'utf-16-le' => ["\xFE\xFF"];
-        yield 'utf-16-be' => ["\xFF\xFE"];
-        yield 'utf-8' => ["\xEF\xBB\xBF"];
-    }
-
-    #[DataProvider('provideBoms')]
+    #[DataProvider('provideBomIsRemovedCases')]
     public function testBomIsRemoved(string $bom): void
     {
         $resource = $this->createResource([
@@ -303,9 +291,41 @@ final class PhpCsvReaderTest extends TestCase
     }
 
     /**
+     * @return array<string, array{string}>
+     */
+    public static function provideBomIsRemovedCases(): iterable
+    {
+        yield 'utf-32-le' => ["\xFF\xFE\x00\x00"];
+        yield 'utf-32-be' => ["\x00\x00\xFE\xFF"];
+        yield 'utf-16-le' => ["\xFE\xFF"];
+        yield 'utf-16-be' => ["\xFF\xFE"];
+        yield 'utf-8' => ["\xEF\xBB\xBF"];
+    }
+
+    /**
+     * @param non-empty-string|null $charset
+     * @param string[]              $lines
+     */
+    #[DataProvider('provideDataCanBeReadInDifferentCharsetCases')]
+    public function testDataCanBeReadInDifferentCharset(?string $charset, array $lines): void
+    {
+        $resource = $this->createResource($lines);
+
+        $reader = new PhpCsvReader($resource, ',', '"', $charset);
+
+        $rows = [];
+        foreach ($reader->read() as $row) {
+            $rows[] = $row;
+        }
+
+        $this->assertCount(1, $rows);
+        $this->assertRow(2, ['field¹' => 'valüe1', 'field2' => 'value²'], $rows[0]);
+    }
+
+    /**
      * @return array<array{non-empty-string|null, string[]}>
      */
-    public static function provideCharsetStringAndLines(): iterable
+    public static function provideDataCanBeReadInDifferentCharsetCases(): iterable
     {
         $buildLinesInCharset = static fn(string $charset): array => [
             mb_convert_encoding('field¹,field2', $charset, 'UTF-8'),
@@ -320,26 +340,6 @@ final class PhpCsvReaderTest extends TestCase
         yield [null, $buildLinesInCharset('utf-8')];
         yield [null, $buildLinesInCharset('iso-8859-1')];
         yield [null, $buildLinesInCharset('windows-1252')];
-    }
-
-    /**
-     * @param non-empty-string|null $charset
-     * @param string[]              $lines
-     */
-    #[DataProvider('provideCharsetStringAndLines')]
-    public function testDataCanBeReadInDifferentCharset(?string $charset, array $lines): void
-    {
-        $resource = $this->createResource($lines);
-
-        $reader = new PhpCsvReader($resource, ',', '"', $charset);
-
-        $rows = [];
-        foreach ($reader->read() as $row) {
-            $rows[] = $row;
-        }
-
-        $this->assertCount(1, $rows);
-        $this->assertRow(2, ['field¹' => 'valüe1', 'field2' => 'value²'], $rows[0]);
     }
 
     /**

@@ -68,18 +68,7 @@ final class RequestContentTypeDeciderTest extends TestCase
         $this->assertNull($contentType->charset);
     }
 
-    /**
-     * @return iterable<array{string}>
-     */
-    public static function provideContentTypesWithCharset(): iterable
-    {
-        yield ['text/csv;charset=utf-8'];
-        yield ['text/csv;Charset="utf-8"'];
-        yield ['text/csv; charset="utf-8"'];
-        yield ['text/csv; charset=UTF-8'];
-    }
-
-    #[DataProvider('provideContentTypesWithCharset')]
+    #[DataProvider('provideContentTypeWithCharsetIsReturnedCases')]
     public function testContentTypeWithCharsetIsReturned(string $header): void
     {
         $request = new Request();
@@ -93,19 +82,17 @@ final class RequestContentTypeDeciderTest extends TestCase
     }
 
     /**
-     * @return iterable<array{RequestContentTypeEnum|null, string, RequestContentTypeEnum|null}>
+     * @return iterable<array{string}>
      */
-    public static function provideAcceptHeaders(): iterable
+    public static function provideContentTypeWithCharsetIsReturnedCases(): iterable
     {
-        yield [RequestContentTypeEnum::JSON, 'application/json', null];
-        yield [RequestContentTypeEnum::CSV, 'text/csv', null];
-        yield [null, 'image/png', null];
-        yield [RequestContentTypeEnum::JSON, 'image/png', RequestContentTypeEnum::JSON];
-        yield [RequestContentTypeEnum::JSON, 'image/png,application/json,text/csv', null];
-        yield [RequestContentTypeEnum::WILDCARD, 'image/png,*/*', null];
+        yield ['text/csv;charset=utf-8'];
+        yield ['text/csv;Charset="utf-8"'];
+        yield ['text/csv; charset="utf-8"'];
+        yield ['text/csv; charset=UTF-8'];
     }
 
-    #[DataProvider('provideAcceptHeaders')]
+    #[DataProvider('provideContentTypeIsNegotiatedCases')]
     public function testContentTypeIsNegotiated(?RequestContentTypeEnum $expected, string $header, ?RequestContentTypeEnum $fallback): void
     {
         $request = new Request();
@@ -114,5 +101,18 @@ final class RequestContentTypeDeciderTest extends TestCase
         $contentType = RequestContentTypeDecider::decideContentType($request, $fallback);
 
         $this->assertSame($expected, $contentType);
+    }
+
+    /**
+     * @return iterable<array{RequestContentTypeEnum|null, string, RequestContentTypeEnum|null}>
+     */
+    public static function provideContentTypeIsNegotiatedCases(): iterable
+    {
+        yield [RequestContentTypeEnum::JSON, 'application/json', null];
+        yield [RequestContentTypeEnum::CSV, 'text/csv', null];
+        yield [null, 'image/png', null];
+        yield [RequestContentTypeEnum::JSON, 'image/png', RequestContentTypeEnum::JSON];
+        yield [RequestContentTypeEnum::JSON, 'image/png,application/json,text/csv', null];
+        yield [RequestContentTypeEnum::WILDCARD, 'image/png,*/*', null];
     }
 }

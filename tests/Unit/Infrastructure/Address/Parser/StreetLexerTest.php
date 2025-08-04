@@ -13,6 +13,15 @@ use PHPUnit\Framework\TestCase;
 final class StreetLexerTest extends TestCase
 {
     /**
+     * @param array{number: ?int, suffix: ?string}|null $expected
+     */
+    #[DataProvider('provideParseNumberCases')]
+    public function testParseNumber(?array $expected, string $value): void
+    {
+        $this->assertSame($expected, StreetLexer::parseNumber($value));
+    }
+
+    /**
      * @return iterable<array{array{number: ?int, suffix: ?string}|null, string}>
      */
     public static function provideParseNumberCases(): iterable
@@ -28,12 +37,12 @@ final class StreetLexerTest extends TestCase
     }
 
     /**
-     * @param array{number: ?int, suffix: ?string}|null $expected
+     * @param array{from: int, to: int}|null $expected
      */
-    #[DataProvider('provideParseNumberCases')]
-    public function testParseNumber(?array $expected, string $value): void
+    #[DataProvider('provideParseNumberRangesCases')]
+    public function testParseNumberRanges(?array $expected, string $value): void
     {
-        $this->assertSame($expected, StreetLexer::parseNumber($value));
+        $this->assertSame($expected, StreetLexer::parseNumberRange($value));
     }
 
     /**
@@ -50,12 +59,12 @@ final class StreetLexerTest extends TestCase
     }
 
     /**
-     * @param array{from: int, to: int}|null $expected
+     * @param array{number: string, from: string, to: string}|null $expected
      */
-    #[DataProvider('provideParseNumberRangesCases')]
-    public function testParseNumberRanges(?array $expected, string $value): void
+    #[DataProvider('provideParseNumberSuffixRangesCases')]
+    public function testParseNumberSuffixRanges(?array $expected, string $value): void
     {
-        $this->assertSame($expected, StreetLexer::parseNumberRange($value));
+        $this->assertSame($expected, StreetLexer::parseNumberSuffixRange($value));
     }
 
     /**
@@ -69,14 +78,5 @@ final class StreetLexerTest extends TestCase
         yield [['number' => 12, 'from' => 'a', 'to' => 'c'], '12a - c'];
         yield [['number' => 12, 'from' => 'a', 'to' => 'c'], '12a- c'];
         yield [['number' => 12, 'from' => 'a', 'to' => 'c'], '12a -c'];
-    }
-
-    /**
-     * @param array{number: string, from: string, to: string}|null $expected
-     */
-    #[DataProvider('provideParseNumberSuffixRangesCases')]
-    public function testParseNumberSuffixRanges(?array $expected, string $value): void
-    {
-        $this->assertSame($expected, StreetLexer::parseNumberSuffixRange($value));
     }
 }

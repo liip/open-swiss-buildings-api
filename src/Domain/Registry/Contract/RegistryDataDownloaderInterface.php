@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Registry\Contract;
 
 use App\Infrastructure\Model\CountryCodeEnum;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag(RegistryDataDownloaderInterface::class)]
@@ -20,7 +21,7 @@ interface RegistryDataDownloaderInterface
      *
      * @return bool Whether the new building data registry was downloaded
      */
-    public function download(): bool;
+    public function download(?ProgressBar $progressBar = null): bool;
 
     /**
      * Returns the filename of the database file for the handled registry.

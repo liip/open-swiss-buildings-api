@@ -53,20 +53,9 @@ final class AddressTest extends TestCase
     }
 
     /**
-     * @return iterable<array<AddressAsArray>>
-     */
-    public static function createFromArrayDataProvider(): iterable
-    {
-        yield 'empty' => [self::getAddressAsArrayEmpty()];
-
-        $data = self::getAddressAsArrayWithValues();
-        yield 'values' => [$data];
-    }
-
-    /**
      * @param AddressAsArray $data
      */
-    #[DataProvider('createFromArrayDataProvider')]
+    #[DataProvider('provideCreateFromArrayAndJsonSerializeCases')]
     public function testCreateFromArrayAndJsonSerialize(array $data): void
     {
         $buildingAddress = Address::fromArray($data);
@@ -76,20 +65,31 @@ final class AddressTest extends TestCase
     }
 
     /**
+     * @return iterable<array<AddressAsArray>>
+     */
+    public static function provideCreateFromArrayAndJsonSerializeCases(): iterable
+    {
+        yield 'empty' => [self::getAddressAsArrayEmpty()];
+
+        $data = self::getAddressAsArrayWithValues();
+        yield 'values' => [$data];
+    }
+
+    #[DataProvider('provideFormatForSearchCases')]
+    public function testFormatForSearch(Address $address, string $formatFull, string $formatAbbr): void
+    {
+        $this->assertSame($formatFull, $address->formatForSearch());
+        $this->assertSame($formatAbbr, $address->formatForSearch(false));
+    }
+
+    /**
      * @return iterable<array{Address, string, string}>
      */
-    public static function createFormatForSearchDataProvider(): iterable
+    public static function provideFormatForSearchCases(): iterable
     {
         yield 'empty' => [Address::fromArray(self::getAddressAsArrayEmpty()), '', ''];
 
         $data = self::getAddressAsArrayWithValues();
         yield 'values' => [Address::fromArray($data), 'Reppischtalstrasse 34 8914 Aeugstertal CH', 'Reppischtalstr. 34 8914 Aeugstertal CH'];
-    }
-
-    #[DataProvider('createFormatForSearchDataProvider')]
-    public function testFormatForSearch(Address $address, string $formatFull, string $formatAbbr): void
-    {
-        $this->assertSame($formatFull, $address->formatForSearch());
-        $this->assertSame($formatAbbr, $address->formatForSearch(false));
     }
 }

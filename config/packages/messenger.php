@@ -5,8 +5,6 @@ declare(strict_types=1);
 use App\Application\Messaging\Message\AsyncDefaultMessage;
 use App\Application\Messaging\Message\AsyncResolveMessage;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Config\Framework\Messenger\RoutingConfig;
-use Symfony\Config\Framework\Messenger\TransportConfig;
 use Symfony\Config\FrameworkConfig;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
@@ -16,11 +14,8 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
     $messenger->failureTransport('failed');
 
     // @todo: remove the annotations when https://github.com/symfony/symfony/pull/54008 is fixed
-    /** @var TransportConfig $asyncDefault */
     $asyncDefault = $messenger->transport('async');
-    /** @var TransportConfig $asyncResolve */
     $asyncResolve = $messenger->transport('resolve');
-    /** @var TransportConfig $failed */
     $failed = $messenger->transport('failed');
 
     if ('test' === $container->env()) {
@@ -32,11 +27,9 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
         return;
     }
 
-    /** @var RoutingConfig $asyncResolveRouting */
     $asyncResolveRouting = $messenger->routing(AsyncResolveMessage::class);
     $asyncResolveRouting->senders(['resolve']);
     $asyncResolve->dsn(env('MESSENGER_TRANSPORT_DSN'))
-        /* @phpstan-ignore argument.type */
         ->options(['queue_name' => 'resolve'])
         ->retryStrategy()
         ->maxRetries(3)
@@ -52,16 +45,13 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
         ->jitter(0.2)
     ;
 
-    /** @var RoutingConfig $asyncDefaultRouting */
     $asyncDefaultRouting = $messenger->routing(AsyncDefaultMessage::class);
     $asyncDefaultRouting->senders(['async']);
     $asyncDefault->dsn(env('MESSENGER_TRANSPORT_DSN'))
-        /* @phpstan-ignore argument.type */
         ->options(['queue_name' => 'async'])
     ;
 
     $failed->dsn(env('MESSENGER_TRANSPORT_DSN'))
-        /* @phpstan-ignore argument.type */
         ->options(['queue_name' => 'failed'])
     ;
 };
