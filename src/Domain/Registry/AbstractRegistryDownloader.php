@@ -10,14 +10,14 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Filesystem\Filesystem;
 
-abstract readonly class AbstractRegistryDownloader
+abstract class AbstractRegistryDownloader
 {
-    private ?ProgressBar $progressBar;
+    private ?ProgressBar $progressBar = null;
 
     public function __construct(
-        private ClientInterface $http,
-        private RequestFactoryInterface $requestFactory,
-        private Filesystem $filesystem,
+        private readonly ClientInterface         $http,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly Filesystem              $filesystem,
     ) {}
 
     abstract protected function getRegistryURL(): string;
@@ -70,6 +70,9 @@ abstract readonly class AbstractRegistryDownloader
             $progress = 0;
             while (!feof($stream)) {
                 $buffer = fread($stream, 8192);
+                if (false === $buffer) {
+                    throw new \UnexpectedValueException('Failed to read buffer');
+                }
                 $progress += fwrite($targetStream, $buffer);
                 $this->progressBar->setProgress((int) ($progress/1024));
             }
