@@ -38,7 +38,7 @@ logs:
 
 [group('Containers')]
 shell:
-    {{ dockerAppPhpExec }} zsh
+    {{ dockerAppPhpExec }} ash
 
 # Open a shell into the container as PHP user, with `sh` as terminal (no fancy terminal nor history)
 [group('Containers')]

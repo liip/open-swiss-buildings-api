@@ -138,6 +138,16 @@ is run once inside the freshly deployed application.
 ./bin/console doctrine:migrations:migrate -n
 ```
 
+### Manual Data Import
+
+To develop locally, you can import all registry data with
+
+    bin/console app:registry:ch:download
+    bin/console app:registry:li:download
+    bin/console app:building-data:import --country-code=ch
+    bin/console app:building-data:import --country-code=li
+    bin/console app:address-search:index-all
+
 ### Workers
 
 The application uses workers to handle the resolving jobs asynchronously.
@@ -146,6 +156,7 @@ If you don't use the official image, you need to run the following commands as s
 ```
 ./bin/console messenger:consume --limit=10 async
 ./bin/console messenger:consume --limit=10 scheduler_default
+./bin/console messenger:consume --limit=10 resolve
 ```
 
 ### Cronjobs
@@ -167,6 +178,8 @@ For the initial setup, you should run the following commands:
 * `cp phpstan.example.neon phpstan.neon` (and adjust it to your needs)
 * `just rebuild`
 * `just up`
+* `just composer install`
+* `just composer phive:install`
 * `just init-test-database`
 
 After that, the application is running locally. You can access it on http://localhost.

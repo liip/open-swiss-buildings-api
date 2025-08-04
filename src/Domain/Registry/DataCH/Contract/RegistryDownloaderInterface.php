@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Registry\DataCH\Contract;
 
+use Symfony\Component\Console\Helper\ProgressBar;
+
 interface RegistryDownloaderInterface
 {
     /**
@@ -13,5 +15,5 @@ interface RegistryDownloaderInterface
      *
      * @return bool Whether the new building data was downloaded
      */
-    public function download(string $target, bool $force = false): bool;
+    public function download(string $target, bool $force = false, ?ProgressBar $progressBar = null): bool;
 }
