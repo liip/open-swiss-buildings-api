@@ -151,6 +151,10 @@ To develop locally, you can import all registry data with
 ### Workers
 
 The application uses workers to handle the resolving jobs asynchronously.
+On the very first start of the Docker image, you might see error messages about duplicates for `messenger_messages_id_seq`.
+This is a race condition as several message workers are started in parallel, and do not impact the functionality.
+If the error keeps occurring on later starts, that would be a cause for concern and needed to be investigated.
+
 If you don't use the official image, you need to run the following commands as services.
 
 ```
