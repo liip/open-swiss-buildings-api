@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\Cli\Resolve;
 
+use App\Application\Web\JobResultCSVResponseCreator;
+use App\Application\Web\JobResultJsonResponseCreator;
 use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use App\Domain\Resolving\Contract\Result\ResolverResultReadRepositoryInterface;
 use App\Domain\Resolving\Exception\ResolverJobNotFoundException;
@@ -22,15 +24,21 @@ final readonly class ResolveResultsPrinter
 
     public const string FORMAT_TABLE = 'table';
     public const string FORMAT_CSV = 'csv';
+    public const string FORMAT_CSV_FILE = 'csv-file';
+    public const string FORMAT_JSON_FILE = 'json-file';
 
     public const array FORMATS = [
         self::FORMAT_TABLE,
         self::FORMAT_CSV,
+        self::FORMAT_CSV_FILE,
+        self::FORMAT_JSON_FILE,
     ];
 
     public function __construct(
         private ResolverJobReadRepositoryInterface $jobRepository,
         private ResolverResultReadRepositoryInterface $resultRepository,
+        private readonly JobResultCSVResponseCreator $csvResponseCreator,
+        private readonly JobResultJsonResponseCreator $jsonResponseCreator,
     ) {}
 
     /**
@@ -51,6 +59,8 @@ final readonly class ResolveResultsPrinter
         match ($format) {
             self::FORMAT_CSV => $this->printCsv($job),
             self::FORMAT_TABLE => $this->printTable($job, $limit, $io),
+            self::FORMAT_CSV_FILE => $this->writeCsv($job),
+            self::FORMAT_JSON_FILE => $this->writeJson($job),
         };
     }
 
@@ -86,6 +96,32 @@ final readonly class ResolveResultsPrinter
                 array_values($result->additionalData->getData()),
             ));
         }
+    }
+
+    private function writeCsv(ResolverJob $job): void
+    {
+        echo 'Writing to ./out.csv ...';
+        $response = $this->csvResponseCreator->buildResponse(Uuid::fromString($job->id), $job);
+        ob_start();
+        $response->sendContent();
+        $content = ob_get_contents();
+        ob_end_clean();
+        file_put_contents('out.csv', $content);
+
+        echo "done\n";
+    }
+
+    private function writeJson(ResolverJob $job): void
+    {
+        echo 'Writing to ./out.json ...';
+        $response = $this->jsonResponseCreator->buildResponse(Uuid::fromString($job->id), $job);
+        ob_start();
+        $response->sendContent();
+        $content = ob_get_contents();
+        ob_end_clean();
+        file_put_contents('out.json', $content);
+
+        echo "done\n";
     }
 
     /**

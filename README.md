@@ -144,8 +144,8 @@ To develop locally, you can import all registry data with
 
     bin/console app:registry:ch:download
     bin/console app:registry:li:download
-    bin/console app:building-data:import --country-code=ch
-    bin/console app:building-data:import --country-code=li
+    bin/console app:building-data:import --country-code=CH
+    bin/console app:building-data:import --country-code=LI
     bin/console app:address-search:index-all
 
 ### Workers
