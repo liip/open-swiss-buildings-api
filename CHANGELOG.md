@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.5
+
+* Rewrote how we create tasks in the database to batch insert to reduce number of queries.
+
 ## v2.0.4
 
 * Added `--format csv-file` and `--format json-file` to the console result

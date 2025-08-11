@@ -28,6 +28,8 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
     ResolverTaskReadRepositoryInterface
 {
     private const string DQL_NEW_TASK = 'NEW ' . ResolverTask::class . '(t.id, IDENTITY(t.job), t.confidence, t.matchType, t.matchingBuildingId, t.matchingMunicipalityCode, t.matchingEntranceId, t.additionalData)';
+    // postgres is limited to 65k parameters, and we have 10 per row,
+    private const int BATCH_SIZE = 6500;
 
     public function __construct(
         ManagerRegistry $registry,
@@ -51,49 +53,116 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
 
     public function store(iterable $tasks): void
     {
-        $valuePlaceholders = [
-            'id' => ':id',
-            'job_id' => ':job_id',
-            'confidence' => ':confidence',
-            'match_type' => ':match_type',
-            'matching_unique_hash' => ':matching_unique_hash',
-            'matching_building_id' => ':matching_building_id',
-            'matching_municipality_code' => ':matching_municipality_code',
-            'matching_entrance_id' => ':matching_entrance_id',
+        $columns = [
+            'id' => '?',
+            'job_id' => '?',
+            'confidence' => '?',
+            'match_type' => '?',
+            'matching_unique_hash' => '?',
+            'matching_building_id' => '?',
+            'matching_municipality_code' => '?',
+            'matching_entrance_id' => '?',
             // The GeoJson must contain the CRS information about the coordinate system used in it, and we must
             // transform and store it with the WGS84 coordinate system
             // This column only accepts 2D geometries, so we need to use `ST_Force2D()` function on the data
-            'matching_geo_json' => 'ST_Force2D(ST_Transform(ST_GeomFromGeoJSON(:matching_geo_json), ' . SRIDEnum::WGS84->value . '))',
-            'additional_data' => ':additional_data',
+            'matching_geo_json' => 'ST_Force2D(ST_Transform(ST_GeomFromGeoJSON(?), ' . SRIDEnum::WGS84->value . '))',
+            'additional_data' => '?',
         ];
+        $types = [Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::JSON];
+        \assert(\count($types) === \count($columns)); /** @phpstan-ignore function.alreadyNarrowedType, identical.alwaysTrue */
+        $sql = $this->buildInsertSql($columns, self::BATCH_SIZE);
+        $typeMap = $this->buildTypes($types, self::BATCH_SIZE);
+        $connection = $this->getEntityManager()->getConnection();
 
-        $sql = "INSERT INTO {$this->getClassMetadata()->getTableName()} AS t " .
-            '(' . implode(',', array_keys($valuePlaceholders)) . ') ' .
-            'VALUES (' . implode(',', $valuePlaceholders) . ') ' .
-            'ON CONFLICT (job_id, matching_unique_hash) ' .
-            'DO UPDATE SET confidence = LEAST(t.confidence, excluded.confidence), additional_data = t.additional_data::jsonb || excluded.additional_data::jsonb';
-
-        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $matchingUniqueHashes = [];
 
         try {
+            $batch = [];
+            $taskIds = [];
+            $batchCount = 0;
             foreach ($tasks as $task) {
-                $stmt->bindValue('id', $task->id);
-                $stmt->bindValue('job_id', $task->jobId);
-                $stmt->bindValue('confidence', $task->confidence);
-                $stmt->bindValue('match_type', $task->matchType);
-                $stmt->bindValue('matching_unique_hash', $this->buildMatchingUniqueHash($task));
-                $stmt->bindValue('matching_building_id', $task->matchingBuildingId);
-                $stmt->bindValue('matching_municipality_code', $task->matchingMunicipalityCode);
-                $stmt->bindValue('matching_entrance_id', $task->matchingEntranceId);
-                $stmt->bindValue('matching_geo_json', $task->matchingGeoJson);
-                $stmt->bindValue('additional_data', $task->additionalData->getAsList(), Types::JSON);
-                $stmt->executeStatement();
+                $matchingUniqueHash = $this->buildMatchingUniqueHash($task);
+                if (\array_key_exists($matchingUniqueHash, $matchingUniqueHashes)) {
+                    $matchingUniqueHashes[$matchingUniqueHash][] = $task;
+                    continue;
+                }
+                $matchingUniqueHashes[$matchingUniqueHash] = [];
+                $taskIds[] = $task->id;
+                $batch[] = $task->id;
+                $batch[] = $task->jobId;
+                $batch[] = $task->confidence;
+                $batch[] = $task->matchType;
+                $batch[] = $matchingUniqueHash;
+                $batch[] = $task->matchingBuildingId;
+                $batch[] = $task->matchingMunicipalityCode;
+                $batch[] = $task->matchingEntranceId;
+                $batch[] = $task->matchingGeoJson;
+                $batch[] = $task->additionalData->getAsList();
 
-                $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($task->id));
+                if (self::BATCH_SIZE === ++$batchCount) {
+                    $connection->executeStatement($sql, $batch, $typeMap);
+                    foreach ($taskIds as $taskId) {
+                        $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($taskId));
+                    }
+                    $batch = [];
+                    $batchCount = 0;
+                    $taskIds = [];
+                }
             }
+            if ($batchCount > 0) {
+                $sql = $this->buildInsertSql($columns, $batchCount);
+                $connection->executeStatement($sql, $batch, $this->buildTypes($types, $batchCount));
+                foreach ($taskIds as $taskId) {
+                    $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($taskId));
+                }
+            }
+            $hashClashes = array_filter($matchingUniqueHashes);
+            if (0 < \count($hashClashes)) {
+                $updateStmt = $connection->prepare($this->buildUpdateSql());
+                foreach ($hashClashes as $matchingUniqueHash => $clash) {
+                    $updateStmt->bindValue('confidence', min(array_map(static fn(WriteResolverTask $task): int => $task->confidence, $clash)));
+                    $updateStmt->bindValue('data', array_merge(...array_map(static fn(WriteResolverTask $task): array => $task->additionalData->getAsList(), $clash)), Types::JSON);
+                    $updateStmt->bindValue('hash', $matchingUniqueHash);
+                    $updateStmt->executeStatement();
+                }
+            }
+
         } catch (\Throwable $e) {
             throw ResolverJobFailedException::wrap($e);
         }
+    }
+
+    /**
+     * @param array<string, string> $columns
+     */
+    private function buildInsertSql(array $columns, int $rows): string
+    {
+        $placeholderRow = '(' . implode(',', $columns) . ')';
+
+        return \sprintf(
+            'INSERT INTO %s AS t (%s) VALUES %s',
+            $this->getClassMetadata()->getTableName(),
+            implode(',', array_keys($columns)),
+            str_repeat("{$placeholderRow},", $rows - 1) . $placeholderRow,
+        );
+    }
+
+    /**
+     * @param array<string|null> $types
+     *
+     * @return array<string|null>
+     */
+    private function buildTypes(array $types, int $rows): array
+    {
+        return array_merge(...array_fill(0, $rows, $types));
+    }
+
+    private function buildUpdateSql(): string
+    {
+        return \sprintf(
+            'UPDATE %s SET confidence = LEAST(confidence, :confidence), additional_data = additional_data::jsonb || :data WHERE matching_unique_hash = :hash',
+            $this->getClassMetadata()->getTableName(),
+        );
     }
 
     private function buildMatchingUniqueHash(WriteResolverTask $task): string
