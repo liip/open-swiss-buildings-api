@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6f8095b589a2d2a8355aea516a6b277",
+    "content-hash": "66c0a368872950cad09cb808cabf10f7",
     "packages": [
         {
             "name": "brick/geo",
@@ -3949,7 +3949,7 @@
         },
         {
             "name": "symfony/expression-language",
-            "version": "v7.2.9",
+            "version": "v7.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/expression-language.git",
@@ -3993,7 +3993,7 @@
             "description": "Provides an engine that can compile and evaluate expressions",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/expression-language/tree/v7.2.9"
+                "source": "https://github.com/symfony/expression-language/tree/v7.3.2"
             },
             "funding": [
                 {
