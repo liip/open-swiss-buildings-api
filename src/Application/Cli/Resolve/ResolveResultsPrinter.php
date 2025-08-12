@@ -26,12 +26,14 @@ final readonly class ResolveResultsPrinter
     public const string FORMAT_CSV = 'csv';
     public const string FORMAT_CSV_FILE = 'csv-file';
     public const string FORMAT_JSON_FILE = 'json-file';
+    public const string FORMAT_NONE = 'none';
 
     public const array FORMATS = [
         self::FORMAT_TABLE,
         self::FORMAT_CSV,
         self::FORMAT_CSV_FILE,
         self::FORMAT_JSON_FILE,
+        self::FORMAT_NONE,
     ];
 
     public function __construct(
@@ -50,6 +52,12 @@ final readonly class ResolveResultsPrinter
      */
     public function print(Uuid $jobId, int $limit, string $format, SymfonyStyle $io): void
     {
+        if (self::FORMAT_NONE === $format) {
+            $io->writeln('Output disabled, do not read results');
+
+            return;
+        }
+
         $job = $this->jobRepository->getJobInfo($jobId);
 
         if (!$job->isResolved()) {
@@ -59,8 +67,8 @@ final readonly class ResolveResultsPrinter
         match ($format) {
             self::FORMAT_CSV => $this->printCsv($job),
             self::FORMAT_TABLE => $this->printTable($job, $limit, $io),
-            self::FORMAT_CSV_FILE => $this->writeCsv($job),
-            self::FORMAT_JSON_FILE => $this->writeJson($job),
+            self::FORMAT_CSV_FILE => $this->writeCsv($job, $io),
+            self::FORMAT_JSON_FILE => $this->writeJson($job, $io),
         };
     }
 
@@ -98,9 +106,9 @@ final readonly class ResolveResultsPrinter
         }
     }
 
-    private function writeCsv(ResolverJob $job): void
+    private function writeCsv(ResolverJob $job, SymfonyStyle $io): void
     {
-        echo 'Writing to ./out.csv ...';
+        $io->write('Writing to ./out.csv ...');
         $response = $this->csvResponseCreator->buildResponse(Uuid::fromString($job->id), $job);
         ob_start();
         $response->sendContent();
@@ -108,12 +116,12 @@ final readonly class ResolveResultsPrinter
         ob_end_clean();
         file_put_contents('out.csv', $content);
 
-        echo "done\n";
+        $io->writeln('done');
     }
 
-    private function writeJson(ResolverJob $job): void
+    private function writeJson(ResolverJob $job, SymfonyStyle $io): void
     {
-        echo 'Writing to ./out.json ...';
+        $io->write('Writing to ./out.json ...');
         $response = $this->jsonResponseCreator->buildResponse(Uuid::fromString($job->id), $job);
         ob_start();
         $response->sendContent();
@@ -121,7 +129,7 @@ final readonly class ResolveResultsPrinter
         ob_end_clean();
         file_put_contents('out.json', $content);
 
-        echo "done\n";
+        $io->writeln('done');
     }
 
     /**

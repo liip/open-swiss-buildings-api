@@ -5,6 +5,8 @@
 ## v2.0.5
 
 * Rewrote how we create tasks in the database to batch insert to reduce number of queries.
+* Added `--format none` to the result printer, so that `app:resolve:jobs:one-shot` can be
+  used to fully resolve but not read the result.
 
 ## v2.0.4
 
