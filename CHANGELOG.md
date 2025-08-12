@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.6
+
+* Rewrote how we create address resolution tasks in the database to batch insert to reduce number of queries.
+
 ## v2.0.5
 
 * Rewrote how we create tasks in the database to batch insert to reduce number of queries.

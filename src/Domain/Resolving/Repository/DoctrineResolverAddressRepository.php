@@ -27,6 +27,9 @@ use Symfony\Component\Uid\Uuid;
  */
 final class DoctrineResolverAddressRepository extends ServiceEntityRepository implements ResolverAddressReadRepositoryInterface, ResolverAddressWriteRepositoryInterface
 {
+    // postgres is limited to 65k parameters, and we have 15 per row,
+    private const int BATCH_SIZE = 4300;
+
     public function __construct(
         ManagerRegistry $registry,
         private readonly AddressNormalizer $normalizer,
@@ -60,52 +63,85 @@ final class DoctrineResolverAddressRepository extends ServiceEntityRepository im
 
     public function store(iterable $addresses): void
     {
-        $valuePlaceholders = [
-            'id' => ':id',
-            'job_id' => ':job_id',
-            'unique_hash' => ':unique_hash',
-            'street_name' => ':street_name',
-            'street_name_normalized' => ':street_name_normalized',
-            'street_house_number' => ':street_house_number',
-            'street_house_number_suffix' => ':street_house_number_suffix',
-            'street_house_number_suffix_normalized' => ':street_house_number_suffix_normalized',
-            'postal_code' => ':postal_code',
-            'locality' => ':locality',
-            'locality_normalized' => ':locality_normalized',
-            'additional_data' => ':additional_data',
-            'range_from' => ':range_from',
-            'range_to' => ':range_to',
-            'range_type' => ':range_type',
+        $columns = [
+            'id' => '?',
+            'job_id' => '?',
+            'unique_hash' => '?',
+            'street_name' => '?',
+            'street_name_normalized' => '?',
+            'street_house_number' => '?',
+            'street_house_number_suffix' => '?',
+            'street_house_number_suffix_normalized' => '?',
+            'postal_code' => '?',
+            'locality' => '?',
+            'locality_normalized' => '?',
+            'additional_data' => '?',
+            'range_from' => '?',
+            'range_to' => '?',
+            'range_type' => '?',
         ];
+        $types = [Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::JSON, Types::STRING, Types::STRING, Types::STRING];
+        \assert(\count($types) === \count($columns)); /** @phpstan-ignore function.alreadyNarrowedType, identical.alwaysTrue */
+        $sql = $this->buildInsertSql($columns, self::BATCH_SIZE);
+        $typeMap = $this->buildTypes($types, self::BATCH_SIZE);
+        $connection = $this->getEntityManager()->getConnection();
 
-        $sql = "INSERT INTO {$this->getClassMetadata()->getTableName()} AS t " .
-            '(' . implode(',', array_keys($valuePlaceholders)) . ') ' .
-            'VALUES (' . implode(',', $valuePlaceholders) . ') ' .
-            'ON CONFLICT (job_id, unique_hash) ' .
-            'DO UPDATE SET additional_data = t.additional_data::jsonb || excluded.additional_data::jsonb';
-
-        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $uniqueHashes = [];
+        $batch = [];
+        $addressIds = [];
+        $batchCount = 0;
 
         /** @var WriteResolverAddress $address */
         foreach ($addresses as $address) {
-            $stmt->bindValue('id', $address->id());
-            $stmt->bindValue('job_id', $address->jobId());
-            $stmt->bindValue('unique_hash', $address->uniqueHash());
-            $stmt->bindValue('street_name', $address->streetName() ?? '');
-            $stmt->bindValue('street_name_normalized', null !== $address->streetName() ? $this->normalizer->normalize($address->streetName()) : '');
-            $stmt->bindValue('street_house_number', $address->houseNumber() ?? 0);
-            $stmt->bindValue('street_house_number_suffix', $address->houseNumberSuffix() ?? '');
-            $stmt->bindValue('street_house_number_suffix_normalized', $this->normalizer->normalize($address->houseNumberSuffix() ?? ''));
-            $stmt->bindValue('postal_code', $address->postalCode() ?: '');
-            $stmt->bindValue('locality', $address->locality() ?: '');
-            $stmt->bindValue('locality_normalized', $this->normalizer->normalize($address->locality() ?: ''));
-            $stmt->bindValue('additional_data', $address->additionalData()->getAsList(), Types::JSON);
-            $stmt->bindValue('range_from', $address->rangeFrom());
-            $stmt->bindValue('range_to', $address->rangeTo());
-            $stmt->bindValue('range_type', $address->rangeType()?->value);
-            $stmt->executeStatement();
+            $uniqueHash = $address->uniqueHash();
+            if (\array_key_exists($uniqueHash, $uniqueHashes)) {
+                $uniqueHashes[$uniqueHash][] = $address;
+                continue;
+            }
+            $uniqueHashes[$uniqueHash] = [];
 
-            $this->eventDispatcher->dispatch(new ResolverAddressHasBeenCreated($address->id()));
+            $addressIds[] = $address->id();
+            $batch[] = $address->id();
+            $batch[] = $address->jobId();
+            $batch[] = $uniqueHash;
+            $batch[] = $address->streetName() ?? '';
+            $batch[] = null !== $address->streetName() ? $this->normalizer->normalize($address->streetName()) : '';
+            $batch[] = $address->houseNumber() ?? 0;
+            $batch[] = $address->houseNumberSuffix() ?? '';
+            $batch[] = $this->normalizer->normalize($address->houseNumberSuffix() ?? '');
+            $batch[] = $address->postalCode() ?: '';
+            $batch[] = $address->locality() ?: '';
+            $batch[] = $this->normalizer->normalize($address->locality() ?: '');
+            $batch[] = $address->additionalData()->getAsList();
+            $batch[] = $address->rangeFrom();
+            $batch[] = $address->rangeTo();
+            $batch[] = $address->rangeType()?->value;
+
+            if (self::BATCH_SIZE === ++$batchCount) {
+                $connection->executeStatement($sql, $batch, $typeMap);
+                foreach ($addressIds as $addressId) {
+                    $this->eventDispatcher->dispatch(new ResolverAddressHasBeenCreated($addressId));
+                }
+                $batch = [];
+                $batchCount = 0;
+                $addressIds = [];
+            }
+        }
+        if ($batchCount > 0) {
+            $sql = $this->buildInsertSql($columns, $batchCount);
+            $connection->executeStatement($sql, $batch, $this->buildTypes($types, $batchCount));
+            foreach ($addressIds as $addressId) {
+                $this->eventDispatcher->dispatch(new ResolverAddressHasBeenCreated($addressId));
+            }
+        }
+        $hashClashes = array_filter($uniqueHashes);
+        if (0 < \count($hashClashes)) {
+            $updateStmt = $connection->prepare($this->buildUpdateSql());
+            foreach ($hashClashes as $matchingUniqueHash => $clash) {
+                $updateStmt->bindValue('data', array_merge(...array_map(static fn(WriteResolverAddress $address): array => $address->additionalData()->getAsList(), $clash)), Types::JSON);
+                $updateStmt->bindValue('hash', $matchingUniqueHash);
+                $updateStmt->executeStatement();
+            }
         }
     }
 
@@ -120,6 +156,39 @@ final class DoctrineResolverAddressRepository extends ServiceEntityRepository im
         ;
 
         return $query->execute();
+    }
+
+    /**
+     * @param array<string, string> $columns
+     */
+    private function buildInsertSql(array $columns, int $rows): string
+    {
+        $placeholderRow = '(' . implode(',', $columns) . ')';
+
+        return \sprintf(
+            'INSERT INTO %s AS t (%s) VALUES %s',
+            $this->getClassMetadata()->getTableName(),
+            implode(',', array_keys($columns)),
+            str_repeat("{$placeholderRow},", $rows - 1) . $placeholderRow,
+        );
+    }
+
+    /**
+     * @param array<string|null> $types
+     *
+     * @return array<string|null>
+     */
+    private function buildTypes(array $types, int $rows): array
+    {
+        return array_merge(...array_fill(0, $rows, $types));
+    }
+
+    private function buildUpdateSql(): string
+    {
+        return \sprintf(
+            'UPDATE %s SET additional_data = additional_data::jsonb || :data WHERE unique_hash = :hash',
+            $this->getClassMetadata()->getTableName(),
+        );
     }
 
     /**
