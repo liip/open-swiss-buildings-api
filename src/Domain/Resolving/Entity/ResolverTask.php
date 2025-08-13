@@ -14,6 +14,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverTaskRepository::class)]
 #[ORM\UniqueConstraint(name: 'task_matching_uniqueness', fields: ['job', 'matchingUniqueHash'])]
+#[ORM\Index(fields: ['matchingUniqueHash'], name: 'building_entrance_matching_hash_idx')]
 #[ORM\Index(fields: ['matchingBuildingId'], name: 'building_entrance_building_id_idx')]
 #[ORM\Index(fields: ['matchingMunicipalityCode'], name: 'building_entrance_municipality_code_idx')]
 class ResolverTask
@@ -23,7 +24,7 @@ class ResolverTask
     public readonly Uuid $id;
 
     #[ORM\ManyToOne(targetEntity: ResolverJob::class)]
-    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', onDelete: 'CASCADE', nullable: false)]
+    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private readonly ResolverJob $job;
 
     /**

@@ -58,23 +58,27 @@ final readonly class DoctrineExactAddressMatcher
 
         $onCondition = "({$condition})";
         if (str_contains($condition, '%street_name%')) {
-            $onCondition =
-                str_replace('%street_name%', 'street_name', $condition) .
-                ' OR ' .
-                str_replace('%street_name%', 'street_name_abbreviated', $condition);
+            $onCondition = str_replace('%street_name%', 'street_name', $condition);
+            $abbreviatedCondition = str_replace('%street_name%', 'street_name_abbreviated', $condition);
         }
+
+        $select = 'SELECT gen_random_uuid(), a.id, :confidence::int, :matchType, b.building_id, b.entrance_id, a.additional_data ' .
+            "FROM {$addressTable} a " .
+            "INNER JOIN {$buildingEntranceTable} b ON %onCondition% " .
+            'WHERE a.job_id = :jobId AND a.range_type IS NULL ' .
+            "AND NOT EXISTS (SELECT 1 FROM {$matchTable} at WHERE at.address_id = a.id)";
 
         // TODO PostgreSQL will generate UUIDv4 with gen_random_uuid(), switch to UUIDv7 with PostgreSQL version 17: https://commitfest.postgresql.org/43/4388/
         $sql = "INSERT INTO {$matchTable} AS t (id, address_id, confidence, match_type, matching_building_id, matching_entrance_id, additional_data) " .
-            "SELECT gen_random_uuid(), a.id, :confidence, :matchType, b.building_id, b.entrance_id, a.additional_data FROM {$addressTable} a " .
-            "LEFT JOIN {$matchTable} at ON a.id = at.address_id " .
-            "INNER JOIN {$buildingEntranceTable} b ON {$onCondition} " .
-            'WHERE a.job_id = :jobId AND at.id IS NULL AND a.range_type IS NULL';
+            str_replace('%onCondition%', $onCondition, $select);
+        if (isset($abbreviatedCondition)) {
+            $sql .= ' UNION ALL ' . str_replace('%onCondition%', $abbreviatedCondition, $select);
+        }
 
         $this->entityManager->getConnection()->executeStatement($sql, [
-            'jobId' => $job->id,
             'confidence' => $confidence,
             'matchType' => $matchType,
+            'jobId' => $job->id,
         ]);
     }
 }

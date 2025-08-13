@@ -54,23 +54,29 @@ final readonly class DoctrineStreetMatcher
         $matchTable = $this->entityManager->getClassMetadata(ResolverAddressMatch::class)->getTableName();
         $streetTable = $this->entityManager->getClassMetadata(ResolverAddressStreet::class)->getTableName();
 
-        $onCondition =
-            str_replace('%street_name%', 'street_name', $condition) .
-            ' OR ' .
-            str_replace('%street_name%', 'street_name_abbreviated', $condition);
-
-        $sql = "INSERT INTO {$streetTable} AS t (address_id, street_id, confidence, match_type) " .
-            "SELECT a.id, b.street_id, :confidence, :matchType FROM {$addressTable} a " .
+        $select = "SELECT a.id, b.street_id, :confidence::int, :matchType FROM {$addressTable} a " .
             "LEFT JOIN {$matchTable} at ON a.id = at.address_id " .
             "LEFT JOIN {$streetTable} s ON a.id = s.address_id " .
-            "INNER JOIN {$buildingEntranceTable} b ON {$onCondition} " .
-            'WHERE a.job_id = :jobId AND at.id IS NULL AND s.address_id IS NULL AND a.range_type IS NULL AND b.street_id != :empty ' .
+            "INNER JOIN {$buildingEntranceTable} b ON %onCondition% " .
+            'WHERE a.job_id = :jobId ' .
+            '  AND a.range_type IS NULL ' .
+            '  AND b.street_id != :empty ' .
+            "  AND NOT EXISTS(SELECT 1 FROM {$matchTable} at WHERE a.id = at.address_id) " .
+            "  AND NOT EXISTS(SELECT 1 FROM {$streetTable} s WHERE a.id = s.address_id) " .
             'GROUP BY a.id, b.street_id';
 
+        $onCondition = str_replace('%street_name%', 'street_name', $condition);
+        $abbrvCondition = str_replace('%street_name%', 'street_name_abbreviated', $condition);
+
+        $sql = "INSERT INTO {$streetTable} AS t (address_id, street_id, confidence, match_type) " .
+            str_replace('%onCondition%', $onCondition, $select) .
+            ' UNION ALL ' .
+            str_replace('%onCondition%', $abbrvCondition, $select);
+
         $this->entityManager->getConnection()->executeStatement($sql, [
-            'jobId' => $job->id,
             'confidence' => $confidence,
             'matchType' => $matchType,
+            'jobId' => $job->id,
             'empty' => '',
         ]);
     }

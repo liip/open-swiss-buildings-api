@@ -103,6 +103,7 @@ final readonly class DoctrineGeoJsonTaskResolver implements TaskResolverInterfac
 
         return 'SELECT ' . implode(',', $columns) .
             " FROM {$taskTable} tasks" .
-            " LEFT JOIN {$buildingEntranceTable} building ON ST_CONTAINS(tasks.matching_geo_json, building.geo_coordinates_wgs84)";
+            // do bounding box check with && before ST_CONTAINS as bounding box is much cheaper
+            " LEFT JOIN {$buildingEntranceTable} building ON building.geo_coordinates_wgs84 && tasks.matching_geo_json AND ST_COVERS(tasks.matching_geo_json, building.geo_coordinates_wgs84)";
     }
 }
