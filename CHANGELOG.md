@@ -4,6 +4,7 @@
 
 ## v2.0.8
 
+* [performance] Force using index when updating tasks.
 * [bugfix] Avoid duplicate key errors when street abbreviated is the same as full street.
 
 ## v2.0.7
