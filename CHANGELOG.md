@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.7
+
+* Optimized queries for address matching and geojson and added an additional index.
+
 ## v2.0.6
 
 * Rewrote how we create address resolution tasks in the database to batch insert to reduce number of queries.
