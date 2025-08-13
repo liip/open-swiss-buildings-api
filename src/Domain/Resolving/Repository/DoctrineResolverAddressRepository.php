@@ -136,6 +136,7 @@ final class DoctrineResolverAddressRepository extends ServiceEntityRepository im
         }
         $hashClashes = array_filter($uniqueHashes);
         if (0 < \count($hashClashes)) {
+            $connection->executeStatement('SET enable_seqscan = FALSE');
             $updateStmt = $connection->prepare($this->buildUpdateSql());
             foreach ($hashClashes as $matchingUniqueHash => $clash) {
                 $updateStmt->bindValue('data', array_merge(...array_map(static fn(WriteResolverAddress $address): array => $address->additionalData()->getAsList(), $clash)), Types::JSON);

@@ -118,6 +118,7 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
             }
             $hashClashes = array_filter($matchingUniqueHashes);
             if (0 < \count($hashClashes)) {
+                $connection->executeStatement('SET enable_seqscan = FALSE');
                 $updateStmt = $connection->prepare($this->buildUpdateSql());
                 foreach ($hashClashes as $matchingUniqueHash => $clash) {
                     $updateStmt->bindValue('confidence', min(array_map(static fn(WriteResolverTask $task): int => $task->confidence, $clash)));
