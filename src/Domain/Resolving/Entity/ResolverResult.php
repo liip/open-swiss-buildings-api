@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverResultRepository::class)]
-#[ORM\Index(name: 'resolver_result_job_id', fields: ['jobId'])]
+#[ORM\Index(fields: ['jobId'], name: 'resolver_result_job_id')]
 #[ORM\UniqueConstraint(name: 'resolver_result_entry', fields: ['jobId', 'countryCode', 'buildingEntranceId'])]
 class ResolverResult
 {
