@@ -13,7 +13,7 @@ class ResolverAddressStreet
 {
     #[ORM\Id]
     #[ORM\OneToOne(targetEntity: ResolverAddress::class)]
-    #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id', onDelete: 'CASCADE', nullable: false)]
+    #[ORM\JoinColumn(name: 'address_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     public ResolverAddress $address;
 
     #[ORM\Id]

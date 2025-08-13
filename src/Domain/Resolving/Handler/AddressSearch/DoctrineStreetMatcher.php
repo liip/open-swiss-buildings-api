@@ -66,7 +66,7 @@ final readonly class DoctrineStreetMatcher
             'GROUP BY a.id, b.street_id';
 
         $onCondition = str_replace('%street_name%', 'street_name', $condition);
-        $abbrvCondition = str_replace('%street_name%', 'street_name_abbreviated', $condition);
+        $abbrvCondition = str_replace('%street_name%', 'street_name_abbreviated AND NOT b.street_name = b.street_name_abbreviated', $condition);
 
         $sql = "INSERT INTO {$streetTable} AS t (address_id, street_id, confidence, match_type) " .
             str_replace('%onCondition%', $onCondition, $select) .

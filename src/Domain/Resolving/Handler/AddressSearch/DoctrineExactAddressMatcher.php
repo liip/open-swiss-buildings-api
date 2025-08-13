@@ -59,7 +59,7 @@ final readonly class DoctrineExactAddressMatcher
         $onCondition = "({$condition})";
         if (str_contains($condition, '%street_name%')) {
             $onCondition = str_replace('%street_name%', 'street_name', $condition);
-            $abbreviatedCondition = str_replace('%street_name%', 'street_name_abbreviated', $condition);
+            $abbreviatedCondition = str_replace('%street_name%', 'street_name_abbreviated AND NOT b.street_name = b.street_name_abbreviated', $condition);
         }
 
         $select = 'SELECT gen_random_uuid(), a.id, :confidence::int, :matchType, b.building_id, b.entrance_id, a.additional_data ' .
