@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.9 (unreleased)
+
+* [dx] Better error messages when trying to import registry data without downloading registry data first.
+
 ## v2.0.8
 
 * [performance] Force using index when updating tasks.
