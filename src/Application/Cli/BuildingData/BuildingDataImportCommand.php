@@ -7,6 +7,8 @@ namespace App\Application\Cli\BuildingData;
 use App\Domain\BuildingData\Contract\BuildingEntranceImporterInterface;
 use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Symfony\Console\OptionHelper;
+use Doctrine\DBAL\Exception\TableNotFoundException;
+use League\Csv\UnavailableStream;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,7 +44,17 @@ final class BuildingDataImportCommand extends Command
         $progress->maxSecondsBetweenRedraws(2);
         $progress->minSecondsBetweenRedraws(1);
 
-        $buildingEntrancesCount = $this->importer->countBuildingEntrances($countryCode);
+        try {
+            $buildingEntrancesCount = $this->importer->countBuildingEntrances($countryCode);
+        } catch (TableNotFoundException) {
+            $io->error('Table not found - did you download the data with app:registry:ch:download?');
+
+            return 1;
+        } catch (UnavailableStream $e) {
+            $io->error("CSV file not found - did you download the data with app:registry:li:download?\n\n{$e->getMessage()}");
+
+            return 1;
+        }
 
         $count = 0;
         foreach ($progress->iterate($this->importer->importBuildingData($countryCode), $buildingEntrancesCount) as $buildingData) {
