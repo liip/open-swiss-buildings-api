@@ -22,7 +22,7 @@ interface BuildingEntranceImporterInterface
     public function importBuildingData(?CountryCodeEnum $countryCode = null): iterable;
 
     /**
-     * Imports the given building data.
+     * Imports the given building data (used for testing).
      *
      * @param iterable<BuildingEntranceData> $buildingData
      */

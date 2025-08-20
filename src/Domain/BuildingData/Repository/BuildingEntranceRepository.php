@@ -36,7 +36,10 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
     BuildingEntranceReadRepositoryInterface,
     BuildingEntranceWriteRepositoryInterface
 {
-    private const int INSERT_BATCH_SIZE = 1000;
+    /**
+     * Maximum number of parameters in postgres is 65k. We have 24 per row.
+     */
+    private const int INSERT_BATCH_SIZE = 2700;
 
     public function __construct(
         ManagerRegistry $registry,
