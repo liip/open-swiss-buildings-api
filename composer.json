@@ -47,7 +47,7 @@
         "symfony/serializer": "7.2.*",
         "symfony/string": "7.3.*",
         "symfony/twig-bundle": "7.2.*",
-        "symfony/uid": "7.2.*",
+        "symfony/uid": "7.3.*",
         "symfony/validator": "7.3.*",
         "symfony/yaml": "7.2.*",
         "twig/extra-bundle": "^3.8",
