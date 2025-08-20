@@ -2,8 +2,9 @@
 
 # 2.x
 
-## v2.0.9 (unreleased)
+## v2.0.9
 
+* [performance] Increase batch size for registry import to maximum possible with postgres.
 * [dx] Better error messages when trying to import registry data without downloading registry data first.
 
 ## v2.0.8
