@@ -64,7 +64,7 @@ final class ResolveJobsResetCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $jobId = (string) $input->getArgument('jobId');
-        $state = OptionHelper::getStringBackedEnumOptionValue($input, 'state', ResolverJobStateEnum::class);
+        $state = ResolverJobStateEnum::from($state);
 
         $io = new SymfonyStyle($input, $output);
 

@@ -10,13 +10,12 @@ use App\Domain\Resolving\Model\Job\ResolverJob;
 use App\Domain\Resolving\Model\Job\ResolverTask;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
 use App\Infrastructure\Pagination;
-use App\Infrastructure\Symfony\Console\OptionHelper;
 use App\Infrastructure\Symfony\Console\Paginator;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Uid\Uuid;
@@ -25,7 +24,7 @@ use Symfony\Component\Uid\Uuid;
     name: 'app:resolve:tasks:list',
     description: 'Displays the list of tasks for a single resolver job',
 )]
-final class ResolveTasksListCommand extends Command
+final class ResolveTasksListCommand
 {
     private const int DEFAULT_LIMIT = 20;
 
@@ -42,26 +41,23 @@ final class ResolveTasksListCommand extends Command
     public function __construct(
         private readonly ResolverJobReadRepositoryInterface $jobRepository,
         private readonly ResolverTaskReadRepositoryInterface $taskRepository,
-    ) {
-        parent::__construct();
+    ) {}
+
+    private static function listFormats(): string
+    {
+        return implode('|', self::FORMATS);
     }
 
-    protected function configure(): void
-    {
-        $this->addArgument('jobId', InputArgument::REQUIRED, 'ID of the resolver job');
-        $this->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of rows to load', self::DEFAULT_LIMIT);
-        $this->addOption('format', null, InputOption::VALUE_REQUIRED, 'Format of the output, one of ' . implode('|', self::FORMATS), self::DEFAULT_FORMAT);
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $jobId = $input->getArgument('jobId');
-        if (!\is_string($jobId)) {
-            throw new \LogicException('Argument jobId needs to be a string, but got ' . get_debug_type($jobId));
-        }
-        $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
-        $format = $input->getOption('format') ?? self::DEFAULT_FORMAT;
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument(description: 'ID of the resolver job')]
+        string $jobId,
+        #[Option(description: 'Number of rows to load')]
+        int $limit = self::DEFAULT_LIMIT,
+        #[Option(description: 'Format of the output, one of table|csv')]
+        string $format = self::DEFAULT_FORMAT,
+    ): int {
         $io = new SymfonyStyle($input, $output);
 
         try {
