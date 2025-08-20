@@ -8,9 +8,9 @@ use App\Domain\BuildingData\Contract\BuildingEntranceReadRepositoryInterface;
 use App\Domain\BuildingData\Contract\BuildingEntranceWriteRepositoryInterface;
 use App\Infrastructure\Symfony\Console\OptionHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -18,24 +18,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:building-data:outdated:prune',
     description: 'Prunes the data imported by removing BuildingEntrances not updated anymore',
 )]
-final class BuildingDataOutdatedPruneCommand extends Command
+final readonly class BuildingDataOutdatedPruneCommand
 {
     private const int DEFAULT_ACTIVE_DAYS_WINDOW = 90;
 
     public function __construct(
-        private readonly BuildingEntranceReadRepositoryInterface $buildingEntranceReadRepository,
-        private readonly BuildingEntranceWriteRepositoryInterface $buildingEntranceWriteRepository,
-    ) {
-        parent::__construct();
-    }
+        private BuildingEntranceReadRepositoryInterface $buildingEntranceReadRepository,
+        private BuildingEntranceWriteRepositoryInterface $buildingEntranceWriteRepository,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this->addOption('active-days', null, InputOption::VALUE_REQUIRED, 'Number of days in the past to consider an imported item as active', self::DEFAULT_ACTIVE_DAYS_WINDOW);
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of days in the past to consider an imported item as active', name: 'active-days')]
+        ?int $activeDays = self::DEFAULT_ACTIVE_DAYS_WINDOW,
+    ): int {
         $activeDays = OptionHelper::getPositiveIntOptionValue($input, 'active-days') ?? self::DEFAULT_ACTIVE_DAYS_WINDOW;
 
         $io = new SymfonyStyle($input, $output);

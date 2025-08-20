@@ -16,14 +16,12 @@ use App\Domain\Resolving\Model\Job\ResolverJobIdentifier;
 use App\Domain\Resolving\Model\Job\ResolverJobStateEnum;
 use App\Domain\Resolving\Model\Job\ResolverMetadata;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
-use App\Infrastructure\Symfony\Console\ArgumentHelper;
-use App\Infrastructure\Symfony\Console\OptionHelper;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressIndicator;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -32,7 +30,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
     name: 'app:resolve:jobs:one-shot',
     description: 'Create a resolver job with data coming from STDIN, prepare and resolve it, and output the results',
 )]
-final class ResolveJobOneShotCommand extends Command
+final class ResolveJobOneShotCommand
 {
     private ?ProgressIndicator $progress = null;
 
@@ -44,31 +42,29 @@ final class ResolveJobOneShotCommand extends Command
         private readonly ResolverJobWriteRepositoryInterface $jobWriteRepository,
         private readonly ResolveResultsPrinter $printer,
         private readonly ResolverJobMessageDispatcher $dispatcher,
-    ) {
-        parent::__construct();
-    }
+    ) {}
 
-    protected function configure(): void
-    {
-        $types = array_column(ResolverTypeEnum::cases(), 'value');
-
-        $this->addArgument('type', InputArgument::REQUIRED, 'Type of the resolver job, one of ' . implode(',', $types))
-            ->addOption('charset', null, InputOption::VALUE_REQUIRED, 'Used charset in the specified CSV')
-            ->addOption('csv-delimiter', null, InputOption::VALUE_REQUIRED, 'CSV delimiter to use')
-            ->addOption('csv-enclosure', null, InputOption::VALUE_REQUIRED, 'CSV enclosure character to use')
-            ->addOption('debug', null, InputOption::VALUE_NONE, 'Specify to enable debug output of the first result, instead of listing the results')
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of rows to load', ResolveResultsPrinter::DEFAULT_LIMIT)
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Format of the output, one of ' . implode('|', ResolveResultsPrinter::FORMATS), ResolveResultsPrinter::DEFAULT_FORMAT)
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument(description: 'Type of the resolver job, one of building_ids|municipalities_codes|geo_json|address_search')]
+        string $type,
+        #[Option(description: 'Used charset in the specified CSV')]
+        ?string $charset = null,
+        #[Option(description: 'CSV delimiter to use', name: 'csv-delimiter')]
+        ?string $csvDelimiter = null,
+        #[Option(description: 'CSV enclosure character to use', name: 'csv-enclosure')]
+        ?string $csvEnclosure = null,
+        #[Option(description: 'Specify to enable debug output of the first result, instead of listing the results')]
+        bool $debug = false,
+        #[Option(description: 'Number of rows to load')]
+        int $limit = ResolveResultsPrinter::DEFAULT_LIMIT,
+        #[Option(description: 'Format of the output, one of table|csv|csv-file|json-file|none')]
+        string $format = ResolveResultsPrinter::DEFAULT_FORMAT,
+    ): int {
         $io = new SymfonyStyle($input, $output);
-        $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? ResolveResultsPrinter::DEFAULT_LIMIT;
-        $format = $input->getOption('format') ?? ResolveResultsPrinter::DEFAULT_FORMAT;
 
-        $job = $this->createJob($input);
+        $job = $this->createJob(ResolverTypeEnum::from($type), $charset, $csvDelimiter, $csvEnclosure);
         $io->success("Created resolver job with ID {$job->id}");
 
         try {
@@ -82,7 +78,7 @@ final class ResolveJobOneShotCommand extends Command
             }
             $this->resolveJob($job, $output);
             $io->writeln('');
-            if ($input->getOption('debug')) {
+            if ($debug) {
                 $this->printer->printDebug($job->id, 1, $io);
             } else {
                 $this->printer->print($job->id, $limit, $format, $io);
@@ -95,18 +91,16 @@ final class ResolveJobOneShotCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function createJob(InputInterface $input): ResolverJobIdentifier
+    private function createJob(ResolverTypeEnum $type, ?string $charset, ?string $delimiter, ?string $enclosure): ResolverJobIdentifier
     {
-        $type = ArgumentHelper::getStringBackedEnumArgument($input, 'type', ResolverTypeEnum::class);
-
         $metadata = new ResolverMetadata();
-        if (null !== ($charset = $input->getOption('charset'))) {
+        if (null !== $charset) {
             $metadata = $metadata->withCharset($charset);
         }
-        if (null !== ($delimiter = $input->getOption('csv-delimiter'))) {
+        if (null !== $delimiter) {
             $metadata = $metadata->withCsvDelimiter($delimiter);
         }
-        if (null !== ($enclosure = $input->getOption('csv-enclosure'))) {
+        if (null !== $enclosure) {
             $metadata = $metadata->withCsvEnclosure($enclosure);
         }
 
