@@ -360,24 +360,6 @@ final readonly class Decoder
      * @param DecoderData      $data
      * @param non-empty-string $property
      *
-     * @return non-empty-string
-     *
-     * @throws \UnexpectedValueException
-     */
-    public static function readUuidAsString(array $data, string $property): string
-    {
-        $value = (string) self::readUuid($data, $property);
-        if ('' === $value) {
-            throw new \UnexpectedValueException("UUID value for property \"{$property}\" can't be empty");
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param DecoderData      $data
-     * @param non-empty-string $property
-     *
      * @return non-empty-string|null
      *
      * @throws \UnexpectedValueException
@@ -390,12 +372,7 @@ final readonly class Decoder
             return null;
         }
 
-        $value = (string) $value;
-        if ('' === $value) {
-            throw new \UnexpectedValueException("UUID value for property \"{$property}\" can't be empty");
-        }
-
-        return $value;
+        return (string) $value;
     }
 
     /**
