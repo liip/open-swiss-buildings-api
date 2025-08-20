@@ -39,8 +39,8 @@ final readonly class ResolveResultsPrinter
     public function __construct(
         private ResolverJobReadRepositoryInterface $jobRepository,
         private ResolverResultReadRepositoryInterface $resultRepository,
-        private readonly JobResultCSVResponseCreator $csvResponseCreator,
-        private readonly JobResultJsonResponseCreator $jsonResponseCreator,
+        private JobResultCSVResponseCreator $csvResponseCreator,
+        private JobResultJsonResponseCreator $jsonResponseCreator,
     ) {}
 
     /**

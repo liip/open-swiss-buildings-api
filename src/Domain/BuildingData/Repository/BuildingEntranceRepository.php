@@ -88,7 +88,7 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         ];
         $conflictUpdates = array_values(array_filter(
             array_keys($columnDefinitions),
-            static fn($column): bool => !\in_array($column, ['id', 'country_code', 'building_id', 'entrance_id', 'street_name_language'], true),
+            static fn(string $column): bool => !\in_array($column, ['id', 'country_code', 'building_id', 'entrance_id', 'street_name_language'], true),
         ));
 
         $batchSql = BatchInsertStatementBuilder::generate(
