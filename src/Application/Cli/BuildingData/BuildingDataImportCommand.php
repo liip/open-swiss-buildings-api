@@ -57,7 +57,7 @@ final class BuildingDataImportCommand extends Command
         }
 
         $count = 0;
-        foreach ($progress->iterate($this->importer->importBuildingData($countryCode), $buildingEntrancesCount) as $buildingData) {
+        foreach ($progress->iterate($this->importer->importBuildingData($countryCode), $buildingEntrancesCount) as $ignored) {
             ++$count;
         }
 

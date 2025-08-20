@@ -37,7 +37,7 @@ final class ResolveTasksListCommand extends Command
         self::FORMAT_CSV,
     ];
 
-    private const DEFAULT_FORMAT = self::FORMAT_TABLE;
+    private const string DEFAULT_FORMAT = self::FORMAT_TABLE;
 
     public function __construct(
         private readonly ResolverJobReadRepositoryInterface $jobRepository,
