@@ -9,9 +9,9 @@ use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Infrastructure\Model\CountryCodeEnum;
 use App\Infrastructure\Symfony\Console\OptionHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -19,38 +19,43 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:address-search:list',
     description: 'List the addresses in the indexed data',
 )]
-final class AddressSearchListCommand extends Command
+final readonly class AddressSearchListCommand
 {
     private const int DEFAULT_LIMIT = 10;
 
     private const string DATE_FORMAT = 'Y-m-d';
 
     public function __construct(
-        private readonly BuildingAddressSearcherInterface $buildingAddressSearcher,
-    ) {
-        parent::__construct();
-    }
+        private BuildingAddressSearcherInterface $buildingAddressSearcher,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of items to show', self::DEFAULT_LIMIT)
-            // Filters
-            ->addOption('id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the ID)')
-            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the given building ID (EGID, GEID)')
-            ->addOption('country-code', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the given country code')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    /**
+     * @param ?string[] $id
+     * @param ?string[] $buildingIds
+     * @param ?string[] $countryCodes
+     */
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of items to show')]
+        int $limit = self::DEFAULT_LIMIT,
+        // Filters
+        #[Option(description: 'Show only entries with the ID')]
+        ?array $id = null,
+        #[Option(description: 'Show only entries with the given building ID (EGID, GEID)', name: 'building-id')]
+        ?array $buildingIds = null,
+        #[Option(description: 'Show only entries with the given country code', name: 'country-code')]
+        ?array $countryCodes = null,
+    ): int {
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
-            $ids = OptionHelper::getStringListOptionValues($input, 'id');
-            $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
-            $countryCodes = OptionHelper::getStringBackedEnumListOptionValues($input, 'country-code', CountryCodeEnum::class);
+            if ($limit < 1) {
+                throw new \UnexpectedValueException('Limit must be at least 1');
+            }
+            $ids = OptionHelper::getStringListOptionValues($id);
+            $buildingIds = OptionHelper::getStringListOptionValues($buildingIds);
+            $countryCodes = OptionHelper::getStringBackedEnumListOptionValues($countryCodes, CountryCodeEnum::class);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 

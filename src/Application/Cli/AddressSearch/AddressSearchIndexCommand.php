@@ -7,9 +7,9 @@ namespace App\Application\Cli\AddressSearch;
 use App\Application\Contract\BuildingAddressIndexerInterface;
 use App\Domain\AddressSearch\Exception\BuildingAddressNotFoundException;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Uid\Uuid;
@@ -18,27 +18,21 @@ use Symfony\Component\Uid\Uuid;
     name: 'app:address-search:index',
     description: 'Index (or update) a single BuildingAddress into the search index',
 )]
-final class AddressSearchIndexCommand extends Command
+final readonly class AddressSearchIndexCommand
 {
     public function __construct(
-        private readonly BuildingAddressIndexerInterface $addressIndexer,
-    ) {
-        parent::__construct();
-    }
+        private BuildingAddressIndexerInterface $addressIndexer,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('id', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'The BuildingAddress ID to index')
-            ->addOption('from-file', null, InputOption::VALUE_REQUIRED, 'The file containing one BuildingAddress ID per line to be imported ')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'The BuildingAddress ID to index')]
+        ?string $id = null,
+        #[Option(description: 'The file containing one BuildingAddress ID per line to be imported', name: 'from-file')]
+        ?string $file = null,
+    ): int {
         $io = new SymfonyStyle($input, $output);
-        $file = $input->getOption('from-file');
-        $id = $input->getOption('id');
         if (!$file && !$id) {
             $io->error([
                 'No source of BuildingAddress ID was provided',

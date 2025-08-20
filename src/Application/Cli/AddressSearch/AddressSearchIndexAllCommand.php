@@ -6,11 +6,10 @@ namespace App\Application\Cli\AddressSearch;
 
 use App\Application\Contract\BuildingAddressIndexerInterface;
 use App\Infrastructure\Model\CountryCodeEnum;
-use App\Infrastructure\Symfony\Console\OptionHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -18,25 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:address-search:index-all',
     description: 'Index ALL building addresses in the search index',
 )]
-final class AddressSearchIndexAllCommand extends Command
+final readonly class AddressSearchIndexAllCommand
 {
     public function __construct(
-        private readonly BuildingAddressIndexerInterface $addressIndexer,
-    ) {
-        parent::__construct();
-    }
+        private BuildingAddressIndexerInterface $addressIndexer,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('country-code', null, InputOption::VALUE_REQUIRED, 'Index only entries with the given country code')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Index only entries with the given country code', name: 'country-code')]
+        ?string $countryCodeText = null,
+    ): int {
         $io = new SymfonyStyle($input, $output);
-        $countryCode = OptionHelper::getStringBackedEnumOptionValue($input, 'country-code', CountryCodeEnum::class);
+        $countryCode = $countryCodeText ? CountryCodeEnum::from($countryCodeText) : null;
 
         $progress = $io->createProgressBar();
         $progress->maxSecondsBetweenRedraws(2);

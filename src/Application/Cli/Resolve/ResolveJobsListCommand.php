@@ -6,9 +6,9 @@ namespace App\Application\Cli\Resolve;
 
 use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -16,25 +16,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:resolve:jobs:list',
     description: 'Displays a list of current resolver jobs',
 )]
-final class ResolveJobsListCommand extends Command
+final readonly class ResolveJobsListCommand
 {
     private const string DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     public function __construct(
-        private readonly ResolverJobReadRepositoryInterface $repository,
-    ) {
-        parent::__construct();
-    }
+        private ResolverJobReadRepositoryInterface $repository,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this->addOption('with-metadata', '', InputOption::VALUE_NONE, 'Include the metadata of the jobs');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Include the metadata of the jobs', name: 'with-metadata')]
+        ?bool $withMetadata = false,
+    ): int {
         $io = new SymfonyStyle($input, $output);
-        $withMetadata = (bool) $input->getOption('with-metadata');
 
         $table = $io->createTable();
         $headers = ['ID', 'Type', 'State', 'Created at', 'Modified at', 'Expires at', 'Failure'];

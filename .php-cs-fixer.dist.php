@@ -7,12 +7,8 @@ use PhpCsFixer\Finder;
 use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 
 $finder = (new Finder())
-    ->in(__DIR__)
-    ->exclude([
-        'templates',
-        'tools',
-        'var',
-    ])
+    ->in(__DIR__.'/src')
+    ->in(__DIR__.'/tests')
 ;
 
 return (new Config())

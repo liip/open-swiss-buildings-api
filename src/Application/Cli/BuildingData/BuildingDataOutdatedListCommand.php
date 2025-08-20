@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Application\Cli\BuildingData;
 
 use App\Domain\BuildingData\Contract\BuildingEntranceReadRepositoryInterface;
-use App\Infrastructure\Symfony\Console\OptionHelper;
 use Psr\Clock\ClockInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -18,28 +17,26 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:building-data:outdated:list',
     description: 'Shows the outdated BuildingEntrances, that are not updated anymore',
 )]
-final class BuildingDataOutdatedListCommand extends Command
+final readonly class BuildingDataOutdatedListCommand
 {
     private const int DEFAULT_ACTIVE_DAYS_WINDOW = 90;
 
     private const string DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     public function __construct(
-        private readonly BuildingEntranceReadRepositoryInterface $buildingEntranceRepository,
-        private readonly ClockInterface $clock,
-    ) {
-        parent::__construct();
-    }
+        private BuildingEntranceReadRepositoryInterface $buildingEntranceRepository,
+        private ClockInterface $clock,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this->addOption('active-days', null, InputOption::VALUE_REQUIRED, 'Number of days in the past to consider an imported item as active', self::DEFAULT_ACTIVE_DAYS_WINDOW);
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $activeDays = OptionHelper::getPositiveIntOptionValue($input, 'active-days') ?? self::DEFAULT_ACTIVE_DAYS_WINDOW;
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of days in the past to consider an imported item as active', name: 'active-days')]
+        int $activeDays = self::DEFAULT_ACTIVE_DAYS_WINDOW,
+    ): int {
+        if ($activeDays < 1) {
+            throw new \InvalidArgumentException('Active days needs to be at least 1');
+        }
         $io = new SymfonyStyle($input, $output);
 
         $table = $io->createTable();

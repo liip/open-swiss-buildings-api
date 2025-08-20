@@ -6,13 +6,12 @@ namespace App\Application\Cli\AddressSearch;
 
 use App\Application\Contract\BuildingAddressSearcherInterface;
 use App\Domain\AddressSearch\Model\AddressSearch;
-use App\Infrastructure\Symfony\Console\OptionHelper;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -20,28 +19,26 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:address-search:search',
     description: 'Searches an address in the indexed data',
 )]
-final class AddressSearchCommand extends Command
+final readonly class AddressSearchCommand
 {
     private const int DEFAULT_LIMIT = 3;
 
     public function __construct(
-        private readonly BuildingAddressSearcherInterface $buildingAddressSearcher,
-    ) {
-        parent::__construct();
-    }
+        private BuildingAddressSearcherInterface $buildingAddressSearcher,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this->addArgument('search', InputArgument::REQUIRED, 'Address to search for')
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of results to show', self::DEFAULT_LIMIT)
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $search = $input->getArgument('search');
-        $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit', 1) ?? self::DEFAULT_LIMIT;
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument(description: 'Address to search for')]
+        string $search,
+        #[Option(description: 'Number of results to show')]
+        int $limit = self::DEFAULT_LIMIT,
+    ): int {
+        if ($limit < 1) {
+            throw new \InvalidArgumentException('Limit can not be less than 1');
+        }
+        $search = '' === $search ? null : $search;
         $filter = new AddressSearch(
             limit: $limit,
             filterByQuery: $search,

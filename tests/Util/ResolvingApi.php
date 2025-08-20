@@ -18,13 +18,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-final readonly class ResolvingApi
+final class ResolvingApi
 {
     use BrowserKitAssertionsTrait;
 
     public function __construct(
-        private KernelBrowser $client,
-        private ContainerInterface $container,
+        private readonly KernelBrowser $client,
+        private readonly ContainerInterface $container,
     ) {
         $this->cleanUp();
     }
