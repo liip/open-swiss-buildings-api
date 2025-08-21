@@ -6,6 +6,7 @@ doctrine:
                 url: '%env(resolve:DATABASE_URL)%'
                 profiling_collect_backtrace: '%kernel.debug%'
                 use_savepoints: true
+                schema_filter: ~^(messenger_messages)$~
             registry_ch:
                 url: 'sqlite:///%env(resolve:REGISTRY_DATABASE_CH_FILE)%'
                 profiling_collect_backtrace: '%kernel.debug%'

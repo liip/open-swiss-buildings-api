@@ -149,9 +149,9 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
     }
 
     /**
-     * @param array<string|null> $types
+     * @param array<string> $types
      *
-     * @return array<string|null>
+     * @return array<string>
      */
     private function buildTypes(array $types, int $rows): array
     {
