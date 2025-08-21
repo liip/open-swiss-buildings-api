@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b188dd6fba84b3654a11d271fa7f53b5",
+    "content-hash": "18f8a279d554da4611df40e72e94d600",
     "packages": [
         {
             "name": "brick/geo",
@@ -1330,12 +1330,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GwendolenLynch/doctrine-postgis.git",
-                "reference": "c82761b99023f09e2b9f5ea53baf8719ee7a5b02"
+                "reference": "9a88d1f66372e51bcd5b92fdef3a03306096a293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GwendolenLynch/doctrine-postgis/zipball/c82761b99023f09e2b9f5ea53baf8719ee7a5b02",
-                "reference": "c82761b99023f09e2b9f5ea53baf8719ee7a5b02",
+                "url": "https://api.github.com/repos/GwendolenLynch/doctrine-postgis/zipball/9a88d1f66372e51bcd5b92fdef3a03306096a293",
+                "reference": "9a88d1f66372e51bcd5b92fdef3a03306096a293",
                 "shasum": ""
             },
             "require": {
@@ -8746,8 +8746,8 @@
         {
             "package": "jsor/doctrine-postgis",
             "version": "dev-dbal-deprecations",
-            "alias": "v2.2",
-            "alias_normalized": "2.2.0.0"
+            "alias": "v2.3",
+            "alias_normalized": "2.3.0.0"
         }
     ],
     "minimum-stability": "stable",
