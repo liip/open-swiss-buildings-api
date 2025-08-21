@@ -175,9 +175,9 @@ final class DoctrineResolverAddressRepository extends ServiceEntityRepository im
     }
 
     /**
-     * @param array<string|null> $types
+     * @param array<string> $types
      *
-     * @return array<string|null>
+     * @return array<string>
      */
     private function buildTypes(array $types, int $rows): array
     {

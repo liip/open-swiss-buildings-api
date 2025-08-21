@@ -66,7 +66,7 @@ final readonly class DoctrineGeoJsonTaskResolver implements TaskResolverInterfac
     {
         $preparedStatement = $this->getPreparedInsertSqlStatement();
         $preparedStatement->bindValue('taskId', $taskId);
-        $count = $preparedStatement->executeStatement();
+        $count = (int) $preparedStatement->executeStatement();
         $this->logger->debug('Resolved Task {task_id}: {count} items processed', [
             'task_id' => (string) $taskId,
             'count' => $count,
