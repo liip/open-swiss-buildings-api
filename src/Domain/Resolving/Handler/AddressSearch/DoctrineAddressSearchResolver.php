@@ -46,7 +46,7 @@ final readonly class DoctrineAddressSearchResolver extends AbstractDatabaseResol
             $this->exactMatcher->matchExactly($job, 100);
             $this->exactMatcher->matchExactlyNormalized($job, 99);
 
-            // Matching on Steet
+            // Matching on Street
             $this->streetMatcher->matchStreetExact($job, 100);
             $this->streetMatcher->matchStreetNormalized($job, 99);
 
@@ -59,7 +59,7 @@ final readonly class DoctrineAddressSearchResolver extends AbstractDatabaseResol
             // Match by street search
             $this->searchStreetMatcher->matchStreetsBySearch($job, 95, 85);
 
-            // Matching on Steet-ID
+            // Matching on Street-ID
             $this->streetIdMatcher->matchOnFullStreet($job, 1);
             $this->streetIdMatcher->matchWithoutSuffix($job, 2);
             $this->streetIdMatcher->matchWitSuffix($job, 3);
