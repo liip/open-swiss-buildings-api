@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.10
+
+* [bugfix] Cleanup how we use with-contenv to run s6 jobs.
+
 ## v2.0.9
 
 * [performance] Increase batch size for registry import to maximum possible with postgres.
