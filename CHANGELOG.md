@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.11
+
+* [bugfix] Fix typo in prune registry query.
+
 ## v2.0.10
 
 * [bugfix] Cleanup how we use with-contenv to run s6 jobs.
