@@ -27,7 +27,7 @@ services:
       - database_data:/var/lib/postgresql/data:rw
 
   meilisearch:
-    image: getmeili/meilisearch:v1.13.3
+    image: getmeili/meilisearch:v1.19.1
     restart: unless-stopped
     environment:
       MEILI_NO_ANALYTICS: 'true'
