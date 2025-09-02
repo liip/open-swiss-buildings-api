@@ -209,7 +209,7 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         $importDateBefore = $this->clock->now()->sub(new \DateInterval("P{$activeDays}D"));
 
         $qb = $this->createQueryBuilder('b')
-            ->where('b.importedAt <=  :importedat')
+            ->where('b.importedAt <=  :importedAt')
             ->setParameter('importedAt', $importDateBefore, Types::DATETIME_IMMUTABLE)
         ;
 
