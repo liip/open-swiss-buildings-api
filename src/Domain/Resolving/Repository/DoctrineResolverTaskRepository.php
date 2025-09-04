@@ -12,9 +12,11 @@ use App\Domain\Resolving\Exception\ResolverJobFailedException;
 use App\Domain\Resolving\Model\Job\ResolverTask;
 use App\Domain\Resolving\Model\Job\WriteResolverTask;
 use App\Domain\Resolving\Model\ResolverTypeEnum;
+use App\Infrastructure\Doctrine\BatchInsertStatementBuilder;
 use App\Infrastructure\Pagination;
 use App\Infrastructure\PostGis\SRIDEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Statement;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -29,7 +31,7 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
 {
     private const string DQL_NEW_TASK = 'NEW ' . ResolverTask::class . '(t.id, IDENTITY(t.job), t.confidence, t.matchType, t.matchingBuildingId, t.matchingMunicipalityCode, t.matchingEntranceId, t.additionalData)';
     // postgres is limited to 65k parameters, and we have 10 per row,
-    private const int BATCH_SIZE = 6500;
+    private const int INSERT_BATCH_SIZE = 6500;
 
     public function __construct(
         ManagerRegistry $registry,
@@ -53,33 +55,48 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
 
     public function store(iterable $tasks): void
     {
-        $columns = [
-            'id' => '?',
-            'job_id' => '?',
-            'confidence' => '?',
-            'match_type' => '?',
-            'matching_unique_hash' => '?',
-            'matching_building_id' => '?',
-            'matching_municipality_code' => '?',
-            'matching_entrance_id' => '?',
+        $connection = $this->getEntityManager()->getConnection();
+
+        $columnDefinitions = [
+            'id' => ':id%i%',
+            'job_id' => ':job_id%i%',
+            'confidence' => ':confidence%i%',
+            'match_type' => ':match_type%i%',
+            'matching_unique_hash' => ':matching_unique_hash%i%',
+            'matching_building_id' => ':matching_building_id%i%',
+            'matching_municipality_code' => ':matching_municipality_code%i%',
+            'matching_entrance_id' => ':matching_entrance_id%i%',
             // The GeoJson must contain the CRS information about the coordinate system used in it, and we must
             // transform and store it with the WGS84 coordinate system
             // This column only accepts 2D geometries, so we need to use `ST_Force2D()` function on the data
-            'matching_geo_json' => 'ST_Force2D(ST_Transform(ST_GeomFromGeoJSON(?), ' . SRIDEnum::WGS84->value . '))',
-            'additional_data' => '?',
+            'matching_geo_json' => 'ST_Force2D(ST_Transform(ST_GeomFromGeoJSON(:matching_geo_json%i%), ' . SRIDEnum::WGS84->value . '))',
+            'additional_data' => ':additional_data%i%',
         ];
-        $types = [Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::STRING, Types::JSON];
-        \assert(\count($types) === \count($columns)); /** @phpstan-ignore function.alreadyNarrowedType, identical.alwaysTrue */
-        $sql = $this->buildInsertSql($columns, self::BATCH_SIZE);
-        $typeMap = $this->buildTypes($types, self::BATCH_SIZE);
-        $connection = $this->getEntityManager()->getConnection();
+        $batchSql = BatchInsertStatementBuilder::generate(
+            $this->getClassMetadata()->getTableName(),
+            self::INSERT_BATCH_SIZE,
+            $columnDefinitions,
+        );
+        $batchStmt = $connection->prepare($batchSql);
+
+        $bindValues = function (Statement $stmt, int $i, WriteResolverTask $task): void {
+            $stmt->bindValue("id{$i}", $task->id);
+            $stmt->bindValue("job_id{$i}", $task->jobId);
+            $stmt->bindValue("confidence{$i}", $task->confidence);
+            $stmt->bindValue("match_type{$i}", $task->matchType);
+            $stmt->bindValue("matching_unique_hash{$i}", $this->buildMatchingUniqueHash($task));
+            $stmt->bindValue("matching_building_id{$i}", $task->matchingBuildingId);
+            $stmt->bindValue("matching_municipality_code{$i}", $task->matchingMunicipalityCode);
+            $stmt->bindValue("matching_entrance_id{$i}", $task->matchingEntranceId);
+            $stmt->bindValue("matching_geo_json{$i}", $task->matchingGeoJson);
+            $stmt->bindValue("additional_data{$i}", $task->additionalData->getAsList(), Types::JSON);
+        };
 
         $matchingUniqueHashes = [];
+        $batchEntries = [];
+        $i = 1;
 
         try {
-            $batch = [];
-            $taskIds = [];
-            $batchCount = 0;
             foreach ($tasks as $task) {
                 $matchingUniqueHash = $this->buildMatchingUniqueHash($task);
                 if (\array_key_exists($matchingUniqueHash, $matchingUniqueHashes)) {
@@ -87,33 +104,36 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
                     continue;
                 }
                 $matchingUniqueHashes[$matchingUniqueHash] = [];
-                $taskIds[] = $task->id;
-                $batch[] = $task->id;
-                $batch[] = $task->jobId;
-                $batch[] = $task->confidence;
-                $batch[] = $task->matchType;
-                $batch[] = $matchingUniqueHash;
-                $batch[] = $task->matchingBuildingId;
-                $batch[] = $task->matchingMunicipalityCode;
-                $batch[] = $task->matchingEntranceId;
-                $batch[] = $task->matchingGeoJson;
-                $batch[] = $task->additionalData->getAsList();
+                $batchEntries[] = $task;
 
-                if (self::BATCH_SIZE === ++$batchCount) {
-                    $connection->executeStatement($sql, $batch, $typeMap);
-                    foreach ($taskIds as $taskId) {
-                        $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($taskId));
+                if (self::INSERT_BATCH_SIZE === $i) {
+                    $i = 1;
+                    foreach ($batchEntries as $entry) {
+                        $bindValues($batchStmt, $i++, $entry);
                     }
-                    $batch = [];
-                    $batchCount = 0;
-                    $taskIds = [];
+                    $batchStmt->executeStatement();
+                    foreach ($batchEntries as $insertedTask) {
+                        $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($insertedTask->id));
+                    }
+                    $batchEntries = [];
+                    $i = 0;
                 }
+                ++$i;
             }
-            if ($batchCount > 0) {
-                $sql = $this->buildInsertSql($columns, $batchCount);
-                $connection->executeStatement($sql, $batch, $this->buildTypes($types, $batchCount));
-                foreach ($taskIds as $taskId) {
-                    $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($taskId));
+            if (\count($batchEntries) > 0) {
+                $batchSql = BatchInsertStatementBuilder::generate(
+                    $this->getClassMetadata()->getTableName(),
+                    \count($batchEntries),
+                    $columnDefinitions,
+                );
+                $batchStmt = $connection->prepare($batchSql);
+                $i = 1;
+                foreach ($batchEntries as $task) {
+                    $bindValues($batchStmt, $i++, $task);
+                }
+                $batchStmt->executeStatement();
+                foreach ($batchEntries as $task) {
+                    $this->eventDispatcher->dispatch(new ResolverTaskHasBeenCreated($task->id));
                 }
             }
             $hashClashes = array_filter($matchingUniqueHashes);
@@ -131,31 +151,6 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
         } catch (\Throwable $e) {
             throw ResolverJobFailedException::wrap($e);
         }
-    }
-
-    /**
-     * @param array<string, string> $columns
-     */
-    private function buildInsertSql(array $columns, int $rows): string
-    {
-        $placeholderRow = '(' . implode(',', $columns) . ')';
-
-        return \sprintf(
-            'INSERT INTO %s AS t (%s) VALUES %s',
-            $this->getClassMetadata()->getTableName(),
-            implode(',', array_keys($columns)),
-            str_repeat("{$placeholderRow},", $rows - 1) . $placeholderRow,
-        );
-    }
-
-    /**
-     * @param array<string> $types
-     *
-     * @return array<string>
-     */
-    private function buildTypes(array $types, int $rows): array
-    {
-        return array_merge(...array_fill(0, $rows, $types));
     }
 
     private function buildUpdateSql(): string
