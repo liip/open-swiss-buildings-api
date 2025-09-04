@@ -115,29 +115,29 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
                 $streetNameAbbreviated = $buildingEntrance->streetAbbreviated->streetName;
             }
 
-            $stmt->bindValue('id' . $i, Uuid::v7());
-            $stmt->bindValue('building_id' . $i, $buildingEntrance->buildingId);
-            $stmt->bindValue('entrance_id' . $i, $buildingEntrance->entranceId);
-            $stmt->bindValue('address_id' . $i, $buildingEntrance->addressId);
-            $stmt->bindValue('country_code' . $i, $buildingEntrance->countryCode->value);
-            $stmt->bindValue('street_id' . $i, $buildingEntrance->streetId);
-            $stmt->bindValue('street_name' . $i, $streetName ?? '');
-            $stmt->bindValue('street_name_normalized' . $i, null !== $streetName ? $this->normalizer->normalize($streetName) : '');
-            $stmt->bindValue('street_name_abbreviated' . $i, $streetNameAbbreviated ?? '');
-            $stmt->bindValue('street_name_abbreviated_normalized' . $i, null !== $streetNameAbbreviated ? $this->normalizer->normalize($streetNameAbbreviated) : '');
-            $stmt->bindValue('street_house_number' . $i, $buildingEntrance->street->number->number ?? 0);
-            $stmt->bindValue('street_house_number_suffix' . $i, $buildingEntrance->street->number->suffix ?? '');
-            $stmt->bindValue('street_house_number_suffix_normalized' . $i, $this->normalizer->normalize($buildingEntrance->street->number->suffix ?? ''));
-            $stmt->bindValue('street_name_language' . $i, $buildingEntrance->streetNameLanguage->value);
-            $stmt->bindValue('postal_code' . $i, $buildingEntrance->postalCode);
-            $stmt->bindValue('locality' . $i, $buildingEntrance->locality);
-            $stmt->bindValue('locality_normalized' . $i, $this->normalizer->normalizeLocality($buildingEntrance->locality, $buildingEntrance->municipality, $buildingEntrance->cantonCode));
-            $stmt->bindValue('municipality_code' . $i, $buildingEntrance->municipalityCode);
-            $stmt->bindValue('municipality' . $i, $buildingEntrance->municipality);
-            $stmt->bindValue('canton' . $i, $buildingEntrance->cantonCode);
-            $stmt->bindValue('coordinates_lv95' . $i, $coordinatesLV95, Types::JSON);
-            $stmt->bindValue('geo_coordinates_lv95' . $i, $geoCoordinatesLV95);
-            $stmt->bindValue('imported_at' . $i, $this->clock->now(), Types::DATETIME_IMMUTABLE);
+            $stmt->bindValue("id{$i}", Uuid::v7());
+            $stmt->bindValue("building_id{$i}", $buildingEntrance->buildingId);
+            $stmt->bindValue("entrance_id{$i}", $buildingEntrance->entranceId);
+            $stmt->bindValue("address_id{$i}", $buildingEntrance->addressId);
+            $stmt->bindValue("country_code{$i}", $buildingEntrance->countryCode->value);
+            $stmt->bindValue("street_id{$i}", $buildingEntrance->streetId);
+            $stmt->bindValue("street_name{$i}", $streetName ?? '');
+            $stmt->bindValue("street_name_normalized{$i}", null !== $streetName ? $this->normalizer->normalize($streetName) : '');
+            $stmt->bindValue("street_name_abbreviated{$i}", $streetNameAbbreviated ?? '');
+            $stmt->bindValue("street_name_abbreviated_normalized{$i}", null !== $streetNameAbbreviated ? $this->normalizer->normalize($streetNameAbbreviated) : '');
+            $stmt->bindValue("street_house_number{$i}", $buildingEntrance->street->number->number ?? 0);
+            $stmt->bindValue("street_house_number_suffix{$i}", $buildingEntrance->street->number->suffix ?? '');
+            $stmt->bindValue("street_house_number_suffix_normalized{$i}", $this->normalizer->normalize($buildingEntrance->street->number->suffix ?? ''));
+            $stmt->bindValue("street_name_language{$i}", $buildingEntrance->streetNameLanguage->value);
+            $stmt->bindValue("postal_code{$i}", $buildingEntrance->postalCode);
+            $stmt->bindValue("locality{$i}", $buildingEntrance->locality);
+            $stmt->bindValue("locality_normalized{$i}", $this->normalizer->normalizeLocality($buildingEntrance->locality, $buildingEntrance->municipality, $buildingEntrance->cantonCode));
+            $stmt->bindValue("municipality_code{$i}", $buildingEntrance->municipalityCode);
+            $stmt->bindValue("municipality{$i}", $buildingEntrance->municipality);
+            $stmt->bindValue("canton{$i}", $buildingEntrance->cantonCode);
+            $stmt->bindValue("coordinates_lv95{$i}", $coordinatesLV95, Types::JSON);
+            $stmt->bindValue("geo_coordinates_lv95{$i}", $geoCoordinatesLV95);
+            $stmt->bindValue("imported_at{$i}", $this->clock->now(), Types::DATETIME_IMMUTABLE);
         };
 
         $batchEntries = [];
@@ -145,9 +145,12 @@ final class BuildingEntranceRepository extends ServiceEntityRepository implement
         foreach ($buildingEntrances as $buildingEntrance) {
             $batchEntries[] = $buildingEntrance;
 
-            $bindValues($batchStmt, $i, $buildingEntrance);
-
             if (self::INSERT_BATCH_SIZE === $i) {
+                $i = 1;
+                foreach ($batchEntries as $entry) {
+                    $bindValues($batchStmt, $i++, $entry);
+                }
+
                 $batchStmt->executeStatement();
                 $batchEntries = [];
                 $i = 0;
