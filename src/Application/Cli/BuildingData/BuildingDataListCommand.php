@@ -13,9 +13,9 @@ use App\Infrastructure\Symfony\Console\OptionHelper;
 use App\Infrastructure\Symfony\Console\Paginator;
 use Psr\Clock\ClockInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -39,34 +39,44 @@ final class BuildingDataListCommand extends Command
     {
         $languages  = implode('|', array_map(static fn(LanguageEnum $case) => $case->value, LanguageEnum::cases()));
 
-        $this
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of items to show', self::DEFAULT_LIMIT)
-            // Filters
-            ->addOption('country-code', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given country')
-            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the building ID (EGID,GEID)')
-            ->addOption('entrance-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries with the entrance ID (EDID)')
-            ->addOption('language', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries in the given language, possible values: ' . $languages)
-            ->addOption('canton', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries in the given canton')
-            ->addOption('municipality', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries of the given municipality, case sensitive')
-            ->addOption('street-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given street-name, case sensitive')
-            ->addOption('street-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show only entries for the given street ID, if available')
-        ;
+
+
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of items to show')]
+        int $limit = self::DEFAULT_LIMIT,
+        // Filters
+        #[Option(description: 'Show only entries for the given country', name: 'country-code')]
+        ?array $countryCode = null,
+        #[Option(description: 'Show only entries with the building ID (EGID,GEID)', name: 'building-id')]
+        ?array $buildingId = null,
+        #[Option(description: 'Show only entries with the entrance ID (EDID)', name: 'building-id')]
+        ?array $entranceId = null,
+        #[Option(description: 'Show only entries in the given language, possible values: de|fr|it|rm')]
+        ?array $languages = null,
+        #[Option(description: 'Show only entries in the given canton')]
+        ?array $canton = null,
+        #[Option(description: 'Show only entries of the given municipality, case sensitive')]
+        ?string $municipality = null,
+        #[Option(description: 'Show only entries for the given street-name, case sensitive', name: 'street-name')]
+        ?string $streetName = null,
+        #[Option(description: 'Show only entries for the given street ID, if available', name: 'street-id')]
+        ?string $streetId = null,
+    ): int {
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
-            $countryCode = OptionHelper::getStringBackedEnumListOptionValues($input, 'country-code', CountryCodeEnum::class);
-            $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
-            $entranceIds = OptionHelper::getStringListOptionValues($input, 'entrance-id');
-            $cantons = OptionHelper::getStringListOptionValues($input, 'canton');
-            $municipalities = OptionHelper::getStringListOptionValues($input, 'municipality');
-            $streetNames = OptionHelper::getStringListOptionValues($input, 'street-name');
-            $streetIds = OptionHelper::getStringListOptionValues($input, 'street-id');
-            $languages = OptionHelper::getStringBackedEnumListOptionValues($input, 'language', LanguageEnum::class);
+            $countryCode = OptionHelper::getStringBackedEnumListOptionValues($countryCode, CountryCodeEnum::class);
+            $buildingIds = OptionHelper::getStringListOptionValues($buildingId);
+            $entranceIds = OptionHelper::getStringListOptionValues($entranceId);
+            $cantons = OptionHelper::getStringListOptionValues($canton);
+            $municipalities = OptionHelper::getStringListOptionValues($municipality);
+            $streetNames = OptionHelper::getStringListOptionValues($streetName);
+            $streetIds = OptionHelper::getStringListOptionValues($streetId);
+            $languages = OptionHelper::getStringBackedEnumListOptionValues($languages, LanguageEnum::class);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 

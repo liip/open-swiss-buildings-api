@@ -17,16 +17,14 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
     name: 'app:registry:ch:download',
     description: 'Downloads the Swiss Federal-Data about buildings',
 )]
-final class RegistryChDownloadCommand extends Command
+final readonly class RegistryChDownloadCommand
 {
     public function __construct(
         #[Autowire(service: RegistryDataDownloader::class)]
-        private readonly RegistryDataDownloaderInterface $downloader,
-    ) {
-        parent::__construct();
-    }
+        private RegistryDataDownloaderInterface $downloader,
+    ) {}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $progressBar = null;
         if ($input->isInteractive()) {
