@@ -1,4 +1,3 @@
 #!/command/execlineb -P
 
-with-contenv
 php-fpm84

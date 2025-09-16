@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-with-contenv
+#!/usr/bin/with-contenv sh
 
 # Run the given command as PHP user, do not `su php` when not needed
 COMMAND=$1

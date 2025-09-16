@@ -1,4 +1,3 @@
-#!/bin/sh
-with-contenv
+#!/usr/bin/with-contenv sh
 
 /opt/run-as-php.sh "/www/bin/console messenger:consume --limit=10 scheduler_default async"

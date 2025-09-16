@@ -65,12 +65,7 @@ final readonly class BuildingAddress implements \JsonSerializable
      */
     public static function extractIdentifier(Uuid $uuidV7): string
     {
-        $s = $uuidV7->toRfc4122();
-        if ('' === $s) {
-            throw new \InvalidArgumentException('ID is empty');
-        }
-
-        return $s;
+        return $uuidV7->toRfc4122();
     }
 
     /**

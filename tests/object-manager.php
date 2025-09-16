@@ -104,7 +104,7 @@ return new class ($doctrine, $metadataFactory) implements ObjectManager {
         return $this->metadataFactory;
     }
 
-    public function find($className, $id): void
+    public function find($className, $id): ?object
     {
         throw new Exception(__FILE__);
     }
@@ -149,7 +149,12 @@ return new class ($doctrine, $metadataFactory) implements ObjectManager {
         throw new Exception(__FILE__);
     }
 
-    public function contains($object): void
+    public function contains($object): bool
+    {
+        throw new Exception(__FILE__);
+    }
+
+    public function isUninitializedObject(mixed $value): bool
     {
         throw new Exception(__FILE__);
     }

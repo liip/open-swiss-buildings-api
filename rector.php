@@ -12,6 +12,7 @@ use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector;
 use Rector\Symfony\CodeQuality\Rector\Class_\EventListenerToEventSubscriberRector;
+use Rector\Symfony\Symfony73\Rector\Class_\InvokableCommandInputAttributeRector;
 
 $symfonyContainer = __DIR__ . '/var/cache/test/App_KernelTestDebugContainer.xml';
 if (file_exists(__DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml')) {
@@ -58,5 +59,9 @@ return RectorConfig::configure()
     ->withRules([
         ReadOnlyPropertyRector::class,
         ReadOnlyClassRector::class,
+    ])
+    ->withSkip([
+        // disable until symfony 7.4, see https://github.com/liip/open-swiss-buildings-api/pull/234
+        InvokableCommandInputAttributeRector::class,
     ])
 ;
