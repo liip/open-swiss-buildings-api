@@ -15,15 +15,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:address-search:stats',
     description: 'Provides stats for the indexed data',
 )]
-final class AddressSearchStatsCommand extends Command
+final readonly class AddressSearchStatsCommand
 {
     public function __construct(
-        private readonly BuildingAddressStatsProviderInterface $statsProvider,
-    ) {
-        parent::__construct();
-    }
+        private BuildingAddressStatsProviderInterface $statsProvider,
+    ) {}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $list[] = ['Indexed addresses' => $this->statsProvider->countIndexedAddresses()];
 

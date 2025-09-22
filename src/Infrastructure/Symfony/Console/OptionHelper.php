@@ -14,21 +14,16 @@ final class OptionHelper
     /**
      * @return non-empty-list<non-empty-string>|null
      */
-    public static function getStringListOptionValues(InputInterface $input, string $optionName): ?array
+    public static function getStringListOptionValues(?array $values): ?array
     {
-        $values = $input->getOption($optionName);
         if (null === $values || [] === $values) {
             return null;
-        }
-
-        if (!\is_array($values)) {
-            throw new \UnexpectedValueException("{$optionName} must be an array!");
         }
 
         $result = [];
         foreach ($values as $value) {
             if (!\is_string($value) || '' === $value) {
-                throw new \UnexpectedValueException("Each {$optionName} must be a non-empty string!");
+                throw new \UnexpectedValueException('Each option must be a non-empty string!');
             }
             $result[] = $value;
         }
@@ -43,9 +38,8 @@ final class OptionHelper
      *
      * @return non-empty-list<T>|null
      */
-    public static function getStringBackedEnumListOptionValues(InputInterface $input, string $optionName, string $enumName): ?array
+    public static function getStringBackedEnumListOptionValues(?array $values, string $enumName): ?array
     {
-        $values = self::getStringListOptionValues($input, $optionName);
         if (null === $values) {
             return null;
         }
@@ -56,27 +50,6 @@ final class OptionHelper
         }
 
         return $enums;
-    }
-
-    /**
-     * @template T of BackedEnum
-     *
-     * @param class-string<T> $enumName
-     *
-     * @return T|null
-     */
-    public static function getStringBackedEnumOptionValue(InputInterface $input, string $optionName, string $enumName): ?\BackedEnum
-    {
-        $value = $input->getOption($optionName);
-        if (null === $value) {
-            return null;
-        }
-
-        if (!\is_string($value)) {
-            throw new \UnexpectedValueException("Error: {$optionName} must be a single string value!");
-        }
-
-        return $enumName::from($value);
     }
 
     /**
