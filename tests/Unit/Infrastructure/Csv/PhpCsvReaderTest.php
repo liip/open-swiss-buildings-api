@@ -291,7 +291,7 @@ final class PhpCsvReaderTest extends TestCase
     }
 
     /**
-     * @return array<string, array{string}>
+     * @return iterable<string, array{string}>
      */
     public static function provideBomIsRemovedCases(): iterable
     {
@@ -323,7 +323,7 @@ final class PhpCsvReaderTest extends TestCase
     }
 
     /**
-     * @return array<array{non-empty-string|null, string[]}>
+     * @return iterable<array{non-empty-string|null, string[]}>
      */
     public static function provideDataCanBeReadInDifferentCharsetCases(): iterable
     {
