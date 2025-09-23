@@ -11,6 +11,7 @@ use App\Domain\Resolving\Entity\ResolverAddressMatch;
 use App\Domain\Resolving\Entity\ResolverResult;
 use App\Domain\Resolving\Entity\ResolverTask;
 use App\Domain\Resolving\Exception\ResolverJobFailedException;
+use App\Domain\Resolving\Exception\RetryableResolvingErrorException;
 use App\Domain\Resolving\Handler\AbstractDatabaseResolver;
 use App\Domain\Resolving\Handler\TasksResultsConditions;
 use App\Domain\Resolving\Model\AdditionalData;
@@ -73,6 +74,9 @@ final readonly class DoctrineAddressSearchResolver extends AbstractDatabaseResol
             // Collecting all possible tasks
             $this->buildTasks($job);
             $this->resolveTasksWithFiltering($job);
+        } catch (RetryableResolvingErrorException|ResolverJobFailedException $e) {
+            // do not wrap the exceptions we are expected to raise, avoid hiding the retryable exceptions inside the non-retryable
+            throw $e;
         } catch (\Throwable $e) {
             throw ResolverJobFailedException::wrap($e);
         }
