@@ -49,7 +49,10 @@ final class BuildingDataOutdatedPruneCommand extends Command
                 $io->success("Deleted {$count} outdated building data entries");
             }
         } else {
-            $io->note('Found no building data entries to cleanup');
+            $io->note('Found no building data entries to cleanup in database');
+            // we still call the delete method even though it will not change the database.
+            // we need to trigger the event that leads to meilisearch being cleaned up as well.
+            $this->buildingEntranceWriteRepository->deleteOutdatedBuildingEntrances($activeDays);
         }
 
         return Command::SUCCESS;

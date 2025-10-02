@@ -37,7 +37,7 @@ final class MeilisearchAddressSearchRepositoryTest extends TestCase
         $indexClient = $this->mockGetBuildingEntranceIndex();
         $indexClient->expects($this->once())
             ->method('deleteDocuments')
-            ->with(['filter' => 'importedAt < 20201112'])
+            ->with(['filter' => '(importedAt < 20201112 OR importedAt NOT EXISTS)'])
             ->willReturn(['taskUid' => 'task-id'])
         ;
 

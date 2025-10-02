@@ -151,7 +151,10 @@ final readonly class MeilisearchAddressSearchRepository implements
     public function deleteByImportedAtBefore(\DateTimeImmutable $dateTime, ?CountryCodeEnum $countryCode = null): void
     {
         $filters = [];
-        $filters[] = BuildingAddressEntity::FIELD_IMPORTED_AT . ' < ' . $dateTime->format('Ymd');
+        $filters[] = FilterBuilder::mergeOrFilters([
+            BuildingAddressEntity::FIELD_IMPORTED_AT . ' < ' . $dateTime->format('Ymd'),
+            BuildingAddressEntity::FIELD_IMPORTED_AT . ' NOT EXISTS',
+        ]);
         if ($countryCode instanceof CountryCodeEnum) {
             $filters[] = BuildingAddressEntity::FIELD_COUNTRY_CODE . ' = ' . $countryCode->value;
         }
