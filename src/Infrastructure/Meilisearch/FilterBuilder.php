@@ -19,18 +19,30 @@ final class FilterBuilder
 
     /**
      * @param list<non-empty-string> $filters
+     *
+     * @return non-empty-string
      */
     public static function mergeAndFilters(array $filters): string
     {
+        if (0 === \count($filters)) {
+            throw new \InvalidArgumentException('No criteria');
+        }
+
         return implode(' AND ', $filters);
     }
 
     /**
      * @param list<non-empty-string> $filters
+     *
+     * @return non-empty-string
      */
     public static function mergeOrFilters(array $filters): string
     {
-        return implode(' OR ', $filters);
+        if (0 === \count($filters)) {
+            throw new \InvalidArgumentException('No criteria');
+        }
+
+        return '(' . implode(' OR ', $filters) . ')';
     }
 
     /** @codeCoverageIgnore  */
