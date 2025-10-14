@@ -30,7 +30,11 @@ final class Autocomplete
         $i = 0;
 
         $sttyMode = shell_exec('stty -g');
-        $isStdin = 'php://stdin' === stream_get_meta_data($inputStream)['uri'];
+        $metadata = stream_get_meta_data($inputStream);
+        if (!\array_key_exists('uri', $metadata)) {
+            throw new \RuntimeException('Input stream has no URI');
+        }
+        $isStdin = 'php://stdin' === $metadata['uri'];
         $r = [$inputStream];
         $w = [];
 
