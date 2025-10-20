@@ -14,3 +14,21 @@ updates:
       interval: "weekly"
     allow:
       - dependency-type: "all"
+    groups:
+      doctrine-updates:
+        patterns:
+          - "doctrine/*"
+        update-types:
+          - "minor"
+          - "patch"
+      symfony-updates:
+        patterns:
+          - "symfony/*"
+        update-types:
+          - "minor"
+          - "patch"
+      minor-updates:
+        update-types:
+          - "minor"
+          - "patch"
+    automerge: true
