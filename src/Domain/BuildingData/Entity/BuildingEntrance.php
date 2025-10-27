@@ -16,22 +16,23 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Jsor\Doctrine\PostGIS\Types\PostGISType;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: BuildingEntranceRepository::class)]
-#[ORM\Index(fields: ['buildingId'], name: 'buildingId_idx')]
-#[ORM\Index(fields: ['entranceId'], name: 'entranceId_idx')]
-#[ORM\Index(fields: ['importedAt'], name: 'importedAt_idx')]
-#[ORM\Index(fields: ['cantonCode'], name: 'cantonCode_idx')]
-#[ORM\Index(fields: ['countryCode'], name: 'countryCode_idx')]
-#[ORM\Index(fields: ['streetName', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'], name: 'building_entrance_idx')]
-#[ORM\Index(fields: ['streetNameAbbreviated', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'], name: 'building_entrance_abbreviation_idx')]
-#[ORM\Index(fields: ['streetNameNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'], name: 'building_entrance_normalized_idx')]
-#[ORM\Index(fields: ['streetNameAbbreviatedNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'], name: 'building_entrance_abbreviation_normalized_idx')]
-#[ORM\Index(fields: ['streetId', 'streetHouseNumber', 'streetHouseNumberSuffix'], name: 'building_entrance_street_id_idx')]
-#[ORM\Index(fields: ['streetId', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized'], name: 'building_entrance_street_id_normalized_idx')]
+#[ORM\Index(name: 'buildingId_idx', fields: ['buildingId'])]
+#[ORM\Index(name: 'entranceId_idx', fields: ['entranceId'])]
+#[ORM\Index(name: 'importedAt_idx', fields: ['importedAt'])]
+#[ORM\Index(name: 'cantonCode_idx', fields: ['cantonCode'])]
+#[ORM\Index(name: 'countryCode_idx', fields: ['countryCode'])]
+#[ORM\Index(name: 'building_entrance_idx', fields: ['streetName', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'])]
+#[ORM\Index(name: 'building_entrance_abbreviation_idx', fields: ['streetNameAbbreviated', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'])]
+#[ORM\Index(name: 'building_entrance_normalized_idx', fields: ['streetNameNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'])]
+#[ORM\Index(name: 'building_entrance_abbreviation_normalized_idx', fields: ['streetNameAbbreviatedNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'])]
+#[ORM\Index(name: 'building_entrance_street_id_idx', fields: ['streetId', 'streetHouseNumber', 'streetHouseNumberSuffix'])]
+#[ORM\Index(name: 'building_entrance_street_id_normalized_idx', fields: ['streetId', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized'])]
 // The following is not supported by Doctrine. Added manually as a migration and set up IgnoredFieldsListener to have Migrations Diff not try to remove it.
-// #[ORM\Index(fields: ['geoCoordinatesWgs84'], name: 'building_entrance_geo_coordinates_wgs84_idx_custom'), type: 'USING GIST']
+// #[ORM\Index(name: 'building_entrance_geo_coordinates_wgs84_idx_custom'), fields: ['geoCoordinatesWgs84'], type: 'USING GIST']
 #[ORM\UniqueConstraint(name: 'building_entrance_language', fields: ['countryCode', 'buildingId', 'entranceId', 'streetNameLanguage'])]
 class BuildingEntrance
 {
@@ -39,7 +40,7 @@ class BuildingEntrance
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
-    public UuidV7 $id;
+    public Uuid $id;
 
     /**
      * Country code.
