@@ -46,7 +46,7 @@ final readonly class SearchMatcher
     {
         foreach ($this->addressRepository->getNonMatchedAddresses($job->id) as $address) {
             // Skip addresses without a street, ZIP code or locality
-            if (null === $address->street || null === $address->postalCode || null === $address->locality) {
+            if (\in_array(null, [$address->street, $address->postalCode, $address->locality], true)) {
                 continue;
             }
 

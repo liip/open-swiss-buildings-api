@@ -124,11 +124,12 @@ final class DoctrineResolverResultRepository extends ServiceEntityRepository imp
     private function createModel(array $row): ResolverResult
     {
         $address = null;
-        if (null !== ($municipalityCode = Decoder::readOptionalString($row, 'municipalityCode'))
-            && null !== ($postalCode = Decoder::readOptionalString($row, 'postalCode'))
-            && null !== ($locality = Decoder::readOptionalString($row, 'locality'))
-            && null !== ($streetName = Decoder::readOptionalNonEmptyString($row, 'streetName', true))
-            && null !== ($countryCode = Decoder::readOptionalNonEmptyString($row, 'countryCode', true))
+        $municipalityCode = Decoder::readOptionalString($row, 'municipalityCode');
+        $postalCode = Decoder::readOptionalString($row, 'postalCode');
+        $locality = Decoder::readOptionalString($row, 'locality');
+        $streetName = Decoder::readOptionalNonEmptyString($row, 'streetName', true);
+        $countryCode = Decoder::readOptionalNonEmptyString($row, 'countryCode', true);
+        if (!\in_array(null, [$municipalityCode, $postalCode, $locality, $streetName, $countryCode], true)
         ) {
             $streetHouseNumber = Decoder::readOptionalPositiveInt($row, 'streetHouseNumber', true);
             $numberSuffix = Decoder::readOptionalNonEmptyString($row, 'streetHouseNumberSuffix', true);

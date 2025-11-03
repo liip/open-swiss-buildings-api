@@ -122,7 +122,7 @@ final class AdditionalData implements \JsonSerializable
         $postalCode = $data[self::DATA_ADDRESS_POSTAL_CODE] ?? null;
         $locality = $data[self::DATA_ADDRESS_LOCALITY] ?? null;
 
-        if (null === $street || null === $postalCode || null === $locality) {
+        if (\in_array(null, [$street, $postalCode, $locality], true)) {
             return null;
         }
 

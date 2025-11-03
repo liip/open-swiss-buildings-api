@@ -35,7 +35,7 @@ final class BatchInsertStatementBuilder
 
         if ([] !== $conflictColumns && [] !== $conflictUpdates) {
             $cColumns = implode(', ', $conflictColumns);
-            $cUpdates = implode(', ', array_map(static fn($c): string => "{$c} = excluded.{$c}", $conflictUpdates));
+            $cUpdates = implode(', ', array_map(static fn(string $c): string => "{$c} = excluded.{$c}", $conflictUpdates));
 
             $sql .= " ON CONFLICT ({$cColumns}) DO UPDATE SET {$cUpdates}";
         }
