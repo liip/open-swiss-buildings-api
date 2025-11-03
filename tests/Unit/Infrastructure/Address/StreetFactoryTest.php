@@ -16,7 +16,7 @@ final class StreetFactoryTest extends TestCase
 {
     public function testStreetWithoutNumberIsCreated(): void
     {
-        $s = StreetFactory::createFromSeparateStrings('Hauptstrasse', null);
+        $s = StreetFactory::createFromSeparateStrings('Hauptstrasse');
 
         $this->assertNotInstanceOf(StreetNumberInterface::class, $s->number);
     }

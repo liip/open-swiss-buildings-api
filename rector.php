@@ -45,7 +45,6 @@ return RectorConfig::configure()
         codeQuality: true,
         typeDeclarations: true,
         instanceOf: true,
-        strictBooleans: true,
         phpunitCodeQuality: true,
         doctrineCodeQuality: true,
         symfonyCodeQuality: true,

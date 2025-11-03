@@ -12,7 +12,7 @@ final class RequestContentTypeDecider
 
     public static function getContentType(Request $request): ?RequestContentType
     {
-        $mimeType = $request->headers->get('CONTENT-TYPE', null);
+        $mimeType = $request->headers->get('CONTENT-TYPE');
         if (null === $mimeType || '' === $mimeType) {
             return null;
         }

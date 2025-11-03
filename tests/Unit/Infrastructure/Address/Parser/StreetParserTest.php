@@ -83,7 +83,7 @@ final class StreetParserTest extends TestCase
         yield [$street, ' 9a'];
         yield [$street, ' 9 a'];
 
-        $street = new Street('Chèvrerie', null);
+        $street = new Street('Chèvrerie');
         yield [$street, 'Chèvrerie 0'];
     }
 }
