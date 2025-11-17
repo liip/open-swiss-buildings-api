@@ -64,7 +64,7 @@ final class AddressesListController extends AbstractController
         Request $request,
         #[MapQueryString]
         AddressListQueryString $listQueryString = new AddressListQueryString(),
-    ): Response {
+    ): StreamedResponse {
         $pagination = new Pagination(limit: $listQueryString->limit, offset: $listQueryString->offset);
         $results = $this->buildingAddressFinder->findPlaces($pagination);
 

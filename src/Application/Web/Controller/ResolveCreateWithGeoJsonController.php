@@ -49,7 +49,7 @@ final class ResolveCreateWithGeoJsonController extends AbstractController
         Request $request,
         #[MapQueryString]
         ?ResolveGeoJsonCreateQueryString $queryString = null,
-    ): Response {
+    ): JsonResponse {
         $metadata = new ResolverMetadata();
         if (null !== $srid = $queryString?->srid) {
             $metadata = $metadata->withGeoJsonSRID($srid->value);

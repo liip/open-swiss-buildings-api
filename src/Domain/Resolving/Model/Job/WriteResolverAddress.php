@@ -12,6 +12,7 @@ use App\Infrastructure\Address\Model\StreetNumberRange;
 use App\Infrastructure\Address\Model\StreetNumberSuffixRange;
 use App\Infrastructure\Address\Parser\StreetParser;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 
 final class WriteResolverAddress
 {
@@ -117,7 +118,7 @@ final class WriteResolverAddress
         }
     }
 
-    public function id(): Uuid
+    public function id(): UuidV7
     {
         return $this->id;
     }
