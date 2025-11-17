@@ -111,7 +111,11 @@ final class BuildingIdsPreparerTest extends TestCase
             ->method('updateMetadata')
             ->with(
                 $this->isInstanceOf(Uuid::class),
-                $this->callback(static fn(ResolverMetadata $metadata): bool => ['field1'] === $metadata->additionalColumns),
+                $this->callback(function (ResolverMetadata $metadata): bool {
+                    $this->assertSame($metadata->additionalColumns, ['field1']);
+
+                    return true;
+                }),
             )
         ;
 
@@ -143,7 +147,11 @@ final class BuildingIdsPreparerTest extends TestCase
             ->method('updateMetadata')
             ->with(
                 $this->isInstanceOf(Uuid::class),
-                $this->callback(static fn(ResolverMetadata $metadata): bool => "\t" === $metadata->csvDelimiter),
+                $this->callback(function (ResolverMetadata $metadata): bool {
+                    $this->assertSame("\t", $metadata->csvDelimiter);
+
+                    return true;
+                }),
             )
         ;
 
@@ -171,7 +179,11 @@ final class BuildingIdsPreparerTest extends TestCase
             ->method('updateMetadata')
             ->with(
                 $this->isInstanceOf(Uuid::class),
-                $this->callback(static fn(ResolverMetadata $metadata): bool => "'" === $metadata->csvEnclosure),
+                $this->callback(function (ResolverMetadata $metadata): bool {
+                    $this->assertSame("'", $metadata->csvEnclosure);
+
+                    return true;
+                }),
             )
         ;
 

@@ -53,7 +53,7 @@ final class ResolveCreateWithBuildingIdsController extends AbstractController
     #[OA\Parameter(in: 'header', name: 'csv-delimiter', description: 'Field separator used in the CSV', schema: new OA\Schema(type: 'string', default: ',', maxLength: 1))]
     #[OA\Parameter(in: 'header', name: 'csv-enclosure', description: 'Field enclosure character used in the CSV', schema: new OA\Schema(type: 'string', default: '"', maxLength: 1))]
     #[OA\Response(response: '200', description: 'Successfully created resolver job', content: new Model(type: ResolverJob::class))]
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request): JsonResponse
     {
         $metadata = new ResolverMetadata(filterByCountry: CountryCodeEnum::CH);
 

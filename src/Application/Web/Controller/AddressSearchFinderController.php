@@ -61,7 +61,7 @@ final class AddressSearchFinderController extends AbstractController
         #[MapQueryString]
         AddressSearchFinderQueryString $queryString,
         Request $request,
-    ): Response {
+    ): StreamedResponse {
         $addressSearchFilter = new AddressSearch(
             limit: $queryString->limit,
             minScore: $queryString->minScore,
@@ -83,7 +83,7 @@ final class AddressSearchFinderController extends AbstractController
     /**
      * @param iterable<PlaceScored> $results
      */
-    private function resultsAsJson(iterable $results): Response
+    private function resultsAsJson(iterable $results): StreamedJsonResponse
     {
         return new StreamedJsonResponse([
             'hits' => $results,
@@ -93,7 +93,7 @@ final class AddressSearchFinderController extends AbstractController
     /**
      * @param iterable<PlaceScored> $results
      */
-    private function resultsAsCsv(iterable $results): Response
+    private function resultsAsCsv(iterable $results): StreamedResponse
     {
         $out = fopen('php://output', 'w');
         if (!\is_resource($out)) {
