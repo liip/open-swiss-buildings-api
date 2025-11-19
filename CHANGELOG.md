@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.12
+
+* [chore] Update to latest dependencies.
+
 ## v2.0.11
 
 * [bugfix] Fix typo in prune registry query.
