@@ -55,3 +55,24 @@ jobs:
       shell: bash
       run: |
         docker compose -f compose.yaml -f compose.tests.yaml down
+
+
+  dependabot-automerge:
+    name: Auto-merge Dependabot PRs
+    needs: tests # only on successful tests
+    runs-on: ubuntu-latest
+
+    # required so the action can approve & merge the PR
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Auto-merge Dependabot PRs
+        uses: fastify/github-action-merge-dependabot@v3
+        with:
+          # automatically approve & mark as auto-merge; GitHub will merge when
+          # branch protection / required checks are satisfied
+          use-github-auto-merge: true
+          # only patch & minor semver bumps (you can relax this later if you want)
+          target: minor
