@@ -31,4 +31,3 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    automerge: true
