@@ -71,8 +71,5 @@ jobs:
       - name: Auto-merge Dependabot PRs
         uses: fastify/github-action-merge-dependabot@v3
         with:
-          # automatically approve & mark as auto-merge; GitHub will merge when
-          # branch protection / required checks are satisfied
-          use-github-auto-merge: true
-          # only patch & minor semver bumps (you can relax this later if you want)
+          # only automerge patch & minor semver bumps
           target: minor
