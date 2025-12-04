@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 final class GeoJsonFeatureParserTest extends TestCase
 {
     private static GeoJsonReader $geoJsonReader;
+
     private GeoJsonFeatureParser $extractor;
 
     protected function setUp(): void

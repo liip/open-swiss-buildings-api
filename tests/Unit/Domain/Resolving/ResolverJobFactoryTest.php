@@ -18,7 +18,9 @@ use Symfony\Component\Uid\Uuid;
 final class ResolverJobFactoryTest extends TestCase
 {
     private MockObject&ResolverJobWriteRepositoryInterface $writeRepository;
+
     private RecordingEventDispatcher $eventDispatcher;
+
     private ResolverJobFactory $factory;
 
     protected function setUp(): void

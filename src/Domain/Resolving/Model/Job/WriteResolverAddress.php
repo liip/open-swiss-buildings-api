@@ -17,6 +17,7 @@ use Symfony\Component\Uid\UuidV7;
 final class WriteResolverAddress
 {
     private readonly Uuid $id;
+
     private readonly Uuid $jobId;
 
     /**

@@ -10,6 +10,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final readonly class AddressNormalizer
 {
     private const string SEPARATOR = '';
+
     private const string LOCALE = 'de_CH';
 
     public function __construct(

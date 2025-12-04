@@ -13,19 +13,33 @@ use App\Infrastructure\PostGis\Coordinates;
 final class BuildingAddressModelBuilder
 {
     public const string UUID1 = '065d7740-526a-7c72-8000-f7532a680456';
+
     public const string UUID2 = '065d7741-54ec-7b41-8000-608eba1884b8';
+
     public const string BUILDING_ID = '1600017';
+
     public const string ENTRANCE_ID = '1';
+
     public const string ADDRESS_ID = '100962765';
+
     public const string LANGUAGE = 'de';
+
     public const string LOCALITY = 'Aeugstertal';
+
     public const int IMPORTED_AT = 20250102;
+
     public const string STREET_NAME = 'Reppischtalstrasse';
+
     public const string STREET_NAME_ABBREVIATED = 'Reppischtalstr.';
+
     public const string STREET_HOUSE_NUMBER = '34';
+
     public const string POSTAL_CODE = '8914';
+
     public const string MUNICIPALITY = 'ZH';
+
     public const string MUNICIPALITY_CODE = '3';
+
     public const string COUNTRY_CODE = 'CH';
 
     private function __construct() {}

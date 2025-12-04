@@ -27,8 +27,11 @@ use Symfony\Component\Uid\Uuid;
 final class GeoJsonJobPrepareTest extends TestCase
 {
     private ResolverTaskWriteRepositoryInterface&MockObject $taskRepository;
+
     private ResolverMetadataWriteRepositoryInterface&MockObject $metadataRepository;
+
     private GeoJsonCoordinatesParserInterface&MockObject $geoJsonCoordinatesParser;
+
     private GeoJsonFeatureParserInterface&MockObject $geoJsonFeatureParser;
 
     private GeoJsonJobPreparer $jobPreparer;

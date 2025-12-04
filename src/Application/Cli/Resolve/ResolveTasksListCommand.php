@@ -30,6 +30,7 @@ final class ResolveTasksListCommand extends Command
     private const int DEFAULT_LIMIT = 20;
 
     private const string FORMAT_TABLE = 'table';
+
     private const string FORMAT_CSV = 'csv';
 
     private const array FORMATS = [

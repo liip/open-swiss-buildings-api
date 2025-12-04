@@ -16,21 +16,25 @@ final class StreetLexer extends AbstractLexer
 {
     /** @var string Matching sequences of numbers, those might appear as both the part of a street name, or the house-number */
     private const string REGEXP_NUMBER = '\d+';
+
     /** @var string Matching alpha-numeric strings representing street names, we use UTF-8 regexp groups to handle umlauts and accents */
     private const string REGEXP_STREET_NAME = '[\p{L}\p{M}\']+';
 
     /** @var string Matching house numbers: this is used used for tokenization in the Lexing process */
     private const string REGEXP_HOUSE_NUMBER = '\d+(?:\s?[a-z]{1})?(?:\s?\.[a-z]?\d+)?$';
+
     /** @var string Matching house numbers, with named capturing-groups: used to identify the parts of the street number */
     private const string CAPTURING_REGEXP_HOUSE_NUMBER = '^(?P<houseNumber>\d+)?(?P<houseNumberSuffix>(\s?[a-z]{1})?(?:\s?\.[a-z]?\d+)?)$';
 
     /** @var string Matching of ranges of street numbers (in the form "12-15"): used for tokenization in the Lexing process */
     private const string REGEXP_HOUSE_NUMBER_RANGE = '\d+\s*-\s*\d+$';
+
     /** @var string Matching of ranges of street numbers, with named capturing-groups: used to extract the number range */
     private const string CAPTURING_REGEXP_HOUSE_NUMBER_RANGE = '(?P<houseNumberFrom>\d+)\s*-\s*(?P<houseNumberTo>\d+)$';
 
     /** @var string Matching of ranges of street number suffixes (in the form "12 a - c"): used for tokenization in the Lexing process */
     private const string REGEXP_HOUSE_NUMBER_SUFFIX_RANGE = '\d+\s*[a-z]\s*-\s*[a-z]$';
+
     /** @var string Matching of ranges of street number suffixes, with named capturing-groups: used extract the number and suffix range */
     private const string CAPTURING_REGEXP_HOUSE_NUMBER_SUFFIX_RANGE = '(?P<houseNumber>\d+)\s*(?P<rangeSuffixFrom>[a-z])\s*-\s*(?P<rangeSuffixTo>[a-z])$';
 

@@ -14,8 +14,11 @@ use Doctrine\ORM\EntityManagerInterface;
 final readonly class DoctrineStreetWithRangeMatcher
 {
     public const string TYPE_STREET_EXACT_W_RANGE = 'streetNumberRange';
+
     public const string TYPE_STREET_EXACT_W_RANGE_SUFFIX = 'streetNumberSuffixRange';
+
     public const string TYPE_STREET_EXACT_NORMALIZED_W_RANGE = 'streetNormalizedNumberRange';
+
     public const string TYPE_STREET_EXACT_NORMALIZED_W_SUFFIX_RANGE = 'streetNormalizedNumberSuffixRange';
 
     public function __construct(private EntityManagerInterface $entityManager) {}

@@ -14,12 +14,19 @@ use App\Domain\Registry\Model\BuildingStatusEnum;
 enum SwissBuildingStatusEnum: string
 {
     case PLANNED = '1001';
+
     case AUTHORIZED = '1002';
+
     case IN_CONSTRUCTION = '1003';
+
     case EXISTING = '1004';
+
     case NOT_USABLE = '1005';
+
     case UNKNOWN_06 = '1006';
+
     case DEMOLISHED = '1007';
+
     case NOT_BUILT = '1008';
 
     case UNKNOWN = '';

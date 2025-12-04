@@ -18,7 +18,9 @@ final class AdditionalData implements \JsonSerializable
     public const string ADDITIONAL_DATA_SEPARATOR = '||';
 
     private const string DATA_ADDRESS_STREET = 'data_address_street';
+
     private const string DATA_ADDRESS_POSTAL_CODE = 'data_address_postal_code';
+
     private const string DATA_ADDRESS_LOCALITY = 'data_address_postal_locality';
 
     private const array ADDRESS_DATA = [

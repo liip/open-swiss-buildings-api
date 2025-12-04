@@ -21,7 +21,7 @@ final readonly class JobResultCSVResponseCreator implements JobResultResponseCre
         private ResolverResultReadRepositoryInterface $resultRepository,
     ) {}
 
-    public function buildResponse(Uuid $jobId, ResolverJob $job): Response
+    public function buildResponse(Uuid $jobId, ResolverJob $job): StreamedResponse
     {
         $out = fopen('php://output', 'w');
         if (!\is_resource($out)) {

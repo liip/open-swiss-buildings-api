@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 final class ResolverJobGeoJsonTest extends WebTestCase
 {
     private ResolvingApi $api;
+
     private const int DEFAULT_COLUMNS_COUNT = 13;
 
     protected function setUp(): void

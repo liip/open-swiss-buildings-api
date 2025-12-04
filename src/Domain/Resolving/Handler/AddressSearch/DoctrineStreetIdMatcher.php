@@ -14,8 +14,11 @@ use Doctrine\ORM\EntityManagerInterface;
 final readonly class DoctrineStreetIdMatcher
 {
     public const string TYPE_STREET_FULL = 'full';
+
     public const string TYPE_STREET_HOUSE_NUMBER_WITHOUT_SUFFIX = 'houseNumberWithoutSuffix';
+
     public const string TYPE_STREET_HOUSE_NUMBERS_WITH_SUFFIX = 'houseNumbersWithSuffix';
+
     public const string TYPE_STREET_HOUSE_NUMBERS_WITH_OTHER_SUFFIX = 'houseNumbersWithOtherSuffix';
 
     public function __construct(private EntityManagerInterface $entityManager) {}

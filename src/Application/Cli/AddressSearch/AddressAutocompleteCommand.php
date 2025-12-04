@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class AddressAutocompleteCommand extends Command
 {
     private const int MAX_AUTOCOMPLETE_ITEMS = 20;
+
     private const int DEFAULT_AUTOCOMPLETE_ITEMS = 10;
 
     private const int MAX_MIN_SCORE = 100;

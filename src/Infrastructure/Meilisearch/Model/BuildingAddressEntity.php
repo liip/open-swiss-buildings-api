@@ -12,11 +12,17 @@ final readonly class BuildingAddressEntity
     public const string INDEX_NAME = 'buildingAddress';
 
     public const string FIELD_JSON_MODEL = 'jsonModel';
+
     public const string FIELD_ID = 'id';
+
     public const string FIELD_COUNTRY_CODE = 'country';
+
     public const string FIELD_BUILDING_ID = 'buildingId';
+
     public const string FIELD_IMPORTED_AT = 'importedAt';
+
     public const string FIELD_FULL_ADDRESS = 'fullAddress';
+
     public const string FIELD_FULL_ADDRESS_ABBREVIATED = 'fullAddressAbbreviated';
 
     public const array FILTERABLE_FIELDS = [
@@ -25,6 +31,7 @@ final readonly class BuildingAddressEntity
         self::FIELD_BUILDING_ID,
         self::FIELD_IMPORTED_AT,
     ];
+
     public const array SEARCHABLE_FIELDS = [
         self::FIELD_FULL_ADDRESS,
         self::FIELD_FULL_ADDRESS_ABBREVIATED,
@@ -40,6 +47,7 @@ final readonly class BuildingAddressEntity
     ];
 
     private const string FIELD_RANKING_SCORE = '_rankingScore';
+
     private const string FIELD_RANKING_SCORE_DETAILS = '_rankingScoreDetails';
 
     private function __construct() {}

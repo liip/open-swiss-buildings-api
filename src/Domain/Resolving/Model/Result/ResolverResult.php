@@ -48,6 +48,7 @@ final readonly class ResolverResult implements \JsonSerializable
     public ?string $entranceId;
 
     public ?Address $address;
+
     public ?Coordinates $coordinates;
 
     #[Serializer\Ignore]

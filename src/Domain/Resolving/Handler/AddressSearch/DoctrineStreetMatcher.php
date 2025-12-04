@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 final readonly class DoctrineStreetMatcher
 {
     public const string TYPE_STREET_EXACT = 'streetExact';
+
     public const string TYPE_STREET_EXACT_NORMALIZED = 'streetExactNormalized';
 
     public function __construct(private EntityManagerInterface $entityManager) {}

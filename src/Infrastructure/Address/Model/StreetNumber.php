@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Address\Model;
 
-final readonly class StreetNumber implements StreetNumberInterface
+final readonly class StreetNumber implements \Stringable, StreetNumberInterface
 {
     public function __construct(
         /**

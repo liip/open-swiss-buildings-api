@@ -25,6 +25,7 @@ use Symfony\Component\Uid\Uuid;
 final class JobPreparationHandlerTest extends TestCase
 {
     private ResolverJobRawDataRepositoryInterface&Stub $rawDataRepository;
+
     private RecordingEventDispatcher $eventDispatcher;
 
     protected function setUp(): void

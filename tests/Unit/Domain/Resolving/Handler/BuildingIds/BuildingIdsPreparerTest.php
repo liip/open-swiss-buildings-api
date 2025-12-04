@@ -26,8 +26,11 @@ use Symfony\Component\Uid\Uuid;
 final class BuildingIdsPreparerTest extends TestCase
 {
     private MemoryTaskRepository $taskRepository;
+
     private ResolverMetadataWriteRepositoryInterface&MockObject $metadataRepository;
+
     private CsvReaderInterface&Stub $csvReader;
+
     private BuildingIdsPreparer $preparer;
 
     protected function setUp(): void

@@ -12,12 +12,15 @@ use Symfony\Component\String\ByteString;
 final class PhpCsvReader implements CsvReaderInterface
 {
     private const string DELIMITER_DEFAULT = ',';
+
     private const array DELIMITER_COMMON = [
         ',',
         ';',
         "\t",
     ];
+
     private const string ENCLOSURE_DEFAULT = '"';
+
     private const array ENCLOSURE_COMMON = [
         '"',
         "'",
