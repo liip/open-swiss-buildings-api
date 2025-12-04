@@ -26,6 +26,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class BuildingDataListCommand extends Command
 {
     private const int DEFAULT_LIMIT = 20;
+
     private const string DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     public function __construct(

@@ -22,6 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class AddressSearchListCommand extends Command
 {
     private const int DEFAULT_LIMIT = 10;
+
     private const string DATE_FORMAT = 'Y-m-d';
 
     public function __construct(

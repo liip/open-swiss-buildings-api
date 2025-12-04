@@ -30,7 +30,9 @@ final readonly class ResolverJob implements \JsonSerializable, \Stringable
 
     #[OA\Property(format: 'uuid')]
     public string $id;
+
     public ResolverTypeEnum $type;
+
     /**
      * Metadata or configuration about the resolver job.
      *
@@ -38,12 +40,17 @@ final readonly class ResolverJob implements \JsonSerializable, \Stringable
      * which is then available when processing the job.
      */
     public ResolverMetadata $metadata;
+
     public ResolverJobStateEnum $state;
+
     public ?ResolverJobFailure $failure;
+
     #[OA\Property(property: 'created_at')]
     public \DateTimeInterface $createdAt;
+
     #[OA\Property(property: 'modified_at')]
     public \DateTimeInterface $modifiedAt;
+
     #[OA\Property(property: 'expires_at')]
     public \DateTimeInterface $expiresAt;
 

@@ -19,6 +19,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 final class RegistryBuildingDataRepository implements RegistryBuildingDataRepositoryInterface
 {
     private const int DEDUPLICATE_BUFFER_LENGTH = 5;
+
     /**
      * @var Reader<BuildingDataCsvRecord[]>|null
      */

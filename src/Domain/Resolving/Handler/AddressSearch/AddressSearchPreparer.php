@@ -19,7 +19,9 @@ use Psr\Log\LoggerInterface;
 final readonly class AddressSearchPreparer implements JobPreparerInterface
 {
     private const string CSV_HEADER_STREET = 'street_housenumbers';
+
     private const string CSV_HEADER_POSTAL_CODE = 'swisszipcode';
+
     private const string CSV_HEADER_LOCALITY = 'town';
 
     public function __construct(

@@ -20,8 +20,11 @@ use Symfony\Component\Uid\Uuid;
 final class BuildingAddressIndexerTest extends TestCase
 {
     private const string UUID1 = '065d7740-526a-7c72-8000-f7532a680456';
+
     private MockObject&BuildingAddressBridgedFactoryInterface $buildingAddressRepository;
+
     private MockObject&AddressSearchWriteRepositoryInterface $addressRepository;
+
     private BuildingAddressIndexer $indexer;
 
     protected function setUp(): void

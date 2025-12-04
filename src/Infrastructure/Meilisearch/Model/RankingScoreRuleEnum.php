@@ -7,8 +7,12 @@ namespace App\Infrastructure\Meilisearch\Model;
 enum RankingScoreRuleEnum: string
 {
     case WORDS = 'words';
+
     case TYPO = 'typo';
+
     case PROXIMITY = 'proximity';
+
     case ATTRIBUTE = 'attribute';
+
     case EXACTNESS = 'exactness';
 }

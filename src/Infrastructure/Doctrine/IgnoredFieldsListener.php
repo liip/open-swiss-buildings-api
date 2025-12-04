@@ -17,6 +17,7 @@ use Jsor\Doctrine\PostGIS\Driver\PostGISPlatform;
 final class IgnoredFieldsListener
 {
     private ?Schema $schema = null;
+
     /**
      * @var AbstractSchemaManager<PostGISPlatform>|null
      */

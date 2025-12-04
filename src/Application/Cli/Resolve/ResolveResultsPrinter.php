@@ -20,12 +20,17 @@ use Symfony\Component\Uid\Uuid;
 final readonly class ResolveResultsPrinter
 {
     public const int DEFAULT_LIMIT = 20;
+
     public const string DEFAULT_FORMAT = self::FORMAT_TABLE;
 
     public const string FORMAT_TABLE = 'table';
+
     public const string FORMAT_CSV = 'csv';
+
     public const string FORMAT_CSV_FILE = 'csv-file';
+
     public const string FORMAT_JSON_FILE = 'json-file';
+
     public const string FORMAT_NONE = 'none';
 
     public const array FORMATS = [

@@ -16,7 +16,9 @@ use Symfony\Component\Console\Tester\CommandTester;
 final class BuildingDataOutdatedPruneCommandTest extends TestCase
 {
     private MockObject&BuildingEntranceReadRepositoryInterface $buildingEntranceReadRepository;
+
     private MockObject&BuildingEntranceWriteRepositoryInterface $buildingEntranceWriteRepository;
+
     private BuildingDataOutdatedPruneCommand $command;
 
     protected function setUp(): void

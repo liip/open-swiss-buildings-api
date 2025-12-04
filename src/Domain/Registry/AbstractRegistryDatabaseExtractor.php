@@ -9,6 +9,7 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract readonly class AbstractRegistryDatabaseExtractor
 {
     private \ZipArchive $zipArchive;
+
     private Filesystem $filesystem;
 
     public function __construct(

@@ -7,6 +7,7 @@ namespace App\Infrastructure\PostGis;
 enum SRIDEnum: int
 {
     case WGS84 = 4326;
+
     case LV95 = 2056;
 
     /**

@@ -78,6 +78,7 @@ $metadataFactory = new class ($doctrine) implements ClassMetadataFactory {
 
 return new class ($doctrine, $metadataFactory) implements ObjectManager {
     private readonly Registry $doctrine;
+
     private readonly ClassMetadataFactory $metadataFactory;
 
     public function __construct(Registry $doctrine, ClassMetadataFactory $metadataFactory)

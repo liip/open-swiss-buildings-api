@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class AddressListQueryString
 {
     public const int DEFAULT_LIMIT = 25;
+
     public const int DEFAULT_OFFSET = 0;
 
     /**

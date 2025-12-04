@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 final class GeoJsonSRIDCoordinatesParserTest extends TestCase
 {
     private const int WGS84 = 4326;
+
     public const int LV95 = 2056;
 
     /**

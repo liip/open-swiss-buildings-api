@@ -21,7 +21,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 final class AddressSearchToBuildingDataBridgeTest extends TestCase
 {
     private AddressSearchWriteRepositoryInterface&MockObject $addressSearchRepository;
+
     private MessageBusInterface&MockObject $messageBus;
+
     private AddressSearchToBuildingDataBridge $bridge;
 
     protected function setUp(): void

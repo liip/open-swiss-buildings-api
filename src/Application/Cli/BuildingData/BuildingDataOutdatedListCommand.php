@@ -21,6 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class BuildingDataOutdatedListCommand extends Command
 {
     private const int DEFAULT_ACTIVE_DAYS_WINDOW = 90;
+
     private const string DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     public function __construct(

@@ -37,8 +37,10 @@ class ResolverAddress
 
     #[ORM\Column(length: 4, nullable: true)]
     public ?string $rangeFrom = null;
+
     #[ORM\Column(length: 4, nullable: true)]
     public ?string $rangeTo = null;
+
     #[ORM\Column(length: 10, nullable: true)]
     public ?RangeAddressTypeEnum $rangeType = null;
 

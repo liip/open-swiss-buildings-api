@@ -13,24 +13,31 @@ use Symfony\Component\Uid\Uuid;
 final readonly class ResolverTask
 {
     public Uuid $id;
+
     public Uuid $jobId;
+
     /**
      * @var int<0, 100>
      */
     public int $confidence;
+
     public string $matchType;
+
     /**
      * @var non-empty-string|null
      */
     public ?string $matchingBuildingId;
+
     /**
      * @var non-empty-string|null
      */
     public ?string $matchingMunicipalityCode;
+
     /**
      * @var non-empty-string|null
      */
     public ?string $matchingEntranceId;
+
     public AdditionalData $additionalData;
 
     /**

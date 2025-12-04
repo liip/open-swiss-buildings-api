@@ -12,20 +12,33 @@ use App\Infrastructure\Model\CountryCodeEnum;
 final readonly class BuildingEntranceDataModelBuilder
 {
     public const CountryCodeEnum COUNTRY_CODE = CountryCodeEnum::CH;
+
     public const string BUILDING_ID = '2366055';
+
     public const string ENTRANCE_ID = '0';
+
     public const string ZIP_CODE = '8005';
+
     public const string STREET_ID = '10004212';
+
     public const string LOCALITY = 'Zürich';
+
     public const string CANTON_CODE = 'ZH';
+
     public const int STREET_NUMBER = 183;
+
     public const string MUNICIPALITY_CODE =  '261';
 
     public const string COORDINATES_LAT_GWS84 = '47.386170922358';
+
     public const string COORDINATES_LON_GWS84 = '8.5292387777084';
+
     public const string COORDINATES_EAST_LV95 = '2682348.561';
+
     public const string COORDINATES_NORTH_LV95 = '1248943.136';
+
     public const string STREET_NAME = 'Limmatstrasse';
+
     public const string STREET_NAME_ABBR = 'Limmatstr';
 
     /**

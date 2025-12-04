@@ -92,6 +92,7 @@ class Building
      */
     #[ORM\Column(name: 'GEBNR', length: 12)]
     public string $GEBNR;
+
     /**
      * Name des Gebäudes
      * Designation du bâtiment

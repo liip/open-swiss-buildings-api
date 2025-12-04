@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Address\Model;
 
-final readonly class StreetNumberSuffixRange implements StreetNumberInterface
+final readonly class StreetNumberSuffixRange implements \Stringable, StreetNumberInterface
 {
     /**
      * @param positive-int|null $number

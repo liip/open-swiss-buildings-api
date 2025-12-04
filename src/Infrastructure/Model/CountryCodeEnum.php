@@ -7,5 +7,6 @@ namespace App\Infrastructure\Model;
 enum CountryCodeEnum: string
 {
     case CH = 'CH';
+
     case LI = 'LI';
 }

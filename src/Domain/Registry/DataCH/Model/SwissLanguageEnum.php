@@ -14,9 +14,13 @@ use App\Infrastructure\Model\LanguageEnum;
 enum SwissLanguageEnum: string
 {
     case DE = '9901';
+
     case RM = '9902';
+
     case FR = '9903';
+
     case IT = '9904';
+
     case UNKNOWN = '';
 
     public static function fromLanguage(LanguageEnum $languageEnum): self

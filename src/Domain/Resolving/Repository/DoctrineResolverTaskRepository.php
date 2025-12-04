@@ -30,6 +30,7 @@ final class DoctrineResolverTaskRepository extends ServiceEntityRepository imple
     ResolverTaskReadRepositoryInterface
 {
     private const string DQL_NEW_TASK = 'NEW ' . ResolverTask::class . '(t.id, IDENTITY(t.job), t.confidence, t.matchType, t.matchingBuildingId, t.matchingMunicipalityCode, t.matchingEntranceId, t.additionalData)';
+
     // postgres is limited to 65k parameters, and we have 10 per row,
     private const int INSERT_BATCH_SIZE = 6500;
 

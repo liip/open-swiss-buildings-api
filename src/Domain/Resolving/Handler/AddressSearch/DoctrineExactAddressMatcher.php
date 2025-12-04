@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 final readonly class DoctrineExactAddressMatcher
 {
     public const string TYPE_EXACT = 'exact';
+
     public const string TYPE_EXACT_NORMALIZED = 'exactNormalized';
 
     public function __construct(private EntityManagerInterface $entityManager) {}
