@@ -8,7 +8,7 @@ use App\Domain\Resolving\Repository\DoctrineResolverAddressStreetRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverAddressStreetRepository::class)]
-#[ORM\Index(fields: ['address', 'streetId'], name: 'resolver_address_street_idx')]
+#[ORM\Index(name: 'resolver_address_street_idx', fields: ['address', 'streetId'])]
 class ResolverAddressStreet
 {
     #[ORM\Id]

@@ -37,8 +37,8 @@ final class ResolveCreateWithGeoJsonController extends AbstractController
      */
     #[Route('/resolve/geo-json', methods: ['POST'])]
     #[OA\RequestBody(
-        required: true,
         description: 'Valid GeoJSON data',
+        required: true,
         content: new OA\MediaType(
             mediaType: 'application/json',
             schema: new OA\Schema(type: 'object', example: "{\n    \"type\": \"FeatureCollection\",\n    \"name\": \"abschaltgebiet\",\n    \"crs\": { \"type\": \"name\", \"properties\": { \"name\": \"urn:ogc:def:crs:EPSG::2056\" } },\n    \"features\": [\n        {\n            \"type\": \"Feature\",\n            \"properties\": { \"extrainformation\": \"B\" },\n            \"geometry\": { \"type\": \"MultiPolygon\", \"coordinates\": [ [ [ [ 2673182.567755069583654, 1270003.15436748531647 ], [ 2676674.704157737549394, 1269564.568515965249389 ], [ 2678160.10340958321467, 1268124.682890220778063 ], [ 2676161.641463506501168, 1266775.824516678228974 ], [ 2672189.543185590300709, 1267396.464872602606192 ], [ 2673182.567755069583654, 1270003.15436748531647 ] ] ] ] }\n         }\n    ]\n}"),

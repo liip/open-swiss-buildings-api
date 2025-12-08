@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverResultRepository::class)]
-#[ORM\Index(fields: ['jobId'], name: 'resolver_result_job_id')]
+#[ORM\Index(name: 'resolver_result_job_id', fields: ['jobId'])]
 #[ORM\UniqueConstraint(name: 'resolver_result_entry', fields: ['jobId', 'countryCode', 'buildingEntranceId'])]
 class ResolverResult
 {
@@ -24,13 +24,13 @@ class ResolverResult
     public readonly Uuid $jobId;
 
     #[ORM\ManyToOne(targetEntity: ResolverJob::class)]
-    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', onDelete: 'CASCADE', nullable: false)]
+    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private readonly ResolverJob $job;
 
     #[ORM\Column]
     private int $confidence;
 
-    #[ORM\Column(nullable: true, length: 2)]
+    #[ORM\Column(length: 2, nullable: true)]
     public ?string $countryCode;
 
     #[ORM\Column(nullable: true)]

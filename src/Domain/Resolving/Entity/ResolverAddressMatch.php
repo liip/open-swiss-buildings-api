@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverAddressMatchRepository::class)]
-#[ORM\Index(fields: ['matchingBuildingId', 'matchingEntranceId'], name: 'resolver_address_match_idx')]
+#[ORM\Index(name: 'resolver_address_match_idx', fields: ['matchingBuildingId', 'matchingEntranceId'])]
 class ResolverAddressMatch
 {
     #[ORM\Id]
