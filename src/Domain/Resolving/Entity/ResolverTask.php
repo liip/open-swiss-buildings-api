@@ -14,9 +14,9 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverTaskRepository::class)]
 #[ORM\UniqueConstraint(name: 'task_matching_uniqueness', fields: ['job', 'matchingUniqueHash'])]
-#[ORM\Index(fields: ['matchingUniqueHash'], name: 'building_entrance_matching_hash_idx')]
-#[ORM\Index(fields: ['matchingBuildingId'], name: 'building_entrance_building_id_idx')]
-#[ORM\Index(fields: ['matchingMunicipalityCode'], name: 'building_entrance_municipality_code_idx')]
+#[ORM\Index(name: 'building_entrance_matching_hash_idx', fields: ['matchingUniqueHash'])]
+#[ORM\Index(name: 'building_entrance_building_id_idx', fields: ['matchingBuildingId'])]
+#[ORM\Index(name: 'building_entrance_municipality_code_idx', fields: ['matchingMunicipalityCode'])]
 class ResolverTask
 {
     #[ORM\Id]

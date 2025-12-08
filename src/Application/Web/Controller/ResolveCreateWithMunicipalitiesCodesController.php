@@ -38,16 +38,16 @@ final class ResolveCreateWithMunicipalitiesCodesController extends AbstractContr
      */
     #[Route('/resolve/municipalities-codes', methods: ['POST'])]
     #[OA\RequestBody(
-        required: true,
         description: 'CSV containing at least the column `bfsnumber`.',
+        required: true,
         content: new OA\MediaType(
             mediaType: 'text/csv',
             schema: new OA\Schema(type: 'string', example: "bfsnumber,extrainformation\n4131,A\n2612,B\n"),
         ),
     )]
-    #[OA\Parameter(in: 'header', name: 'content-type', description: 'Content type of the request data, including charset', schema: new OA\Schema(type: 'string', default: 'text/csv; charset=utf-8'))]
-    #[OA\Parameter(in: 'header', name: 'csv-delimiter', description: 'Field separator used in the CSV', schema: new OA\Schema(type: 'string', default: ',', maxLength: 1))]
-    #[OA\Parameter(in: 'header', name: 'csv-enclosure', description: 'Field enclosure character used in the CSV', schema: new OA\Schema(type: 'string', default: '"', maxLength: 1))]
+    #[OA\Parameter(name: 'content-type', description: 'Content type of the request data, including charset', in: 'header', schema: new OA\Schema(type: 'string', default: 'text/csv; charset=utf-8'))]
+    #[OA\Parameter(name: 'csv-delimiter', description: 'Field separator used in the CSV', in: 'header', schema: new OA\Schema(type: 'string', default: ',', maxLength: 1))]
+    #[OA\Parameter(name: 'csv-enclosure', description: 'Field enclosure character used in the CSV', in: 'header', schema: new OA\Schema(type: 'string', default: '"', maxLength: 1))]
     #[OA\Response(response: '200', description: 'Successfully created resolver job', content: new Model(type: ResolverJob::class))]
     public function __invoke(Request $request): JsonResponse
     {

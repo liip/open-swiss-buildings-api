@@ -14,9 +14,9 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DoctrineResolverAddressRepository::class)]
 #[ORM\UniqueConstraint(name: 'address_matching_uniqueness', fields: ['job', 'uniqueHash'])]
-#[ORM\Index(fields: ['streetName', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'], name: 'resolver_address_idx')]
-#[ORM\Index(fields: ['streetNameNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'], name: 'resolver_address_normalized_idx')]
-#[ORM\Index(fields: ['rangeType'], name: 'resolver_address_range_type_idx')]
+#[ORM\Index(name: 'resolver_address_idx', fields: ['streetName', 'streetHouseNumber', 'streetHouseNumberSuffix', 'postalCode', 'locality'])]
+#[ORM\Index(name: 'resolver_address_normalized_idx', fields: ['streetNameNormalized', 'streetHouseNumber', 'streetHouseNumberSuffixNormalized', 'postalCode', 'localityNormalized'])]
+#[ORM\Index(name: 'resolver_address_range_type_idx', fields: ['rangeType'])]
 class ResolverAddress
 {
     use AddressFieldsTrait;
@@ -26,7 +26,7 @@ class ResolverAddress
     public readonly Uuid $id;
 
     #[ORM\ManyToOne(targetEntity: ResolverJob::class)]
-    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', onDelete: 'CASCADE', nullable: false)]
+    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private readonly ResolverJob $job;
 
     /**
