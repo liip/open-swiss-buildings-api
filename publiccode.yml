@@ -1,0 +1,29 @@
+publiccodeYmlVersion: "0"
+name: Open Swiss Buildings API (OSBAPI)
+url: "https://github.com/liip/open-swiss-buildings-api"
+platforms:
+  - web
+developmentStatus: stable
+softwareType: standalone/web
+description:
+  en:
+    shortDescription: This is an API for the Swiss Buildings Register (GWR) as well as Liechtenstein. It supports various formats that result in massive lists of addresses.
+    longDescription: >
+      This is an API for the Swiss Buildings Register (Eidgenössisches Gebäude- und Wohnungsregister GWR). The API dataset has been extended to also include building information taken from the Liechtenstein Building Registry.
+
+      It provides ways to resolve massive input data into address lists with up to several 100'000 entries. Additionally, it provides an autocomplete-search for addresses.
+    features:
+       - Match list of CSV addresses (up to 500k rows) against the registry
+       - Find addresses by Geojson polygons
+       - Find addresses by swiss municipality
+       - Match lists of CSV EGID against the current registry
+       - Track additional metadata about addresses
+       - Autocomplete search for single addresses
+legal:
+  license: MIT
+maintenance:
+  type: community
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
