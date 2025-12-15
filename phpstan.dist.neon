@@ -6,6 +6,7 @@ parameters:
     - src/
     - tests/
   tmpDir: var/cache/ci/phpstan
+  treatPhpDocTypesAsCertain: false
   doctrine:
     ormRepositoryClass: Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
     objectManagerLoader: tests/object-manager.php

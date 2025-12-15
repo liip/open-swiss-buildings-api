@@ -12,9 +12,9 @@ use App\Infrastructure\Pagination;
 use App\Infrastructure\Symfony\Console\OptionHelper;
 use App\Infrastructure\Symfony\Console\Paginator;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -23,39 +23,46 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
     name: 'app:registry:li:list',
     description: 'Show the Liechtenstein data related to the entrances',
 )]
-final class RegistryLiListCommand extends Command
+final readonly class RegistryLiListCommand
 {
     private const int DEFAULT_LIMIT = 30;
 
     public function __construct(
         #[Autowire(service: RegistryBuildingDataRepository::class)]
-        private readonly RegistryBuildingDataRepositoryInterface $repository,
-    ) {
-        parent::__construct();
-    }
+        private RegistryBuildingDataRepositoryInterface $repository,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of rows to load', self::DEFAULT_LIMIT)
-            // Filters
-            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by building ID (GEID)')
-            ->addOption('entrance-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by entrance ID (GEDID)')
-            ->addOption('municipality-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by municipality name, case sensitive (GDENAME)')
-            ->addOption('street-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by street name, case sensitive (STRNAME)')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    /**
+     * @param string[]|null $buildingId
+     * @param string[]|null $entranceId
+     * @param string[]|null $municipalityName
+     * @param string[]|null $streetName
+     */
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of rows to load')]
+        int $limit = self::DEFAULT_LIMIT,
+        // Filters
+        #[Option(description: 'Filter by building ID (GEID)', name: 'building-id')]
+        ?array $buildingId = null,
+        #[Option(description: 'Filter by entrance ID (GEDID)', name: 'entrance-id')]
+        ?array $entranceId = null,
+        #[Option(description: 'Filter by municipality name, case sensitive (GDENAME)', name: 'municipality-name')]
+        ?array $municipalityName = null,
+        #[Option(description: 'Filter by street name, case sensitive (STRNAME)', name: 'street-name')]
+        ?array $streetName = null,
+    ): int {
+        if ($limit < 1) {
+            throw new \InvalidArgumentException('Limit must be at least 1');
+        }
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
-            $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
-            $entranceIds = OptionHelper::getStringListOptionValues($input, 'entrance-id');
-            $municipalityNames = OptionHelper::getStringListOptionValues($input, 'municipality-name');
-            $streetNames = OptionHelper::getStringListOptionValues($input, 'street-name');
+            $buildingIds = OptionHelper::getStringListOptionValues($buildingId);
+            $entranceIds = OptionHelper::getStringListOptionValues($entranceId);
+            $municipalityNames = OptionHelper::getStringListOptionValues($municipalityName);
+            $streetNames = OptionHelper::getStringListOptionValues($streetName);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 

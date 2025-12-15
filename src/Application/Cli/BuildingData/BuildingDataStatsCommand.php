@@ -16,15 +16,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:building-data:stats',
     description: 'Show stats from BuildingEntrance information as stored in the internal database',
 )]
-final class BuildingDataStatsCommand extends Command
+final readonly class BuildingDataStatsCommand
 {
     public function __construct(
-        private readonly BuildingEntranceReadRepositoryInterface $buildingEntranceRepository,
-    ) {
-        parent::__construct();
-    }
+        private BuildingEntranceReadRepositoryInterface $buildingEntranceRepository,
+    ) {}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 

@@ -7,9 +7,9 @@ namespace App\Application\Cli\Resolve;
 use App\Application\Contract\ResolverJobResolveMessageDispatcherInterface;
 use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use App\Domain\Resolving\Exception\ResolverJobNotFoundException;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -19,22 +19,19 @@ use Symfony\Component\Uid\Uuid;
     name: 'app:resolve:jobs:dispatch-resolve',
     description: 'Dispatch the message to trigger the "resolve" process for a given job',
 )]
-final class ResolveJobsDispatchResolveCommand extends Command
+final readonly class ResolveJobsDispatchResolveCommand
 {
     public function __construct(
-        private readonly ResolverJobReadRepositoryInterface $jobFinder,
-        private readonly ResolverJobResolveMessageDispatcherInterface $jobResolvingDispatcher,
-    ) {
-        parent::__construct();
-    }
+        private ResolverJobReadRepositoryInterface $jobFinder,
+        private ResolverJobResolveMessageDispatcherInterface $jobResolvingDispatcher,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this->addArgument('jobId', InputArgument::REQUIRED, 'ID of the Job');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument(description: 'ID of the Job', name: 'jobId')]
+        string $jobId,
+    ): int {
         $io = new SymfonyStyle($input, $output);
         $jobStringId = (string) $input->getArgument('jobId');
 

@@ -9,10 +9,10 @@ use App\Domain\Resolving\Contract\Job\ResolverJobReadRepositoryInterface;
 use App\Domain\Resolving\Contract\JobPreparationHandlerInterface;
 use App\Domain\Resolving\Event\ResolverAddressHasBeenCreated;
 use App\Domain\Resolving\Event\ResolverTaskHasBeenCreated;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressIndicator;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -23,7 +23,7 @@ use Symfony\Component\Uid\Uuid;
     name: 'app:resolve:jobs:prepare',
     description: 'Prepares a single resolver job',
 )]
-final class PrepareJobCommand extends Command
+final class PrepareJobCommand
 {
     private ?ProgressIndicator $progress = null;
 
@@ -31,22 +31,14 @@ final class PrepareJobCommand extends Command
         private readonly ResolverJobReadRepositoryInterface $jobRepository,
         private readonly JobPreparationHandlerInterface $preparer,
         private readonly ResolverJobMessageDispatcher $dispatcher,
-    ) {
-        parent::__construct();
-    }
+    ) {}
 
-    protected function configure(): void
-    {
-        $this->addArgument('jobId', InputArgument::REQUIRED, 'ID of the resolver job');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $jobId = $input->getArgument('jobId');
-        if (!\is_string($jobId)) {
-            throw new \LogicException('Argument jobId needs to be a string, but got ' . get_debug_type($jobId));
-        }
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument(description: 'ID of the resolver job', name: 'jobId')]
+        string $jobId,
+    ): int {
         $io = new SymfonyStyle($input, $output);
 
         try {
@@ -81,14 +73,14 @@ final class PrepareJobCommand extends Command
         return Command::SUCCESS;
     }
 
-    #[AsEventListener]
-    public function onTaskCreated(ResolverTaskHasBeenCreated $event): void
+    #[AsEventListener(event: ResolverTaskHasBeenCreated::class)]
+    public function onTaskCreated(): void
     {
         $this->progress?->advance();
     }
 
-    #[AsEventListener]
-    public function onAddressCreated(ResolverAddressHasBeenCreated $event): void
+    #[AsEventListener(event: ResolverAddressHasBeenCreated::class)]
+    public function onAddressCreated(): void
     {
         $this->progress?->advance();
     }

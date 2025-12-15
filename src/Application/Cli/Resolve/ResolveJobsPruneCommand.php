@@ -17,17 +17,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:resolve:jobs:prune',
     description: 'Deletes expired resolver jobs',
 )]
-final class ResolveJobsPruneCommand extends Command
+final readonly class ResolveJobsPruneCommand
 {
     public function __construct(
-        private readonly ResolverJobReadRepositoryInterface $readRepository,
-        private readonly ResolverJobWriteRepositoryInterface $writeRepository,
-        private readonly ClockInterface $clock,
-    ) {
-        parent::__construct();
-    }
+        private ResolverJobReadRepositoryInterface $readRepository,
+        private ResolverJobWriteRepositoryInterface $writeRepository,
+        private ClockInterface $clock,
+    ) {}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 

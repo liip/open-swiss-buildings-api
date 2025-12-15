@@ -8,18 +8,17 @@ use App\Application\Contract\BuildingAddressSearcherInterface;
 use App\Domain\AddressSearch\Model\AddressSearch;
 use App\Domain\AddressSearch\Model\BuildingAddressScored;
 use App\Infrastructure\Symfony\Console\Autocomplete;
-use App\Infrastructure\Symfony\Console\OptionHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'app:address-search:autocomplete',
     description: 'Autocomplete the addresses by using the indexed data',
 )]
-final class AddressAutocompleteCommand extends Command
+final readonly class AddressAutocompleteCommand
 {
     private const int MAX_AUTOCOMPLETE_ITEMS = 20;
 
@@ -28,29 +27,27 @@ final class AddressAutocompleteCommand extends Command
     private const int MAX_MIN_SCORE = 100;
 
     public function __construct(
-        private readonly BuildingAddressSearcherInterface $buildingAddressSearcher,
-    ) {
-        parent::__construct();
-    }
+        private BuildingAddressSearcherInterface $buildingAddressSearcher,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of items to show', self::DEFAULT_AUTOCOMPLETE_ITEMS)
-            ->addOption('min-score', null, InputOption::VALUE_REQUIRED, 'Filter results by their min score (min: 1, max: 100)')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $limit = self::MAX_AUTOCOMPLETE_ITEMS;
-        if (null !== ($inputLimit = OptionHelper::getPositiveIntOptionValue($input, 'limit', 1, self::MAX_AUTOCOMPLETE_ITEMS))) {
-            $limit = min($inputLimit, self::MAX_AUTOCOMPLETE_ITEMS);
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of items to show')]
+        int $limit = self::DEFAULT_AUTOCOMPLETE_ITEMS,
+        #[Option(description: 'Filter results by their min score (min: 1, max: 100)', name: 'min-score')]
+        ?int $minScore = null,
+    ): int {
+        $limit = min($limit, self::MAX_AUTOCOMPLETE_ITEMS);
+        if ($limit < 1) {
+            throw new \InvalidArgumentException('Limit can not be less than 1');
         }
 
-        $minScore = null;
-        if (null !== ($inputMinScore = OptionHelper::getPositiveIntOptionValue($input, 'min-score', 1, self::MAX_MIN_SCORE))) {
-            $minScore = min($inputMinScore, self::MAX_MIN_SCORE);
+        if (null !== $minScore) {
+            $minScore = min($minScore, self::MAX_MIN_SCORE);
+        }
+        if ($minScore < 1) {
+            throw new \InvalidArgumentException('Min score can not be less than 1');
         }
 
         $stream = \STDIN;

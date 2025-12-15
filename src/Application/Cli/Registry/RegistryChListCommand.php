@@ -14,9 +14,9 @@ use App\Infrastructure\Pagination;
 use App\Infrastructure\Symfony\Console\OptionHelper;
 use App\Infrastructure\Symfony\Console\Paginator;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -25,47 +25,62 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
     name: 'app:registry:ch:list',
     description: 'Show the Swiss Federal-Data related to the entrances',
 )]
-final class RegistryChListCommand extends Command
+final readonly class RegistryChListCommand
 {
     private const int DEFAULT_LIMIT = 30;
 
     public function __construct(
         #[Autowire(service: RegistryBuildingDataRepository::class)]
-        private readonly RegistryBuildingDataRepositoryInterface $repository,
-    ) {
-        parent::__construct();
-    }
+        private RegistryBuildingDataRepositoryInterface $repository,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Number of rows to load', self::DEFAULT_LIMIT)
-            // Filters
-            ->addOption('building-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by building ID (EGID)')
-            ->addOption('entrance-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by entrance ID (EDID)')
-            ->addOption('language', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by language (9901|9902|9903|9904)')
-            ->addOption('municipality-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by municipality name, case sensitive (GGDENAME)')
-            ->addOption('street-name', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by street name, case sensitive (STRNAME)')
-            ->addOption('street-id', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by street ID (ESID)')
-            ->addOption('canton', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by canton code (GDEKR)')
-            ->addOption('building-status', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter by building status code (GSTAT)')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    /**
+     * @param string[]|null $buildingId
+     * @param string[]|null $entranceId
+     * @param string[]|null $language
+     * @param string[]|null $municipalityName
+     * @param string[]|null $streetName
+     * @param string[]|null $streetId
+     * @param string[]|null $canton
+     * @param string[]|null $buildingStatus
+     */
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Number of rows to load')]
+        int $limit = self::DEFAULT_LIMIT,
+        // Filters
+        #[Option(description: 'Filter by building ID (EGID)', name: 'building-id')]
+        ?array $buildingId = null,
+        #[Option(description: 'Filter by entrance ID (EDID)', name: 'entrance-id')]
+        ?array $entranceId = null,
+        #[Option(description: 'Filter by language (9901|9902|9903|9904)')]
+        ?array $language = null,
+        #[Option(description: 'Filter by municipality name, case sensitive (GGDENAME)', name: 'municipality-name')]
+        ?array $municipalityName = null,
+        #[Option(description: 'Filter by street name, case sensitive (STRNAME)', name: 'street-name')]
+        ?array $streetName = null,
+        #[Option(description: 'Filter by street ID (ESID)', name: 'street-id')]
+        ?array $streetId = null,
+        #[Option(description: 'Filter by canton code (GDEKR)')]
+        ?array $canton = null,
+        #[Option(description: 'Filter by building status code (GSTAT)', name: 'building-status')]
+        ?array $buildingStatus = null,
+    ): int {
+        if ($limit < 1) {
+            throw new \InvalidArgumentException('Limit must be at least 1');
+        }
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
-            $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
-            $entranceIds = OptionHelper::getStringListOptionValues($input, 'entrance-id');
-            $languages = OptionHelper::getStringBackedEnumListOptionValues($input, 'language', LanguageEnum::class);
-            $cantons = OptionHelper::getStringListOptionValues($input, 'canton');
-            $municipalityNames = OptionHelper::getStringListOptionValues($input, 'municipality-name');
-            $streetNames = OptionHelper::getStringListOptionValues($input, 'street-name');
-            $streetIds = OptionHelper::getStringListOptionValues($input, 'street-id');
-            $buildingStatuses = OptionHelper::getStringBackedEnumListOptionValues($input, 'building-status', BuildingStatusEnum::class);
+            $buildingIds = OptionHelper::getStringListOptionValues($buildingId);
+            $entranceIds = OptionHelper::getStringListOptionValues($entranceId);
+            $languages = OptionHelper::getStringBackedEnumListOptionValues($language, LanguageEnum::class);
+            $cantons = OptionHelper::getStringListOptionValues($canton);
+            $municipalityNames = OptionHelper::getStringListOptionValues($municipalityName);
+            $streetNames = OptionHelper::getStringListOptionValues($streetName);
+            $streetIds = OptionHelper::getStringListOptionValues($streetId);
+            $buildingStatuses = OptionHelper::getStringBackedEnumListOptionValues($buildingStatus, BuildingStatusEnum::class);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 

@@ -6,13 +6,12 @@ namespace App\Application\Cli\BuildingData;
 
 use App\Domain\BuildingData\Contract\BuildingEntranceImporterInterface;
 use App\Infrastructure\Model\CountryCodeEnum;
-use App\Infrastructure\Symfony\Console\OptionHelper;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use League\Csv\UnavailableStream;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -20,24 +19,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:building-data:import',
     description: 'Imports the building data from the available building registries',
 )]
-final class BuildingDataImportCommand extends Command
+final readonly class BuildingDataImportCommand
 {
     public function __construct(
-        private readonly BuildingEntranceImporterInterface $importer,
-    ) {
-        parent::__construct();
-    }
+        private BuildingEntranceImporterInterface $importer,
+    ) {}
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption('country-code', null, InputOption::VALUE_REQUIRED, 'Only handle the given country')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $countryCode = OptionHelper::getStringBackedEnumOptionValue($input, 'country-code', CountryCodeEnum::class);
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(description: 'Only handle the given country', name: 'country-code')]
+        ?string $countryCode = null,
+    ): int {
+        $countryCode = $countryCode ? CountryCodeEnum::from($countryCode) : null;
 
         $io = new SymfonyStyle($input, $output);
         $progress = $io->createProgressBar();

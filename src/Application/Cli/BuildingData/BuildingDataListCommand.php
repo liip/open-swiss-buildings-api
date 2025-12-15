@@ -60,14 +60,14 @@ final class BuildingDataListCommand extends Command
 
         try {
             $limit = OptionHelper::getPositiveIntOptionValue($input, 'limit') ?? self::DEFAULT_LIMIT;
-            $countryCode = OptionHelper::getStringBackedEnumListOptionValues($input, 'country-code', CountryCodeEnum::class);
-            $buildingIds = OptionHelper::getStringListOptionValues($input, 'building-id');
-            $entranceIds = OptionHelper::getStringListOptionValues($input, 'entrance-id');
-            $cantons = OptionHelper::getStringListOptionValues($input, 'canton');
-            $municipalities = OptionHelper::getStringListOptionValues($input, 'municipality');
-            $streetNames = OptionHelper::getStringListOptionValues($input, 'street-name');
-            $streetIds = OptionHelper::getStringListOptionValues($input, 'street-id');
-            $languages = OptionHelper::getStringBackedEnumListOptionValues($input, 'language', LanguageEnum::class);
+            $countryCode = OptionHelper::getStringBackedEnumListOptionValuesFromInput($input, 'country-code', CountryCodeEnum::class);
+            $buildingIds = OptionHelper::getStringListOptionValuesFromInput($input, 'building-id');
+            $entranceIds = OptionHelper::getStringListOptionValuesFromInput($input, 'entrance-id');
+            $cantons = OptionHelper::getStringListOptionValuesFromInput($input, 'canton');
+            $municipalities = OptionHelper::getStringListOptionValuesFromInput($input, 'municipality');
+            $streetNames = OptionHelper::getStringListOptionValuesFromInput($input, 'street-name');
+            $streetIds = OptionHelper::getStringListOptionValuesFromInput($input, 'street-id');
+            $languages = OptionHelper::getStringBackedEnumListOptionValuesFromInput($input, 'language', LanguageEnum::class);
         } catch (\UnexpectedValueException $e) {
             $io->error($e->getMessage());
 
