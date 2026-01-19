@@ -27,7 +27,7 @@
         "nelmio/api-doc-bundle": "^5.0",
         "nyholm/dsn": "^2.0",
         "nyholm/psr7": "^1.8",
-        "phpdocumentor/reflection-docblock": "^5.3",
+        "phpdocumentor/reflection-docblock": "^6.0",
         "phpstan/phpdoc-parser": "^2.0",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
