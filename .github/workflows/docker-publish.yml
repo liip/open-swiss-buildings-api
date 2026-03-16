@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: global
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -17,12 +21,11 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Publish docker image to github docker registry
     permissions:
       contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
+      packages: write # Needed to write to GHCR - container images are considered packages by GitHub.
+      id-token: write # This is used to complete the identity challenge with sigstore/fulcio when running outside of PRs.
 
     steps:
       - name: Checkout repository
