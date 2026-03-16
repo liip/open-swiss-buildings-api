@@ -6,14 +6,21 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+    name: Static and runtime tests
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        persist-credentials: false
     - name: Start stack
       shell: bash
       run: |
@@ -62,14 +69,13 @@ jobs:
     needs: tests # only on successful tests
     runs-on: ubuntu-latest
 
-    # required so the action can approve & merge the PR
     permissions:
-      pull-requests: write
-      contents: write
+      pull-requests: write # needed so dependabot can approve
+      contents: write # needed so dependabot can merge
 
     steps:
       - name: Auto-merge Dependabot PRs
-        uses: fastify/github-action-merge-dependabot@v3
+        uses: fastify/github-action-merge-dependabot@1b2ed42db8f9d81a46bac83adedfc03eb5149dff # v3
         with:
           # only automerge patch & minor semver bumps
           target: minor
