@@ -25,12 +25,7 @@ final class AddressSearchFinderQueryString
      */
     #[Assert\GreaterThanOrEqual(1)]
     #[Assert\LessThanOrEqual(50)]
-    #[OA\Property(
-        description: 'Number of results to return',
-        maximum: 50,
-        minimum: 1,
-        example: 25,
-    )]
+    #[OA\Property(description: 'Number of results to return', example: 25, maximum: 50, minimum: 1)]
     public int $limit = 10;
 
     /**
@@ -38,11 +33,6 @@ final class AddressSearchFinderQueryString
      */
     #[Assert\GreaterThanOrEqual(1)]
     #[Assert\LessThanOrEqual(100)]
-    #[OA\Property(
-        description: 'Lowest matching score of results to return',
-        maximum: 100,
-        minimum: 1,
-        example: 90,
-    )]
+    #[OA\Property(description: 'Lowest matching score of results to return', example: 90, maximum: 100, minimum: 1)]
     public ?int $minScore = null;
 }
