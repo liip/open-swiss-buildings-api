@@ -5,6 +5,7 @@
 /phpunit.xml
 /.php-cs-fixer.php
 /compose.override.yaml
+/config/reference.php
 
 ###> symfony/framework-bundle ###
 /.env.local

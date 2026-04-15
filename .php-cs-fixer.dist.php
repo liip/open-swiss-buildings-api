@@ -9,6 +9,7 @@ use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 $finder = (new Finder())
     ->in(__DIR__.'/src')
     ->in(__DIR__.'/tests')
+    ->notPath(__DIR__.'/config/reference.php')
 ;
 
 return (new Config())
