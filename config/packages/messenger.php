@@ -30,7 +30,7 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
     $asyncResolveRouting = $messenger->routing(AsyncResolveMessage::class);
     $asyncResolveRouting->senders(['resolve']);
     $asyncResolve->dsn(env('MESSENGER_TRANSPORT_DSN'))
-        ->options(['queue_name' => 'resolve'])
+        ->option('queue_name', 'resolve')
         ->retryStrategy()
         ->maxRetries(3)
         // 30s delay (in milliseconds) for the first retry
@@ -48,10 +48,10 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
     $asyncDefaultRouting = $messenger->routing(AsyncDefaultMessage::class);
     $asyncDefaultRouting->senders(['async']);
     $asyncDefault->dsn(env('MESSENGER_TRANSPORT_DSN'))
-        ->options(['queue_name' => 'async'])
+        ->option('queue_name', 'async')
     ;
 
     $failed->dsn(env('MESSENGER_TRANSPORT_DSN'))
-        ->options(['queue_name' => 'failed'])
+        ->option('queue_name', 'failed')
     ;
 };
