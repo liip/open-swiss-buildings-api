@@ -30,10 +30,9 @@ final class AddressSearchToBuildingDataBridgeTest extends TestCase
     {
         $this->messageBus = $this->createMock(MessageBusInterface::class);
         $this->addressSearchRepository = $this->createMock(AddressSearchWriteRepositoryInterface::class);
-        $buildingEntranceRepository = $this->createMock(BuildingEntranceReadRepositoryInterface::class);
 
         $this->bridge = new AddressSearchToBuildingDataBridge(
-            $buildingEntranceRepository,
+            $this->createStub(BuildingEntranceReadRepositoryInterface::class),
             $this->addressSearchRepository,
             $this->messageBus,
             new NullLogger(),
