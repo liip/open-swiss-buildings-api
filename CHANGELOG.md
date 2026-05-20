@@ -2,6 +2,10 @@
 
 # 2.x
 
+## v2.0.14
+
+* [security] Upgrade dependencies to get rid of Symfony CVEs.
+
 ## v2.0.13
 
 * [bugfix] Fix regression in php-fpm startup script to inject environment variables into PHP again.
