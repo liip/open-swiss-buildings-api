@@ -28,7 +28,7 @@ final readonly class ResolveJobsListCommand
         InputInterface $input,
         OutputInterface $output,
         #[Option(description: 'Include the metadata of the jobs', name: 'with-metadata')]
-        ?bool $withMetadata = false,
+        bool $withMetadata = false,
     ): int {
         $io = new SymfonyStyle($input, $output);
 
