@@ -7,7 +7,6 @@ namespace App\Domain\AddressSearch;
 use App\Application\Contract\BuildingAddressSearcherInterface;
 use App\Domain\AddressSearch\Contract\AddressSearchReadRepositoryInterface;
 use App\Domain\AddressSearch\Model\AddressSearch;
-use App\Domain\AddressSearch\Model\BuildingAddressScored;
 use App\Domain\AddressSearch\Model\PlaceScored;
 use App\Domain\AddressSearch\Model\SearchStats;
 
@@ -25,7 +24,7 @@ final readonly class BuildingAddressSearcher implements BuildingAddressSearcherI
     public function searchPlaces(AddressSearch $search): iterable
     {
         foreach ($this->searchBuildingAddress($search) as $buildingAddressScored) {
-            /* @var BuildingAddressScored $buildingAddressScored */
+            /* @var \App\Domain\AddressSearch\Model\BuildingAddressScored $buildingAddressScored */
             yield PlaceScored::buildFromBuildingAddressScored($buildingAddressScored);
         }
     }
