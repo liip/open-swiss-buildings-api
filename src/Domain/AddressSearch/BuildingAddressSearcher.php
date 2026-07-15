@@ -24,6 +24,7 @@ final readonly class BuildingAddressSearcher implements BuildingAddressSearcherI
     public function searchPlaces(AddressSearch $search): iterable
     {
         foreach ($this->searchBuildingAddress($search) as $buildingAddressScored) {
+            /** @var \App\Domain\AddressSearch\Model\BuildingAddressScored $buildingAddressScored */
             yield PlaceScored::buildFromBuildingAddressScored($buildingAddressScored);
         }
     }
