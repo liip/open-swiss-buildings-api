@@ -6,6 +6,7 @@ RUN apk -U upgrade && apk add --no-cache \
     postgresql-client \
     php84 \
     php84-apcu \
+    php84-fpm \
     php84-cli \
     php84-ctype \
     php84-curl \
