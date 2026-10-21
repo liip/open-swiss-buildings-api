@@ -47,8 +47,15 @@ COPY --link docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 # Image used to pull the latest phive release as v0.15.3 is not yet available as docker image
 FROM alpine:latest AS local-phive
 RUN apk -U upgrade && apk add --no-cache gpg gpg-agent
-RUN wget -O phive.phar https://phar.io/releases/phive.phar
-RUN wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc
+RUN for artifact in phive.phar phive.phar.asc; do \
+    for attempt in 1 2 3 4 5; do \
+        if wget -O "$artifact" "https://phar.io/releases/$artifact"; then \
+            break; \
+        fi; \
+        if [ "$attempt" -eq 5 ]; then exit 1; fi; \
+        sleep "$attempt"; \
+    done; \
+done
 RUN gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
 RUN gpg --verify phive.phar.asc phive.phar
 RUN chmod +x phive.phar
