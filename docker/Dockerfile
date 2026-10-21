@@ -44,12 +44,12 @@ ENV TZ=Europe/Zurich \
 COPY --link docker/etc/php/conf.d/*.ini /etc/php84/conf.d/
 COPY --link docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Image used to pull the latest phive release as v0.15.3 is not yet available as docker image
+# Image used to pull PHIVE v0.15.3 as it is not yet available as a Docker image
 FROM alpine:latest AS local-phive
 RUN apk -U upgrade && apk add --no-cache gpg gpg-agent
-RUN for artifact in phive.phar phive.phar.asc; do \
+RUN for artifact in phive-0.15.3.phar phive-0.15.3.phar.asc; do \
     for attempt in 1 2 3 4 5; do \
-        if wget -O "$artifact" "https://phar.io/releases/$artifact"; then \
+        if wget -O "$artifact" "https://github.com/phar-io/phive/releases/download/0.15.3/$artifact"; then \
             break; \
         fi; \
         if [ "$attempt" -eq 5 ]; then exit 1; fi; \
@@ -57,9 +57,9 @@ RUN for artifact in phive.phar phive.phar.asc; do \
     done; \
 done
 RUN gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
-RUN gpg --verify phive.phar.asc phive.phar
-RUN chmod +x phive.phar
-RUN mv phive.phar /usr/local/bin/phive
+RUN gpg --verify phive-0.15.3.phar.asc phive-0.15.3.phar
+RUN chmod +x phive-0.15.3.phar
+RUN mv phive-0.15.3.phar /usr/local/bin/phive
 
 # Image used in Prod
 FROM base AS app-prod
