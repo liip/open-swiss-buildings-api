@@ -35,10 +35,10 @@ class ResolverAddress
     #[ORM\Column]
     public string $uniqueHash;
 
-    #[ORM\Column(length: 4, nullable: true)]
+    #[ORM\Column(length: 4, nullable: true, options: ['collation' => 'custom_osb_numeric_ci'])]
     public ?string $rangeFrom = null;
 
-    #[ORM\Column(length: 4, nullable: true)]
+    #[ORM\Column(length: 4, nullable: true, options: ['collation' => 'custom_osb_numeric_ci'])]
     public ?string $rangeTo = null;
 
     #[ORM\Column(length: 10, nullable: true)]
