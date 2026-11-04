@@ -8,6 +8,16 @@ updates:
       default-days: 7
   - package-ecosystem: "docker"
     directory: "/docker"
+    # PHP upgrades need matching packages, configuration and FPM startup.
+    ignore:
+      - dependency-name: "existenz/webstack"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
+      - dependency-name: "php"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     schedule:
       interval: "weekly"
     cooldown:
