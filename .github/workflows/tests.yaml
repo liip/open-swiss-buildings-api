@@ -33,8 +33,10 @@ jobs:
         docker compose -f compose.yaml -f compose.tests.yaml exec app composer install --no-ansi --no-interaction --no-progress --prefer-dist
     - name: Install tools
       shell: bash
+      env:
+        GITHUB_AUTH_TOKEN: ${{ github.token }}
       run: |
-        docker compose -f compose.yaml -f compose.tests.yaml exec app composer phive:install --no-interaction --no-progress --no-ansi
+        docker compose -f compose.yaml -f compose.tests.yaml exec -e GITHUB_AUTH_TOKEN app composer phive:install --no-interaction --no-progress --no-ansi
     - name: Initialize database
       shell: bash
       run: |
